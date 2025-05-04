@@ -60,7 +60,8 @@ const Feedback = () => {
     setError('')
 
     try {
-      const response = await axios.post(`http://localhost:8000/auto-feedback`, {
+      const API_URL = import.meta.env.VITE_SERVER_URL ;
+      const response = await axios.post(`${API_URL}/auto-feedback`, {
         rollno: rollNo,
         password: password,
         feedback_index: feedbackIndex

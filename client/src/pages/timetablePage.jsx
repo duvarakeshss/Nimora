@@ -99,7 +99,8 @@ const Timetable = () => {
     const fetchExamSchedule = async () => {
       try {
         setLoading(true)
-        const response = await axios.post('http://localhost:8000/exam-schedule', {
+        const API_URL = import.meta.env.VITE_SERVER_URL ;
+        const response = await axios.post(`${API_URL}/exam-schedule`, {
           rollno: rollNo,
           password: password
         })

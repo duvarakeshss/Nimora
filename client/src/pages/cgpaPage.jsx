@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import axios from 'axios'
+const API_URL = import.meta.env.VITE_SERVER_URL ;
 
 const SemesterCard = ({ semester, gpa, cgpa, credits, totalCredits, totalPoints }) => {
   return (
@@ -117,7 +118,7 @@ const Cgpa = () => {
     const fetchCgpaData = async () => {
       try {
         setLoading(true)
-        const response = await axios.post(`http://localhost:8000/cgpa`, {
+        const response = await axios.post(`${API_URL}/cgpa`, {
           rollno: rollNo,
           password: password
         })
@@ -139,7 +140,7 @@ const Cgpa = () => {
     try {
       setPredictionLoading(true)
       setError(null) // Clear any previous errors
-      const response = await axios.post(`http://localhost:8000/predict-courses`, {
+      const response = await axios.post(`${API_URL}/predict-courses`, {
         rollno: rollNo,
         password: password
       })
