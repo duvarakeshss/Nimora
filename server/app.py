@@ -4,11 +4,22 @@ from util.Feedback import auto_feedback_task
 from util.Cgpa import getStudentCourses, getCGPA
 from util.Timetable import getExamSchedule
 import pandas as pd
+import os
+import traceback
+import logging
 from fastapi import FastAPI, HTTPException, BackgroundTasks, Request
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("nimora-api")
+
+# Environment variables
+DEPLOYMENT_ENV = os.environ.get("VERCEL_ENV", "development")
+IS_VERCEL = DEPLOYMENT_ENV != "development"
 
 app = FastAPI()
 
@@ -54,6 +65,21 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         }
     )
 
+@app.exception_handler(Exception)
+async def general_exception_handler(request: Request, exc: Exception):
+    # Log the error
+    logger.error(f"Unhandled exception: {str(exc)}")
+    logger.error(traceback.format_exc())
+    
+    return JSONResponse(
+        status_code=500,
+        content={
+            "detail": "An unexpected error occurred. Please try again later.",
+            "error_type": exc.__class__.__name__,
+            "message": str(exc)
+        }
+    )
+
 @app.get("/")
 def root():
     """
@@ -63,6 +89,7 @@ def root():
         "name": "Nimora Student Information API",
         "description": "API for accessing student attendance, CGPA, exam schedules, and more",
         "version": "1.0.0",
+        "environment": DEPLOYMENT_ENV,
         "endpoints": {
             "/login": "Authenticate and get attendance summary",
             "/attendance": "Get detailed attendance information",
@@ -141,6 +168,7 @@ def get_cgpa(credentials: UserCredentials):
     Get CGPA and GPA data for a student
     """
     try:
+        logger.info(f"CGPA request for {credentials.rollno}")
         session = getHomePageAttendance(credentials.rollno, credentials.password)
         if not session:
             raise HTTPException(status_code=401, detail="Invalid credentials")
@@ -160,15 +188,21 @@ def get_cgpa(credentials: UserCredentials):
             if he.status_code == 404 and ("No completed courses found" in he.detail or 
                                           "Could not find completed courses data" in he.detail):
                 # Return empty array for new students
+                logger.info(f"No CGPA data for {credentials.rollno} (new student)")
                 return []
             # Re-raise other HTTP exceptions
+            logger.error(f"CGPA HTTP error: {he.detail}")
             raise he
             
     except HTTPException as he:
         # Re-raise HTTP exceptions
+        logger.error(f"CGPA request error: {he.detail}")
         raise he
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error calculating CGPA: {str(e)}")
+        logger.error(f"CGPA error: {str(e)}")
+        logger.error(traceback.format_exc())
+        raise HTTPException(status_code=500, 
+                           detail=f"Error calculating CGPA. Please try again or contact support if the issue persists.")
 
 @app.post("/predict-courses")
 def get_current_courses(credentials: UserCredentials):
@@ -279,6 +313,7 @@ def get_exam_schedule(credentials: UserCredentials):
     Get the exam schedule for the student
     """
     try:
+        logger.info(f"Exam schedule request for {credentials.rollno}")
         session = getHomePageAttendance(credentials.rollno, credentials.password)
         if not session:
             raise HTTPException(status_code=401, detail="Invalid credentials")
@@ -290,14 +325,19 @@ def get_exam_schedule(credentials: UserCredentials):
         if isinstance(schedule, pd.DataFrame):
             # Check if it's empty
             if schedule.empty:
+                logger.info(f"No exam schedule for {credentials.rollno}")
                 return {"exams": [], "message": "No upcoming exams found."}
             else:
                 # Convert DataFrame to dict for JSON serialization
                 return {"exams": schedule.to_dict(orient='records')}
         else:
             # Handle non-DataFrame return (like empty list)
+            logger.info(f"Non-DataFrame exam schedule for {credentials.rollno}")
             return {"exams": [], "message": "No upcoming exams found."}
         
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error getting exam schedule: {str(e)}")
+        logger.error(f"Exam schedule error: {str(e)}")
+        logger.error(traceback.format_exc())
+        raise HTTPException(status_code=500, 
+                          detail=f"Error retrieving exam schedule. Please try again or contact support if the issue persists.")
 
