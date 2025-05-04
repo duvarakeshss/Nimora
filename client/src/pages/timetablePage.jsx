@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
 import axios from 'axios'
 
 const ExamCard = ({ exam }) => {
@@ -182,51 +183,54 @@ const Timetable = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-6xl mx-auto">
-        <Navbar />
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h1 className="text-2xl font-bold text-purple-700 mb-6">Exam Schedule</h1>
-          
-          {loading ? (
-            <div className="flex justify-center items-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
-            </div>
-          ) : error ? (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-              <p className="font-medium">Error</p>
-              <p>{error}</p>
-            </div>
-          ) : message ? (
-            <div className="text-center py-8">
-              <div className="mx-auto w-16 h-16 mb-4 text-gray-400">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
+    <div className="min-h-screen bg-gray-100 flex flex-col">
+      <div className="flex-grow p-6">
+        <div className="max-w-6xl mx-auto">
+          <Navbar />
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h1 className="text-2xl font-bold text-purple-700 mb-6">Exam Schedule</h1>
+            
+            {loading ? (
+              <div className="flex justify-center items-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
               </div>
-              <p className="text-gray-600">{message}</p>
-            </div>
-          ) : (
-            <div>
-              <div className="mb-6">
-                <p className="text-gray-600 mb-4">Your upcoming exams are listed below. They are automatically sorted by date.</p>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">0-2 days: Urgent</span>
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">3-7 days: Soon</span>
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">&gt;7 days: Upcoming</span>
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-gray-200 text-gray-700">Past</span>
+            ) : error ? (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+                <p className="font-medium">Error</p>
+                <p>{error}</p>
+              </div>
+            ) : message ? (
+              <div className="text-center py-8">
+                <div className="mx-auto w-16 h-16 mb-4 text-gray-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <p className="text-gray-600">{message}</p>
+              </div>
+            ) : (
+              <div>
+                <div className="mb-6">
+                  <p className="text-gray-600 mb-4">Your upcoming exams are listed below. They are automatically sorted by date.</p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">0-2 days: Urgent</span>
+                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">3-7 days: Soon</span>
+                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">&gt;7 days: Upcoming</span>
+                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-gray-200 text-gray-700">Past</span>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {sortedExams.map((exam, index) => (
+                    <ExamCard key={index} exam={exam} />
+                  ))}
                 </div>
               </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {sortedExams.map((exam, index) => (
-                  <ExamCard key={index} exam={exam} />
-                ))}
-              </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
+      <Footer />
     </div>
   )
 }

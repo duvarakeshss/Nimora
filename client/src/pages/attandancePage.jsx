@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { getStudentAttendance } from '../utils/attendanceService'
 import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
 import { BarChart3, Calendar, CheckCircle, XCircle, AlertTriangle } from 'lucide-react'
 
 const Attandance = () => {
@@ -174,80 +175,253 @@ const Attandance = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-6xl mx-auto">
-        <Navbar />
-        
-        {/* Analytics Summary */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <h1 className="text-2xl font-bold text-blue-700 mb-6">Attendance Dashboard</h1>
+    <div className="min-h-screen bg-gray-100 flex flex-col">
+      <div className="flex-grow p-6">
+        <div className="max-w-6xl mx-auto">
+          <Navbar />
           
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="bg-blue-50 rounded-lg p-4 shadow-sm flex flex-col items-center justify-center transition-all duration-300 hover:shadow-md hover:bg-blue-100 hover:scale-105">
-              <div className="bg-blue-100 rounded-full p-3 mb-2 transition-colors duration-300 hover:bg-blue-200">
-                <Calendar className="h-6 w-6 text-blue-700" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-700">Total Classes</h3>
-              <p className="text-3xl font-bold text-blue-700">{attendanceStats.totalClasses}</p>
-            </div>
+          {/* Analytics Summary */}
+          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h1 className="text-2xl font-bold text-blue-700 mb-6">Attendance Dashboard</h1>
             
-            <div className="bg-green-50 rounded-lg p-4 shadow-sm flex flex-col items-center justify-center transition-all duration-300 hover:shadow-md hover:bg-green-100 hover:scale-105">
-              <div className="bg-green-100 rounded-full p-3 mb-2 transition-colors duration-300 hover:bg-green-200">
-                <CheckCircle className="h-6 w-6 text-green-700" />
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="bg-blue-50 rounded-lg p-4 shadow-sm flex flex-col items-center justify-center transition-all duration-300 hover:shadow-md hover:bg-blue-100 hover:scale-105">
+                <div className="bg-blue-100 rounded-full p-3 mb-2 transition-colors duration-300 hover:bg-blue-200">
+                  <Calendar className="h-6 w-6 text-blue-700" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-700">Total Classes</h3>
+                <p className="text-3xl font-bold text-blue-700">{attendanceStats.totalClasses}</p>
               </div>
-              <h3 className="text-lg font-semibold text-gray-700">Present</h3>
-              <p className="text-3xl font-bold text-green-700">{attendanceStats.presentClasses}</p>
-            </div>
-            
-            <div className="bg-red-50 rounded-lg p-4 shadow-sm flex flex-col items-center justify-center transition-all duration-300 hover:shadow-md hover:bg-red-100 hover:scale-105">
-              <div className="bg-red-100 rounded-full p-3 mb-2 transition-colors duration-300 hover:bg-red-200">
-                <XCircle className="h-6 w-6 text-red-700" />
+              
+              <div className="bg-green-50 rounded-lg p-4 shadow-sm flex flex-col items-center justify-center transition-all duration-300 hover:shadow-md hover:bg-green-100 hover:scale-105">
+                <div className="bg-green-100 rounded-full p-3 mb-2 transition-colors duration-300 hover:bg-green-200">
+                  <CheckCircle className="h-6 w-6 text-green-700" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-700">Present</h3>
+                <p className="text-3xl font-bold text-green-700">{attendanceStats.presentClasses}</p>
               </div>
-              <h3 className="text-lg font-semibold text-gray-700">Absent</h3>
-              <p className="text-3xl font-bold text-red-700">{attendanceStats.absentClasses}</p>
-            </div>
-            
-            <div className="bg-purple-50 rounded-lg p-4 shadow-sm flex flex-col items-center justify-center transition-all duration-300 hover:shadow-md hover:bg-purple-100 hover:scale-105">
-              <div className="bg-purple-100 rounded-full p-3 mb-2 transition-colors duration-300 hover:bg-purple-200">
-                <BarChart3 className="h-6 w-6 text-purple-700" />
+              
+              <div className="bg-red-50 rounded-lg p-4 shadow-sm flex flex-col items-center justify-center transition-all duration-300 hover:shadow-md hover:bg-red-100 hover:scale-105">
+                <div className="bg-red-100 rounded-full p-3 mb-2 transition-colors duration-300 hover:bg-red-200">
+                  <XCircle className="h-6 w-6 text-red-700" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-700">Absent</h3>
+                <p className="text-3xl font-bold text-red-700">{attendanceStats.absentClasses}</p>
               </div>
-              <h3 className="text-lg font-semibold text-gray-700">Overall %</h3>
-              <p className={`text-3xl font-bold ${attendanceStats.overallPercentage < 75 ? 'text-red-600' : 'text-purple-700'}`}>
-                {attendanceStats.overallPercentage}%
-              </p>
+              
+              <div className="bg-purple-50 rounded-lg p-4 shadow-sm flex flex-col items-center justify-center transition-all duration-300 hover:shadow-md hover:bg-purple-100 hover:scale-105">
+                <div className="bg-purple-100 rounded-full p-3 mb-2 transition-colors duration-300 hover:bg-purple-200">
+                  <BarChart3 className="h-6 w-6 text-purple-700" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-700">Overall %</h3>
+                <p className={`text-3xl font-bold ${attendanceStats.overallPercentage < 75 ? 'text-red-600' : 'text-purple-700'}`}>
+                  {attendanceStats.overallPercentage}%
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-        
-        {/* Action Required Courses Section */}
-        {combinedData.length > 0 && combinedData.some(course => course.affordableLeaves < 0) && (
-          <div className="bg-red-50 rounded-lg shadow-md p-6 mb-6 border-l-4 border-red-500">
-            <div className="flex items-center mb-4">
-              <AlertTriangle className="h-6 w-6 text-red-600 mr-2" />
-              <h2 className="text-2xl font-semibold text-red-700">Action Required Courses</h2>
-            </div>
-            
-            <div className="rounded-lg border-2 border-red-200 shadow-md overflow-hidden overflow-x-auto mb-4">
-              <div className="min-w-full">
-                {/* Header Row - hidden on small screens, visible from md up */}
-                <div className="hidden md:grid grid-cols-6 bg-red-100 divide-x divide-red-200 text-red-700 border-b-2 border-red-200">
-                  <div className="px-6 py-4 text-left text-sm font-semibold uppercase">Course</div>
-                  <div className="px-6 py-4 text-center text-sm font-semibold uppercase">Total Classes</div>
-                  <div className="px-6 py-4 text-center text-sm font-semibold uppercase">Present</div>
-                  <div className="px-6 py-4 text-center text-sm font-semibold uppercase">Absent</div>
-                  <div className="px-6 py-4 text-center text-sm font-semibold uppercase">Attendance %</div>
-                  <div className="px-6 py-4 text-center text-sm font-semibold uppercase">
-                    Classes To Attend
+          
+          {/* Action Required Courses Section */}
+          {combinedData.length > 0 && combinedData.some(course => course.affordableLeaves < 0) && (
+            <div className="bg-red-50 rounded-lg shadow-md p-6 mb-6 border-l-4 border-red-500">
+              <div className="flex items-center mb-4">
+                <AlertTriangle className="h-6 w-6 text-red-600 mr-2" />
+                <h2 className="text-2xl font-semibold text-red-700">Action Required Courses</h2>
+              </div>
+              
+              <div className="rounded-lg border-2 border-red-200 shadow-md overflow-hidden overflow-x-auto mb-4">
+                <div className="min-w-full">
+                  {/* Header Row - hidden on small screens, visible from md up */}
+                  <div className="hidden md:grid grid-cols-6 bg-red-100 divide-x divide-red-200 text-red-700 border-b-2 border-red-200">
+                    <div className="px-6 py-4 text-left text-sm font-semibold uppercase">Course</div>
+                    <div className="px-6 py-4 text-center text-sm font-semibold uppercase">Total Classes</div>
+                    <div className="px-6 py-4 text-center text-sm font-semibold uppercase">Present</div>
+                    <div className="px-6 py-4 text-center text-sm font-semibold uppercase">Absent</div>
+                    <div className="px-6 py-4 text-center text-sm font-semibold uppercase">Attendance %</div>
+                    <div className="px-6 py-4 text-center text-sm font-semibold uppercase">
+                      Classes To Attend
+                    </div>
+                  </div>
+                  
+                  {/* Data Rows with horizontal grid styling */}
+                  <div>
+                    {combinedData
+                      .filter(course => course.affordableLeaves < 0)
+                      .map((course, index) => {
+                        // This is the last row
+                        const isLastRow = index === combinedData.filter(c => c.affordableLeaves < 0).length - 1;
+                        
+                        // Is this course selected
+                        const isSelected = selectedCourse?.courseCode === course.courseCode;
+                        
+                        return (
+                          <div key={index}>
+                            {/* Mobile view - vertical card layout */}
+                            <div 
+                              className="md:hidden block p-4 border-b border-red-200 cursor-pointer"
+                              onClick={() => handleCourseClick(course)}
+                            >
+                              <div className={`rounded-lg p-4 bg-red-50 shadow ${isSelected ? 'ring-2 ring-red-500' : ''} transition-all duration-300 hover:shadow-lg hover:bg-red-100 hover:scale-102`}>
+                                <div className="text-xl font-bold text-red-700 mb-2 transition-colors duration-300 hover:text-red-800">{course.courseCode}</div>
+                                <div className="grid grid-cols-2 gap-2">
+                                  <div className="text-gray-600">Total Classes:</div>
+                                  <div className="font-medium text-right">{course.totalClasses}</div>
+                                  
+                                  <div className="text-gray-600">Present:</div>
+                                  <div className="font-medium text-right">{course.present}</div>
+                                  
+                                  <div className="text-gray-600">Absent:</div>
+                                  <div className="font-medium text-right">{course.absent}</div>
+                                  
+                                  <div className="text-gray-600">Attendance:</div>
+                                  <div className="font-medium text-right text-red-600">
+                                    {course.percentage}%
+                                  </div>
+                                  
+                                  <div className="text-gray-600">Classes To Attend:</div>
+                                  <div className="font-medium text-right text-red-600 transition-all duration-300 hover:font-bold hover:text-red-700">
+                                    {Math.abs(course.affordableLeaves)}
+                                  </div>
+                                </div>
+                                
+                                {isSelected && (
+                                  <div className="mt-4 pt-4 border-t border-red-200">
+                                    <h4 className="font-medium text-red-700 mb-2">Action Required</h4>
+                                    <p className="text-sm text-gray-700">
+                                      You need to attend at least {Math.abs(course.affordableLeaves)} more class{Math.abs(course.affordableLeaves) === 1 ? '' : 'es'} to reach {customPercentage}% attendance.
+                                    </p>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                            
+                            {/* Desktop view - row layout */}
+                            <div 
+                              className={`hidden md:grid md:grid-cols-6 bg-red-50 
+                                hover:bg-red-100 border-l-8 border-transparent
+                                hover:border-l-8 hover:border-red-500 hover:shadow hover:shadow-red-100 divide-x divide-red-200
+                                ${!isLastRow ? 'border-b border-red-200' : ''}
+                                transition-all duration-200 ease-in-out cursor-pointer
+                                ${isSelected ? 'ring-2 ring-red-500 ring-inset' : ''}`}
+                              onClick={() => handleCourseClick(course)}
+                            >
+                              <div className="px-6 py-5 text-base font-medium text-red-900">{course.courseCode}</div>
+                              <div className="px-6 py-5 text-base text-center text-gray-600">{course.totalClasses}</div>
+                              <div className="px-6 py-5 text-base text-center text-gray-600">{course.present}</div>
+                              <div className="px-6 py-5 text-base text-center text-gray-600">{course.absent}</div>
+                              <div className="px-6 py-5 text-base text-center font-medium text-red-600">
+                                {course.percentage}%
+                              </div>
+                              <div className="px-6 py-5 text-base text-center font-medium text-red-600">
+                                <span className="inline-flex items-center justify-center">
+                                  {Math.abs(course.affordableLeaves)}
+                                  <span className="ml-1 text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">urgent</span>
+                                </span>
+                              </div>
+                            </div>
+                            
+                            {/* Details panel for desktop */}
+                            {isSelected && (
+                              <div className="hidden md:block bg-red-100 p-4 border-b border-red-200">
+                                <div className="flex justify-between">
+                                  <div>
+                                    <h4 className="font-medium text-red-700 mb-1">Action Required</h4>
+                                    <p className="text-sm text-gray-700">
+                                      You need to attend at least {Math.abs(course.affordableLeaves)} more class{Math.abs(course.affordableLeaves) === 1 ? '' : 'es'} to reach {customPercentage}% attendance.
+                                    </p>
+                                  </div>
+                                  
+                                  <div className="text-right">
+                                    <div className="text-sm font-medium text-gray-500">Current Status:</div>
+                                    <div className="font-medium text-red-600">
+                                      Below Minimum Requirement
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                   </div>
                 </div>
-                
-                {/* Data Rows with horizontal grid styling */}
-                <div>
-                  {combinedData
-                    .filter(course => course.affordableLeaves < 0)
-                    .map((course, index) => {
+              </div>
+            </div>
+          )}
+          
+          {combinedData.length > 0 && (
+            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+              <div className="flex flex-col md:flex-row items-start md:items-center mb-6 space-y-3 md:space-y-0">
+                <h2 className="text-2xl font-semibold text-blue-700">All Courses</h2>
+                <div className="w-full md:w-auto md:ml-auto flex flex-col items-stretch md:items-end">
+                  <div className="flex items-center justify-between w-full">
+                    <label htmlFor="customPercentage" className="mr-3 text-sm font-medium text-gray-700">
+                      Target Percentage: 
+                    </label>
+                    <span className="text-sm font-bold bg-blue-100 text-blue-800 px-2 py-1 rounded-full min-w-[50px] text-center">
+                      {customPercentage}%
+                    </span>
+                  </div>
+                  <div className="w-full md:w-64 mt-2 relative">
+                    <div className="absolute -top-1 left-0 right-0 flex justify-between px-1">
+                      <div className="w-0.5 h-2 bg-gray-300"></div>
+                      <div className="w-0.5 h-2 bg-gray-300"></div>
+                      <div className="w-0.5 h-2 bg-gray-300"></div>
+                      <div className="w-0.5 h-2 bg-gray-300"></div>
+                      <div className="w-0.5 h-2 bg-gray-300"></div>
+                      <div className="w-0.5 h-2 bg-gray-300"></div>
+                    </div>
+                    <input
+                      type="range"
+                      id="customPercentage"
+                      min="50"
+                      max="100"
+                      step="1"
+                      value={customPercentage}
+                      onChange={handlePercentageChange}
+                      className="w-full h-2 appearance-none rounded-full bg-gradient-to-r from-red-500 via-yellow-400 to-green-500 cursor-pointer"
+                    />
+                    <div className="flex justify-between text-xs text-gray-500 mt-1 px-1">
+                      <span>50%</span>
+                      <span>60%</span>
+                      <span>70%</span>
+                      <span>80%</span>
+                      <span>90%</span>
+                      <span>100%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="rounded-lg border-2 border-gray-300 shadow-md overflow-hidden overflow-x-auto">
+                <div className="min-w-full">
+                  {/* Header Row - hidden on small screens, visible from md up */}
+                  <div className="hidden md:grid grid-cols-6 bg-blue-50 divide-x divide-gray-200 text-blue-700 border-b-2 border-blue-200">
+                    <div className="px-6 py-4 text-left text-sm font-semibold uppercase">Course</div>
+                    <div className="px-6 py-4 text-center text-sm font-semibold uppercase">Total Classes</div>
+                    <div className="px-6 py-4 text-center text-sm font-semibold uppercase">Present</div>
+                    <div className="px-6 py-4 text-center text-sm font-semibold uppercase">Absent</div>
+                    <div className="px-6 py-4 text-center text-sm font-semibold uppercase">Attendance %</div>
+                    <div className="px-6 py-4 text-center text-sm font-semibold uppercase">
+                      Affordable Leaves ({customPercentage}%)
+                    </div>
+                  </div>
+                  
+                  {/* Data Rows with horizontal grid styling */}
+                  <div>
+                    {combinedData.map((course, index) => {
+                      // Determine color based on affordable leaves
+                      const colorClass = course.affordableLeaves >= 0 
+                        ? "hover:border-l-8 hover:border-blue-500 hover:shadow hover:shadow-blue-100" 
+                        : "hover:border-l-8 hover:border-red-500 hover:shadow hover:shadow-red-100";
+                      
+                      // Determine background color based on index for zebra striping
+                      const bgClass = index % 2 === 0 
+                        ? (parseInt(course.percentage) < 75 ? "bg-red-50" : "bg-white") 
+                        : (parseInt(course.percentage) < 75 ? "bg-red-50" : "bg-gray-50");
+                      
                       // This is the last row
-                      const isLastRow = index === combinedData.filter(c => c.affordableLeaves < 0).length - 1;
+                      const isLastRow = index === combinedData.length - 1;
                       
                       // Is this course selected
                       const isSelected = selectedCourse?.courseCode === course.courseCode;
@@ -256,11 +430,11 @@ const Attandance = () => {
                         <div key={index}>
                           {/* Mobile view - vertical card layout */}
                           <div 
-                            className="md:hidden block p-4 border-b border-red-200 cursor-pointer"
+                            className="md:hidden block p-4 border-b border-gray-300 cursor-pointer"
                             onClick={() => handleCourseClick(course)}
                           >
-                            <div className={`rounded-lg p-4 bg-red-50 shadow ${isSelected ? 'ring-2 ring-red-500' : ''} transition-all duration-300 hover:shadow-lg hover:bg-red-100 hover:scale-102`}>
-                              <div className="text-xl font-bold text-red-700 mb-2 transition-colors duration-300 hover:text-red-800">{course.courseCode}</div>
+                            <div className={`rounded-lg p-4 ${parseInt(course.percentage) < 75 ? "bg-red-50" : "bg-white"} shadow ${isSelected ? 'ring-2 ring-blue-500' : ''} transition-all duration-300 hover:shadow-lg hover:scale-102 ${parseInt(course.percentage) < 75 ? "hover:bg-red-100" : "hover:bg-blue-50"}`}>
+                              <div className="text-xl font-bold text-blue-700 mb-2 transition-colors duration-300 hover:text-blue-800">{course.courseCode}</div>
                               <div className="grid grid-cols-2 gap-2">
                                 <div className="text-gray-600">Total Classes:</div>
                                 <div className="font-medium text-right">{course.totalClasses}</div>
@@ -272,21 +446,27 @@ const Attandance = () => {
                                 <div className="font-medium text-right">{course.absent}</div>
                                 
                                 <div className="text-gray-600">Attendance:</div>
-                                <div className="font-medium text-right text-red-600">
+                                <div className={`font-medium text-right ${parseInt(course.percentage) < 75 ? "text-red-600" : "text-green-600"} transition-colors duration-300 ${parseInt(course.percentage) < 75 ? "hover:text-red-700" : "hover:text-green-700"} hover:font-bold`}>
                                   {course.percentage}%
                                 </div>
                                 
-                                <div className="text-gray-600">Classes To Attend:</div>
-                                <div className="font-medium text-right text-red-600 transition-all duration-300 hover:font-bold hover:text-red-700">
-                                  {Math.abs(course.affordableLeaves)}
+                                <div className="text-gray-600">Affordable Leaves:</div>
+                                <div className={`font-medium text-right ${course.affordableLeaves < 0 ? "text-red-600" : "text-green-600"}`}>
+                                  {course.affordableLeaves}
+                                  {course.affordableLeaves < 0 && 
+                                    <span className="ml-1 text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">attend</span>
+                                  }
                                 </div>
                               </div>
                               
                               {isSelected && (
-                                <div className="mt-4 pt-4 border-t border-red-200">
-                                  <h4 className="font-medium text-red-700 mb-2">Action Required</h4>
+                                <div className="mt-4 pt-4 border-t border-gray-200">
+                                  <h4 className="font-medium text-blue-700 mb-2">Attendance Recommendation</h4>
                                   <p className="text-sm text-gray-700">
-                                    You need to attend at least {Math.abs(course.affordableLeaves)} more class{Math.abs(course.affordableLeaves) === 1 ? '' : 'es'} to reach {customPercentage}% attendance.
+                                    {course.affordableLeaves >= 0 
+                                      ? `You can afford to miss ${course.affordableLeaves} more class${course.affordableLeaves === 1 ? '' : 'es'} while maintaining ${customPercentage}% attendance.` 
+                                      : `You need to attend at least ${Math.abs(course.affordableLeaves)} more class${Math.abs(course.affordableLeaves) === 1 ? '' : 'es'} to reach ${customPercentage}% attendance.`
+                                    }
                                   </p>
                                 </div>
                               )}
@@ -295,44 +475,49 @@ const Attandance = () => {
                           
                           {/* Desktop view - row layout */}
                           <div 
-                            className={`hidden md:grid md:grid-cols-6 bg-red-50 
-                              hover:bg-red-100 border-l-8 border-transparent
-                              hover:border-l-8 hover:border-red-500 hover:shadow hover:shadow-red-100 divide-x divide-red-200
-                              ${!isLastRow ? 'border-b border-red-200' : ''}
+                            className={`hidden md:grid md:grid-cols-6 ${bgClass} 
+                              hover:bg-blue-50 border-l-8 border-transparent
+                              ${colorClass} divide-x divide-gray-200
+                              ${!isLastRow ? 'border-b border-gray-300' : ''}
                               transition-all duration-200 ease-in-out cursor-pointer
-                              ${isSelected ? 'ring-2 ring-red-500 ring-inset' : ''}`}
+                              ${isSelected ? 'ring-2 ring-blue-500 ring-inset' : ''}`}
                             onClick={() => handleCourseClick(course)}
                           >
-                            <div className="px-6 py-5 text-base font-medium text-red-900">{course.courseCode}</div>
+                            <div className="px-6 py-5 text-base font-medium text-gray-900">{course.courseCode}</div>
                             <div className="px-6 py-5 text-base text-center text-gray-600">{course.totalClasses}</div>
                             <div className="px-6 py-5 text-base text-center text-gray-600">{course.present}</div>
                             <div className="px-6 py-5 text-base text-center text-gray-600">{course.absent}</div>
-                            <div className="px-6 py-5 text-base text-center font-medium text-red-600">
+                            <div className={`px-6 py-5 text-base text-center font-medium ${parseInt(course.percentage) < 75 ? "text-red-600" : "text-green-600"}`}>
                               {course.percentage}%
                             </div>
-                            <div className="px-6 py-5 text-base text-center font-medium text-red-600">
+                            <div className={`px-6 py-5 text-base text-center font-medium ${course.affordableLeaves < 0 ? "text-red-600" : "text-green-600"}`}>
                               <span className="inline-flex items-center justify-center">
-                                {Math.abs(course.affordableLeaves)}
-                                <span className="ml-1 text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">urgent</span>
+                                {course.affordableLeaves}
+                                {course.affordableLeaves < 0 && 
+                                  <span className="ml-1 text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">attend</span>
+                                }
                               </span>
                             </div>
                           </div>
                           
                           {/* Details panel for desktop */}
                           {isSelected && (
-                            <div className="hidden md:block bg-red-100 p-4 border-b border-red-200">
+                            <div className="hidden md:block bg-blue-50 p-4 border-b border-gray-300">
                               <div className="flex justify-between">
                                 <div>
-                                  <h4 className="font-medium text-red-700 mb-1">Action Required</h4>
+                                  <h4 className="font-medium text-blue-700 mb-1">Attendance Recommendation</h4>
                                   <p className="text-sm text-gray-700">
-                                    You need to attend at least {Math.abs(course.affordableLeaves)} more class{Math.abs(course.affordableLeaves) === 1 ? '' : 'es'} to reach {customPercentage}% attendance.
+                                    {course.affordableLeaves >= 0 
+                                      ? `You can afford to miss ${course.affordableLeaves} more class${course.affordableLeaves === 1 ? '' : 'es'} while maintaining ${customPercentage}% attendance.` 
+                                      : `You need to attend at least ${Math.abs(course.affordableLeaves)} more class${Math.abs(course.affordableLeaves) === 1 ? '' : 'es'} to reach ${customPercentage}% attendance.`
+                                    }
                                   </p>
                                 </div>
                                 
                                 <div className="text-right">
                                   <div className="text-sm font-medium text-gray-500">Current Status:</div>
-                                  <div className="font-medium text-red-600">
-                                    Below Minimum Requirement
+                                  <div className={`font-medium ${parseInt(course.percentage) < 75 ? 'text-red-600' : 'text-green-600'}`}>
+                                    {parseInt(course.percentage) < 75 ? 'Below Minimum Requirement' : 'Meeting Attendance Requirements'}
                                   </div>
                                 </div>
                               </div>
@@ -341,195 +526,14 @@ const Attandance = () => {
                         </div>
                       );
                     })}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-        
-        {combinedData.length > 0 && (
-          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-            <div className="flex flex-col md:flex-row items-start md:items-center mb-6 space-y-3 md:space-y-0">
-              <h2 className="text-2xl font-semibold text-blue-700">All Courses</h2>
-              <div className="w-full md:w-auto md:ml-auto flex flex-col items-stretch md:items-end">
-                <div className="flex items-center justify-between w-full">
-                  <label htmlFor="customPercentage" className="mr-3 text-sm font-medium text-gray-700">
-                    Target Percentage: 
-                  </label>
-                  <span className="text-sm font-bold bg-blue-100 text-blue-800 px-2 py-1 rounded-full min-w-[50px] text-center">
-                    {customPercentage}%
-                  </span>
-                </div>
-                <div className="w-full md:w-64 mt-2 relative">
-                  <div className="absolute -top-1 left-0 right-0 flex justify-between px-1">
-                    <div className="w-0.5 h-2 bg-gray-300"></div>
-                    <div className="w-0.5 h-2 bg-gray-300"></div>
-                    <div className="w-0.5 h-2 bg-gray-300"></div>
-                    <div className="w-0.5 h-2 bg-gray-300"></div>
-                    <div className="w-0.5 h-2 bg-gray-300"></div>
-                    <div className="w-0.5 h-2 bg-gray-300"></div>
-                  </div>
-                  <input
-                    type="range"
-                    id="customPercentage"
-                    min="50"
-                    max="100"
-                    step="1"
-                    value={customPercentage}
-                    onChange={handlePercentageChange}
-                    className="w-full h-2 appearance-none rounded-full bg-gradient-to-r from-red-500 via-yellow-400 to-green-500 cursor-pointer"
-                  />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1 px-1">
-                    <span>50%</span>
-                    <span>60%</span>
-                    <span>70%</span>
-                    <span>80%</span>
-                    <span>90%</span>
-                    <span>100%</span>
                   </div>
                 </div>
               </div>
             </div>
-            
-            <div className="rounded-lg border-2 border-gray-300 shadow-md overflow-hidden overflow-x-auto">
-              <div className="min-w-full">
-                {/* Header Row - hidden on small screens, visible from md up */}
-                <div className="hidden md:grid grid-cols-6 bg-blue-50 divide-x divide-gray-200 text-blue-700 border-b-2 border-blue-200">
-                  <div className="px-6 py-4 text-left text-sm font-semibold uppercase">Course</div>
-                  <div className="px-6 py-4 text-center text-sm font-semibold uppercase">Total Classes</div>
-                  <div className="px-6 py-4 text-center text-sm font-semibold uppercase">Present</div>
-                  <div className="px-6 py-4 text-center text-sm font-semibold uppercase">Absent</div>
-                  <div className="px-6 py-4 text-center text-sm font-semibold uppercase">Attendance %</div>
-                  <div className="px-6 py-4 text-center text-sm font-semibold uppercase">
-                    Affordable Leaves ({customPercentage}%)
-                  </div>
-                </div>
-                
-                {/* Data Rows with horizontal grid styling */}
-                <div>
-                  {combinedData.map((course, index) => {
-                    // Determine color based on affordable leaves
-                    const colorClass = course.affordableLeaves >= 0 
-                      ? "hover:border-l-8 hover:border-blue-500 hover:shadow hover:shadow-blue-100" 
-                      : "hover:border-l-8 hover:border-red-500 hover:shadow hover:shadow-red-100";
-                    
-                    // Determine background color based on index for zebra striping
-                    const bgClass = index % 2 === 0 
-                      ? (parseInt(course.percentage) < 75 ? "bg-red-50" : "bg-white") 
-                      : (parseInt(course.percentage) < 75 ? "bg-red-50" : "bg-gray-50");
-                    
-                    // This is the last row
-                    const isLastRow = index === combinedData.length - 1;
-                    
-                    // Is this course selected
-                    const isSelected = selectedCourse?.courseCode === course.courseCode;
-                    
-                    return (
-                      <div key={index}>
-                        {/* Mobile view - vertical card layout */}
-                        <div 
-                          className="md:hidden block p-4 border-b border-gray-300 cursor-pointer"
-                          onClick={() => handleCourseClick(course)}
-                        >
-                          <div className={`rounded-lg p-4 ${parseInt(course.percentage) < 75 ? "bg-red-50" : "bg-white"} shadow ${isSelected ? 'ring-2 ring-blue-500' : ''} transition-all duration-300 hover:shadow-lg hover:scale-102 ${parseInt(course.percentage) < 75 ? "hover:bg-red-100" : "hover:bg-blue-50"}`}>
-                            <div className="text-xl font-bold text-blue-700 mb-2 transition-colors duration-300 hover:text-blue-800">{course.courseCode}</div>
-                            <div className="grid grid-cols-2 gap-2">
-                              <div className="text-gray-600">Total Classes:</div>
-                              <div className="font-medium text-right">{course.totalClasses}</div>
-                              
-                              <div className="text-gray-600">Present:</div>
-                              <div className="font-medium text-right">{course.present}</div>
-                              
-                              <div className="text-gray-600">Absent:</div>
-                              <div className="font-medium text-right">{course.absent}</div>
-                              
-                              <div className="text-gray-600">Attendance:</div>
-                              <div className={`font-medium text-right ${parseInt(course.percentage) < 75 ? "text-red-600" : "text-green-600"} transition-colors duration-300 ${parseInt(course.percentage) < 75 ? "hover:text-red-700" : "hover:text-green-700"} hover:font-bold`}>
-                                {course.percentage}%
-                              </div>
-                              
-                              <div className="text-gray-600">Affordable Leaves:</div>
-                              <div className={`font-medium text-right ${course.affordableLeaves < 0 ? "text-red-600" : "text-green-600"}`}>
-                                {course.affordableLeaves}
-                                {course.affordableLeaves < 0 && 
-                                  <span className="ml-1 text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">attend</span>
-                                }
-                              </div>
-                            </div>
-                            
-                            {isSelected && (
-                              <div className="mt-4 pt-4 border-t border-gray-200">
-                                <h4 className="font-medium text-blue-700 mb-2">Attendance Recommendation</h4>
-                                <p className="text-sm text-gray-700">
-                                  {course.affordableLeaves >= 0 
-                                    ? `You can afford to miss ${course.affordableLeaves} more class${course.affordableLeaves === 1 ? '' : 'es'} while maintaining ${customPercentage}% attendance.` 
-                                    : `You need to attend at least ${Math.abs(course.affordableLeaves)} more class${Math.abs(course.affordableLeaves) === 1 ? '' : 'es'} to reach ${customPercentage}% attendance.`
-                                  }
-                                </p>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                        
-                        {/* Desktop view - row layout */}
-                        <div 
-                          className={`hidden md:grid md:grid-cols-6 ${bgClass} 
-                            hover:bg-blue-50 border-l-8 border-transparent
-                            ${colorClass} divide-x divide-gray-200
-                            ${!isLastRow ? 'border-b border-gray-300' : ''}
-                            transition-all duration-200 ease-in-out cursor-pointer
-                            ${isSelected ? 'ring-2 ring-blue-500 ring-inset' : ''}`}
-                          onClick={() => handleCourseClick(course)}
-                        >
-                          <div className="px-6 py-5 text-base font-medium text-gray-900">{course.courseCode}</div>
-                          <div className="px-6 py-5 text-base text-center text-gray-600">{course.totalClasses}</div>
-                          <div className="px-6 py-5 text-base text-center text-gray-600">{course.present}</div>
-                          <div className="px-6 py-5 text-base text-center text-gray-600">{course.absent}</div>
-                          <div className={`px-6 py-5 text-base text-center font-medium ${parseInt(course.percentage) < 75 ? "text-red-600" : "text-green-600"}`}>
-                            {course.percentage}%
-                          </div>
-                          <div className={`px-6 py-5 text-base text-center font-medium ${course.affordableLeaves < 0 ? "text-red-600" : "text-green-600"}`}>
-                            <span className="inline-flex items-center justify-center">
-                              {course.affordableLeaves}
-                              {course.affordableLeaves < 0 && 
-                                <span className="ml-1 text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">attend</span>
-                              }
-                            </span>
-                          </div>
-                        </div>
-                        
-                        {/* Details panel for desktop */}
-                        {isSelected && (
-                          <div className="hidden md:block bg-blue-50 p-4 border-b border-gray-300">
-                            <div className="flex justify-between">
-                              <div>
-                                <h4 className="font-medium text-blue-700 mb-1">Attendance Recommendation</h4>
-                                <p className="text-sm text-gray-700">
-                                  {course.affordableLeaves >= 0 
-                                    ? `You can afford to miss ${course.affordableLeaves} more class${course.affordableLeaves === 1 ? '' : 'es'} while maintaining ${customPercentage}% attendance.` 
-                                    : `You need to attend at least ${Math.abs(course.affordableLeaves)} more class${Math.abs(course.affordableLeaves) === 1 ? '' : 'es'} to reach ${customPercentage}% attendance.`
-                                  }
-                                </p>
-                              </div>
-                              
-                              <div className="text-right">
-                                <div className="text-sm font-medium text-gray-500">Current Status:</div>
-                                <div className={`font-medium ${parseInt(course.percentage) < 75 ? 'text-red-600' : 'text-green-600'}`}>
-                                  {parseInt(course.percentage) < 75 ? 'Below Minimum Requirement' : 'Meeting Attendance Requirements'}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
+      <Footer />
     </div>
   )
 }

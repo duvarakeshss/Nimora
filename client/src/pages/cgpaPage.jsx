@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
 import axios from 'axios'
 const API_URL = import.meta.env.VITE_SERVER_URL ;
 
@@ -285,168 +286,171 @@ const Cgpa = () => {
     null;
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-6xl mx-auto">
-        <Navbar />
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <h1 className="text-2xl font-bold text-purple-700 mb-4">CGPA Calculator</h1>
-          
-          {loading ? (
-            <div className="flex justify-center items-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
-            </div>
-          ) : error ? (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-              <p className="font-medium">Error</p>
-              <p>{error}</p>
-            </div>
-          ) : (
-            <div>
-              {latestCgpaData && (
-                <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-6 rounded-lg shadow-lg mb-8">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <p className="text-lg font-medium mb-2">Current CGPA</p>
-                      <p className="text-4xl font-bold">{latestCgpaData.CGPA}</p>
-                    </div>
-                    <div>
-                      <p className="text-lg font-medium mb-2">Total Credits</p>
-                      <p className="text-4xl font-bold">{latestCgpaData.TOTAL_CREDITS}</p>
-                    </div>
-                    <div>
-                      <p className="text-lg font-medium mb-2">Total Points</p>
-                      <p className="text-4xl font-bold">{latestCgpaData.TOTAL_POINTS}</p>
+    <div className="min-h-screen bg-gray-100 flex flex-col">
+      <div className="flex-grow p-6">
+        <div className="max-w-6xl mx-auto">
+          <Navbar />
+          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h1 className="text-2xl font-bold text-purple-700 mb-4">CGPA Calculator</h1>
+            
+            {loading ? (
+              <div className="flex justify-center items-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+              </div>
+            ) : error ? (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+                <p className="font-medium">Error</p>
+                <p>{error}</p>
+              </div>
+            ) : (
+              <div>
+                {latestCgpaData && (
+                  <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-6 rounded-lg shadow-lg mb-8">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <p className="text-lg font-medium mb-2">Current CGPA</p>
+                        <p className="text-4xl font-bold">{latestCgpaData.CGPA}</p>
+                      </div>
+                      <div>
+                        <p className="text-lg font-medium mb-2">Total Credits</p>
+                        <p className="text-4xl font-bold">{latestCgpaData.TOTAL_CREDITS}</p>
+                      </div>
+                      <div>
+                        <p className="text-lg font-medium mb-2">Total Points</p>
+                        <p className="text-4xl font-bold">{latestCgpaData.TOTAL_POINTS}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
-              
-              {/* CGPA Prediction Section */}
-              <div className="mb-8">
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-xl font-bold text-purple-800">CGPA Prediction</h2>
-                  <button 
-                    onClick={() => {
-                      if (!showPrediction) {
-                        fetchCurrentCourses()
-                      }
-                      setShowPrediction(!showPrediction)
-                    }}
-                    className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
-                  >
-                    {showPrediction ? 'Hide Prediction' : 'Predict CGPA'}
-                  </button>
-                </div>
+                )}
                 
-                {showPrediction && (
-                  <div className="bg-purple-50 p-6 rounded-lg border border-purple-200">
-                    {predictionLoading ? (
-                      <div className="flex justify-center items-center py-8">
-                        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500"></div>
-                      </div>
-                    ) : (
-                      <div>
-                        <h3 className="text-lg font-semibold text-purple-800 mb-4">Current Semester Courses</h3>
-                        <p className="text-sm text-gray-600 mb-4">Enter the credits and expected grade for each course to predict your semester GPA and new CGPA</p>
-                        
-                        <div className="mb-6">
-                          {currentCourses.map((course, index) => (
-                            <CourseGradeInput 
-                              key={course.course_code} 
-                              course={course} 
-                              index={index}
-                              updateCourseData={updateCourseData}
-                            />
-                          ))}
+                {/* CGPA Prediction Section */}
+                <div className="mb-8">
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-xl font-bold text-purple-800">CGPA Prediction</h2>
+                    <button 
+                      onClick={() => {
+                        if (!showPrediction) {
+                          fetchCurrentCourses()
+                        }
+                        setShowPrediction(!showPrediction)
+                      }}
+                      className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+                    >
+                      {showPrediction ? 'Hide Prediction' : 'Predict CGPA'}
+                    </button>
+                  </div>
+                  
+                  {showPrediction && (
+                    <div className="bg-purple-50 p-6 rounded-lg border border-purple-200">
+                      {predictionLoading ? (
+                        <div className="flex justify-center items-center py-8">
+                          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500"></div>
                         </div>
-                        
-                        {predictedResults && (
-                          <div className="bg-white p-5 rounded-lg shadow-md border-l-4 border-purple-500">
-                            <h3 className="text-lg font-semibold text-purple-800 mb-3">Prediction Results</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                              <div>
-                                <h4 className="text-md font-medium text-gray-700 mb-2">Semester Details</h4>
-                                <div className="bg-purple-100 p-3 rounded mb-2">
-                                  <span className="text-sm text-purple-700">Semester GPA:</span>
-                                  <span className="text-xl font-bold text-purple-900 ml-2">{predictedResults.semesterGpa}</span>
+                      ) : (
+                        <div>
+                          <h3 className="text-lg font-semibold text-purple-800 mb-4">Current Semester Courses</h3>
+                          <p className="text-sm text-gray-600 mb-4">Enter the credits and expected grade for each course to predict your semester GPA and new CGPA</p>
+                          
+                          <div className="mb-6">
+                            {currentCourses.map((course, index) => (
+                              <CourseGradeInput 
+                                key={course.course_code} 
+                                course={course} 
+                                index={index}
+                                updateCourseData={updateCourseData}
+                              />
+                            ))}
+                          </div>
+                          
+                          {predictedResults && (
+                            <div className="bg-white p-5 rounded-lg shadow-md border-l-4 border-purple-500">
+                              <h3 className="text-lg font-semibold text-purple-800 mb-3">Prediction Results</h3>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                  <h4 className="text-md font-medium text-gray-700 mb-2">Semester Details</h4>
+                                  <div className="bg-purple-100 p-3 rounded mb-2">
+                                    <span className="text-sm text-purple-700">Semester GPA:</span>
+                                    <span className="text-xl font-bold text-purple-900 ml-2">{predictedResults.semesterGpa}</span>
+                                  </div>
+                                  <div className="bg-purple-100 p-3 rounded mb-2">
+                                    <span className="text-sm text-purple-700">Semester Credits:</span>
+                                    <span className="text-lg font-bold text-purple-900 ml-2">{predictedResults.semesterCredits}</span>
+                                  </div>
+                                  <div className="bg-purple-100 p-3 rounded">
+                                    <span className="text-sm text-purple-700">Semester Points:</span>
+                                    <span className="text-lg font-bold text-purple-900 ml-2">{predictedResults.semesterPoints}</span>
+                                  </div>
                                 </div>
-                                <div className="bg-purple-100 p-3 rounded mb-2">
-                                  <span className="text-sm text-purple-700">Semester Credits:</span>
-                                  <span className="text-lg font-bold text-purple-900 ml-2">{predictedResults.semesterCredits}</span>
-                                </div>
-                                <div className="bg-purple-100 p-3 rounded">
-                                  <span className="text-sm text-purple-700">Semester Points:</span>
-                                  <span className="text-lg font-bold text-purple-900 ml-2">{predictedResults.semesterPoints}</span>
-                                </div>
-                              </div>
-                              <div>
-                                <h4 className="text-md font-medium text-gray-700 mb-2">Overall Details</h4>
-                                <div className="bg-indigo-100 p-3 rounded mb-2">
-                                  <span className="text-sm text-indigo-700">New CGPA:</span>
-                                  <span className="text-xl font-bold text-indigo-900 ml-2">{predictedResults.newCgpa}</span>
-                                </div>
-                                <div className="bg-indigo-100 p-3 rounded mb-2">
-                                  <span className="text-sm text-indigo-700">Total Credits:</span>
-                                  <span className="text-lg font-bold text-indigo-900 ml-2">{predictedResults.totalNewCredits}</span>
-                                </div>
-                                <div className="bg-indigo-100 p-3 rounded">
-                                  <span className="text-sm text-indigo-700">Total Points:</span>
-                                  <span className="text-lg font-bold text-indigo-900 ml-2">{predictedResults.totalNewPoints.toFixed(1)}</span>
+                                <div>
+                                  <h4 className="text-md font-medium text-gray-700 mb-2">Overall Details</h4>
+                                  <div className="bg-indigo-100 p-3 rounded mb-2">
+                                    <span className="text-sm text-indigo-700">New CGPA:</span>
+                                    <span className="text-xl font-bold text-indigo-900 ml-2">{predictedResults.newCgpa}</span>
+                                  </div>
+                                  <div className="bg-indigo-100 p-3 rounded mb-2">
+                                    <span className="text-sm text-indigo-700">Total Credits:</span>
+                                    <span className="text-lg font-bold text-indigo-900 ml-2">{predictedResults.totalNewCredits}</span>
+                                  </div>
+                                  <div className="bg-indigo-100 p-3 rounded">
+                                    <span className="text-sm text-indigo-700">Total Points:</span>
+                                    <span className="text-lg font-bold text-indigo-900 ml-2">{predictedResults.totalNewPoints.toFixed(1)}</span>
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )}
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+                
+                <h2 className="text-xl font-bold text-purple-800 mb-4">Semester History</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {cgpaData.length > 0 ? (
+                    <>
+                      {/* Only show semesters that have actual data */}
+                      {cgpaData.filter(semester => 
+                        semester.GPA !== "-" || 
+                        semester.CGPA !== "-" || 
+                        (semester.TOTAL_CREDITS && semester.TOTAL_CREDITS > 0)
+                      ).map((semester, index) => (
+                        <SemesterCard 
+                          key={index}
+                          semester={semester.SEMESTER}
+                          gpa={semester.GPA}
+                          cgpa={semester.CGPA}
+                          credits={semester.CREDITS}
+                          totalCredits={semester.TOTAL_CREDITS}
+                          totalPoints={semester.TOTAL_POINTS}
+                        />
+                      ))}
+                      
+                      {/* Show empty state message if all semesters were filtered out */}
+                      {cgpaData.filter(semester => 
+                        semester.GPA !== "-" || 
+                        semester.CGPA !== "-" || 
+                        (semester.TOTAL_CREDITS && semester.TOTAL_CREDITS > 0)
+                      ).length === 0 && (
+                        <div className="col-span-full text-center p-8">
+                          <p className="text-gray-500 mb-2">No semester history available yet.</p>
+                          <p className="text-sm text-purple-600">Use the prediction feature to see how your current semester will affect your GPA.</p>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div className="col-span-full text-center p-8">
+                      <p className="text-gray-500 mb-2">No semester history available yet.</p>
+                      <p className="text-sm text-purple-600">Use the prediction feature to see how your current semester will affect your GPA.</p>
+                    </div>
+                  )}
+                </div>
               </div>
-              
-              <h2 className="text-xl font-bold text-purple-800 mb-4">Semester History</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {cgpaData.length > 0 ? (
-                  <>
-                    {/* Only show semesters that have actual data */}
-                    {cgpaData.filter(semester => 
-                      semester.GPA !== "-" || 
-                      semester.CGPA !== "-" || 
-                      (semester.TOTAL_CREDITS && semester.TOTAL_CREDITS > 0)
-                    ).map((semester, index) => (
-                      <SemesterCard 
-                        key={index}
-                        semester={semester.SEMESTER}
-                        gpa={semester.GPA}
-                        cgpa={semester.CGPA}
-                        credits={semester.CREDITS}
-                        totalCredits={semester.TOTAL_CREDITS}
-                        totalPoints={semester.TOTAL_POINTS}
-                      />
-                    ))}
-                    
-                    {/* Show empty state message if all semesters were filtered out */}
-                    {cgpaData.filter(semester => 
-                      semester.GPA !== "-" || 
-                      semester.CGPA !== "-" || 
-                      (semester.TOTAL_CREDITS && semester.TOTAL_CREDITS > 0)
-                    ).length === 0 && (
-                      <div className="col-span-full text-center p-8">
-                        <p className="text-gray-500 mb-2">No semester history available yet.</p>
-                        <p className="text-sm text-purple-600">Use the prediction feature to see how your current semester will affect your GPA.</p>
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <div className="col-span-full text-center p-8">
-                    <p className="text-gray-500 mb-2">No semester history available yet.</p>
-                    <p className="text-sm text-purple-600">Use the prediction feature to see how your current semester will affect your GPA.</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
+      <Footer />
     </div>
   )
 }
