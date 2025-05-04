@@ -166,7 +166,7 @@ const Home = () => {
         </div>
 
         {combinedData.length > 0 && (
-          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
             <div className="flex flex-col md:flex-row items-start md:items-center mb-6 space-y-3 md:space-y-0">
               <h2 className="text-2xl font-semibold text-blue-700">Attendance Overview</h2>
               <div className="w-full md:w-auto md:ml-auto flex flex-col items-stretch md:items-end">
@@ -206,9 +206,9 @@ const Home = () => {
                     <span>100%</span>
                   </div>
                 </div>
+                </div>
               </div>
-            </div>
-            
+              
             <div className="rounded-lg border-2 border-gray-300 shadow-md overflow-hidden overflow-x-auto">
               <div className="min-w-full">
                 {/* Header Row - hidden on small screens, visible from md up */}
@@ -219,7 +219,7 @@ const Home = () => {
                   <div className="px-6 py-4 text-center text-sm font-semibold uppercase">Absent</div>
                   <div className="px-6 py-4 text-center text-sm font-semibold uppercase">Attendance %</div>
                   <div className="px-6 py-4 text-center text-sm font-semibold uppercase">
-                    Affordable Leaves ({customPercentage}%)
+                        Affordable Leaves ({customPercentage}%)
                   </div>
                 </div>
                 
@@ -288,7 +288,7 @@ const Home = () => {
                           </div>
                           <div className={`px-6 py-5 text-base text-center font-medium ${course.affordableLeaves < 0 ? "text-red-600" : "text-green-600"}`}>
                             <span className="inline-flex items-center justify-center">
-                              {course.affordableLeaves}
+                          {course.affordableLeaves}
                               {course.affordableLeaves < 0 && 
                                 <span className="ml-1 text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">attend</span>
                               }

@@ -7,4 +7,6 @@ pandas
 python-dotenv
 lxml
 pytz
-httpx 
+httpx
+selenium
+webdriver-manager 

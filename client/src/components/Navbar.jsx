@@ -92,7 +92,7 @@ const Navbar = () => {
                 className={`flex items-center px-3 py-3 rounded-md text-base font-medium transition-all duration-300 ${
                   location.pathname === item.path 
                     ? 'bg-blue-600 text-white shadow-md' 
-                    : 'text-gray-700 hover:bg-blue-500 hover:text-white hover:shadow-md'
+                    : 'text-gray-700 hover:bg-blue-500 hover:text-white hover:shadow-md transform hover:scale-105'
                 }`}
               >
                 <item.icon className="mr-3 h-5 w-5" />
