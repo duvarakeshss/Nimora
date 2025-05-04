@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pydantic
+requests
+beautifulsoup4
+pandas
+python-dotenv
+lxml
+pytz
+httpx 
