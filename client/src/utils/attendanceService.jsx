@@ -1,9 +1,6 @@
 
 const API_URL = import.meta.env.VITE_SERVER_URL ;
 
-// Log the API URL for debugging
-console.log("API URL being used:", API_URL);
-
 // Function to handle login request
 export const loginUser = async (rollNo, password) => {
   try {
@@ -108,7 +105,7 @@ export const getStudentAttendance = async (rollNo, password) => {
 
 // Greet user function
 export const greetUser = async (rollNo, password) => {
-  // You could implement a specific greeting endpoint, but for now let's just return a greeting
+  
   const hour = new Date().getHours();
   let greeting = '';
   
