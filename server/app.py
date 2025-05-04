@@ -4,7 +4,9 @@ from util.Feedback import auto_feedback_task
 from util.Cgpa import getStudentCourses, getCGPA
 from util.Timetable import getExamSchedule
 import pandas as pd
-from fastapi import FastAPI, HTTPException, BackgroundTasks
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Request
+from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -18,6 +20,59 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Custom exception handlers
+@app.exception_handler(404)
+async def custom_404_handler(request: Request, exc):
+    return JSONResponse(
+        status_code=404,
+        content={
+            "detail": "Endpoint not found. Please check the API documentation.",
+            "available_endpoints": {
+                "/": "API information",
+                "/login": "Authenticate and get attendance summary",
+                "/attendance": "Get detailed attendance information",
+                "/cgpa": "Get CGPA and semester-wise GPA",
+                "/exam-schedule": "Get upcoming exam schedule",
+                "/auto-feedback": "Submit automated feedback",
+                "/predict-courses": "Get current courses for CGPA prediction"
+            }
+        }
+    )
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    return JSONResponse(
+        status_code=422,
+        content={
+            "detail": "Invalid request parameters",
+            "errors": exc.errors(),
+            "required_format": {
+                "rollno": "Your roll number",
+                "password": "Your password"
+            }
+        }
+    )
+
+@app.get("/")
+def root():
+    """
+    Root endpoint that provides welcome message and API information
+    """
+    return {
+        "name": "Nimora Student Information API",
+        "description": "API for accessing student attendance, CGPA, exam schedules, and more",
+        "version": "1.0.0",
+        "endpoints": {
+            "/login": "Authenticate and get attendance summary",
+            "/attendance": "Get detailed attendance information",
+            "/cgpa": "Get CGPA and semester-wise GPA",
+            "/exam-schedule": "Get upcoming exam schedule",
+            "/auto-feedback": "Submit automated feedback",
+            "/predict-courses": "Get current courses for CGPA prediction"
+        },
+        "status": "online"
+    }
 
 class UserCredentials(BaseModel):
     rollno: str
