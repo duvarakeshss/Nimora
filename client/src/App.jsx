@@ -4,7 +4,7 @@ import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import Home from './pages/homePage'
 import Attandance from './pages/attandancePage'
 import Feedback from './pages/feedbackPage'
-import TimeTable from './pages/timetablePage'
+import TimeTable from './pages/timeTablePage'
 import Cgpa from './pages/cgpaPage'
 import Login from './components/Login'
 
