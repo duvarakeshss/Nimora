@@ -7,6 +7,7 @@ import Feedback from './pages/feedbackPage'
 import TimeTable from './pages/timeTablePage'
 import Cgpa from './pages/cgpaPage'
 import Login from './components/Login'
+import Navbar from './components/Navbar'
 
 
 
