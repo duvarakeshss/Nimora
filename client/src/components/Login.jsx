@@ -2,7 +2,6 @@ import React from 'react'
 import { useState } from 'react'
 import { Lock, User, Eye, EyeOff } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import Home from '../pages/homePage'
 
 const Login = () => {
     const [rollNo, setRollNo] = useState('')
@@ -22,6 +21,13 @@ const Login = () => {
         }
         setError('')
     }
+    
+    // Handle Enter key press
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            handleLogin()
+        }
+    }
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-slate-400 to-stone-100">
@@ -39,6 +45,7 @@ const Login = () => {
                             placeholder="Roll No"
                             value={rollNo}
                             onChange={(e) => setRollNo(e.target.value)}
+                            onKeyDown={handleKeyDown}
                             className="flex-grow focus:outline-none"
                         />
                     </div>
@@ -49,6 +56,7 @@ const Login = () => {
                             placeholder="Password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            onKeyDown={handleKeyDown}
                             className="flex-grow focus:outline-none"
                         />
                         {showPassword ? (

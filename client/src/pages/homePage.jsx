@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-// import { getStudentAttendance, greetUser } from '../utils/attendanceService'
+import { getStudentAttendance, greetUser } from '../utils/attendanceService'
 import Navbar from '../components/Navbar'
 
 const Home = () => {
@@ -12,7 +12,30 @@ const Home = () => {
   const [attendanceData, setAttendanceData] = useState([])
   const [error, setError] = useState('')
   const [customPercentage, setCustomPercentage] = useState(75)
-  const [affordableLeaves, setAffordableLeaves] = useState([])
+  const [combinedData, setCombinedData] = useState([])
+
+  // Prevent going back to login page when back button is clicked
+  useEffect(() => {
+    // Push a duplicate entry to the history stack
+    window.history.pushState(null, document.title, window.location.href);
+    
+    // Handle the popstate event (when back button is clicked)
+    const handlePopState = (event) => {
+      // Push another entry to prevent going back
+      window.history.pushState(null, document.title, window.location.href);
+      
+      // Show a message indicating they should use the logout button
+      alert("Please use the logout button to return to the login page.");
+    };
+    
+    // Add event listener for the popstate event
+    window.addEventListener('popstate', handlePopState);
+    
+    // Clean up event listener when component unmounts
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,7 +55,7 @@ const Home = () => {
         setAttendanceData(data)
 
         // Calculate affordable leaves with default percentage
-        calculateAffordableLeaves(data, customPercentage)
+        calculateCombinedData(data, customPercentage)
       } catch (err) {
         console.error('Error loading data:', err)
         setError('Failed to fetch data: ' + err.message)
@@ -44,7 +67,7 @@ const Home = () => {
     fetchData()
   }, [rollNo, password])
 
-  const calculateAffordableLeaves = (data, percentage) => {
+  const calculateCombinedData = (data, percentage) => {
     if (!data || data.length === 0) return
 
     const result = data.map(course => {
@@ -54,11 +77,15 @@ const Home = () => {
       
       return {
         courseCode: course[0],
+        totalClasses: course[1],
+        present: course[4],
+        absent: course[2],
+        percentage: course[5],
         affordableLeaves: leaves
       }
     })
 
-    setAffordableLeaves(result)
+    setCombinedData(result)
   }
 
   const calculateIndividualLeaves = (classesPresent, classesTotal, maintenancePercentage) => {
@@ -85,7 +112,7 @@ const Home = () => {
   const handlePercentageChange = (e) => {
     const newPercentage = parseInt(e.target.value)
     setCustomPercentage(newPercentage)
-    calculateAffordableLeaves(attendanceData, newPercentage)
+    calculateCombinedData(attendanceData, newPercentage)
   }
   
   const handleLogout = () => {
@@ -135,88 +162,146 @@ const Home = () => {
             </div>
           )}
           
-          <div className="text-sm text-gray-500 mt-2">
-            <p>Note: This is using simulated data. In a real implementation, the application would scrape data from PSG Tech portal.</p>
-          </div>
+          
         </div>
 
-        {attendanceData.length > 0 && (
-          <>
-            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-              <h2 className="text-xl font-semibold mb-4">Attendance Overview</h2>
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Classes</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Present</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Absent</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Attendance %</th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {attendanceData.map((course, index) => (
-                      <tr key={index} className={parseInt(course[5]) < 75 ? "bg-red-50" : ""}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{course[0]}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{course[1]}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{course[4]}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{course[2]}</td>
-                        <td className={`px-6 py-4 whitespace-nowrap text-sm ${parseInt(course[5]) < 75 ? "text-red-600 font-bold" : "text-green-600"}`}>
-                          {course[5]}%
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <div className="flex items-center mb-4">
-                <h2 className="text-xl font-semibold">Affordable Leaves</h2>
-                <div className="ml-auto flex items-center">
-                  <label htmlFor="customPercentage" className="mr-2 text-sm text-gray-600">
-                    Maintenance Percentage:
+        {combinedData.length > 0 && (
+          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+            <div className="flex flex-col md:flex-row items-start md:items-center mb-6 space-y-3 md:space-y-0">
+              <h2 className="text-2xl font-semibold text-blue-700">Attendance Overview</h2>
+              <div className="w-full md:w-auto md:ml-auto flex flex-col items-stretch md:items-end">
+                <div className="flex items-center justify-between w-full">
+                  <label htmlFor="customPercentage" className="mr-3 text-sm font-medium text-gray-700">
+                    Maintenance: 
                   </label>
+                  <span className="text-sm font-bold bg-blue-100 text-blue-800 px-2 py-1 rounded-full min-w-[50px] text-center">
+                    {customPercentage}%
+                  </span>
+                </div>
+                <div className="w-full md:w-64 mt-2 relative">
+                  <div className="absolute -top-1 left-0 right-0 flex justify-between px-1">
+                    <div className="w-0.5 h-2 bg-gray-300"></div>
+                    <div className="w-0.5 h-2 bg-gray-300"></div>
+                    <div className="w-0.5 h-2 bg-gray-300"></div>
+                    <div className="w-0.5 h-2 bg-gray-300"></div>
+                    <div className="w-0.5 h-2 bg-gray-300"></div>
+                    <div className="w-0.5 h-2 bg-gray-300"></div>
+                  </div>
                   <input
-                    type="number"
+                    type="range"
                     id="customPercentage"
                     min="50"
                     max="100"
+                    step="1"
                     value={customPercentage}
                     onChange={handlePercentageChange}
-                    className="border rounded px-2 py-1 w-16 text-center"
+                    className="w-full h-2 appearance-none rounded-full bg-gradient-to-r from-red-500 via-yellow-400 to-green-500 cursor-pointer"
                   />
+                  <div className="flex justify-between text-xs text-gray-500 mt-1 px-1">
+                    <span>50%</span>
+                    <span>60%</span>
+                    <span>70%</span>
+                    <span>80%</span>
+                    <span>90%</span>
+                    <span>100%</span>
+                  </div>
                 </div>
               </div>
-              
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Affordable Leaves ({customPercentage}%)
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {affordableLeaves.map((course, index) => (
-                      <tr key={index}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{course.courseCode}</td>
-                        <td className={`px-6 py-4 whitespace-nowrap text-sm ${course.affordableLeaves < 0 ? "text-red-600" : "text-green-600"}`}>
-                          {course.affordableLeaves}
-                          {course.affordableLeaves < 0 && " (attend required classes)"}
-                          {course.affordableLeaves > 0 && " (can skip)"}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+            </div>
+            
+            <div className="rounded-lg border-2 border-gray-300 shadow-md overflow-hidden overflow-x-auto">
+              <div className="min-w-full">
+                {/* Header Row - hidden on small screens, visible from md up */}
+                <div className="hidden md:grid grid-cols-6 bg-blue-50 divide-x divide-gray-200 text-blue-700 border-b-2 border-blue-200">
+                  <div className="px-6 py-4 text-left text-sm font-semibold uppercase">Course</div>
+                  <div className="px-6 py-4 text-center text-sm font-semibold uppercase">Total Classes</div>
+                  <div className="px-6 py-4 text-center text-sm font-semibold uppercase">Present</div>
+                  <div className="px-6 py-4 text-center text-sm font-semibold uppercase">Absent</div>
+                  <div className="px-6 py-4 text-center text-sm font-semibold uppercase">Attendance %</div>
+                  <div className="px-6 py-4 text-center text-sm font-semibold uppercase">
+                    Affordable Leaves ({customPercentage}%)
+                  </div>
+                </div>
+                
+                {/* Data Rows with horizontal grid styling */}
+                <div>
+                  {combinedData.map((course, index) => {
+                    // Determine color based on affordable leaves
+                    const colorClass = course.affordableLeaves >= 0 
+                      ? "hover:border-l-8 hover:border-blue-500 hover:shadow hover:shadow-blue-100" 
+                      : "hover:border-l-8 hover:border-red-500 hover:shadow hover:shadow-red-100";
+                    
+                    // Determine background color based on index for zebra striping
+                    const bgClass = index % 2 === 0 
+                      ? (parseInt(course.percentage) < 75 ? "bg-red-50" : "bg-white") 
+                      : (parseInt(course.percentage) < 75 ? "bg-red-50" : "bg-gray-50");
+                    
+                    // This is the last row
+                    const isLastRow = index === combinedData.length - 1;
+                    
+                    return (
+                      <div key={index}>
+                        {/* Mobile view - vertical card layout */}
+                        <div className="md:hidden block p-4 border-b border-gray-300">
+                          <div className={`rounded-lg p-4 ${parseInt(course.percentage) < 75 ? "bg-red-50" : "bg-white"} shadow`}>
+                            <div className="text-xl font-bold text-blue-700 mb-2">{course.courseCode}</div>
+                            <div className="grid grid-cols-2 gap-2">
+                              <div className="text-gray-600">Total Classes:</div>
+                              <div className="font-medium text-right">{course.totalClasses}</div>
+                              
+                              <div className="text-gray-600">Present:</div>
+                              <div className="font-medium text-right">{course.present}</div>
+                              
+                              <div className="text-gray-600">Absent:</div>
+                              <div className="font-medium text-right">{course.absent}</div>
+                              
+                              <div className="text-gray-600">Attendance:</div>
+                              <div className={`font-medium text-right ${parseInt(course.percentage) < 75 ? "text-red-600" : "text-green-600"}`}>
+                                {course.percentage}%
+                              </div>
+                              
+                              <div className="text-gray-600">Affordable Leaves:</div>
+                              <div className={`font-medium text-right ${course.affordableLeaves < 0 ? "text-red-600" : "text-green-600"}`}>
+                                {course.affordableLeaves}
+                                {course.affordableLeaves < 0 && 
+                                  <span className="ml-1 text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">attend</span>
+                                }
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Desktop view - row layout */}
+                        <div 
+                          className={`hidden md:grid md:grid-cols-6 ${bgClass} 
+                            hover:bg-blue-50 border-l-8 border-transparent
+                            ${colorClass} divide-x divide-gray-200
+                            ${!isLastRow ? 'border-b border-gray-300' : ''}
+                            transition-all duration-200 ease-in-out cursor-pointer`}
+                        >
+                          <div className="px-6 py-5 text-base font-medium text-gray-900">{course.courseCode}</div>
+                          <div className="px-6 py-5 text-base text-center text-gray-600">{course.totalClasses}</div>
+                          <div className="px-6 py-5 text-base text-center text-gray-600">{course.present}</div>
+                          <div className="px-6 py-5 text-base text-center text-gray-600">{course.absent}</div>
+                          <div className={`px-6 py-5 text-base text-center font-medium ${parseInt(course.percentage) < 75 ? "text-red-600" : "text-green-600"}`}>
+                            {course.percentage}%
+                          </div>
+                          <div className={`px-6 py-5 text-base text-center font-medium ${course.affordableLeaves < 0 ? "text-red-600" : "text-green-600"}`}>
+                            <span className="inline-flex items-center justify-center">
+                              {course.affordableLeaves}
+                              {course.affordableLeaves < 0 && 
+                                <span className="ml-1 text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">attend</span>
+                              }
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
-          </>
+          </div>
         )}
       </div>
     </div>
