@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 
-const TimeTable = () => {
+const Timetable = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const { rollNo, password } = location.state || {}
@@ -63,4 +63,4 @@ const TimeTable = () => {
   )
 }
 
-export default TimeTable
+export default Timetable

@@ -4,7 +4,7 @@ import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import Home from './pages/homePage'
 import Attandance from './pages/attandancePage'
 import Feedback from './pages/feedbackPage'
-import TimeTable from './pages/timetablePage'
+import Timetable from './pages/timetablePage'
 import Cgpa from './pages/cgpaPage'
 import Login from './components/Login'
 import Navbar from './components/Navbar'
@@ -19,7 +19,7 @@ function App() {
         <Route path='/Home' element={<Home />} />
         <Route path='/attandance' element={<Attandance />} />
         <Route path='/feedback' element={<Feedback />} />
-        <Route path='/timetable' element={<TimeTable />} />
+        <Route path='/timetable' element={<Timetable />} />
         <Route path='/cgpa' element={<Cgpa />} />
       </Routes>
     </BrowserRouter>
