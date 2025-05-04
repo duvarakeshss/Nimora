@@ -51,11 +51,15 @@ def get_attendance(credentials: UserCredentials):
     # Convert the list of lists to a list of dictionaries for better JSON representation
     result = []
     for row in data:
+        total_classes = int(row[1])
+        present = int(row[4])
+        # Correctly calculate absent as total_classes minus present
+        absent = total_classes - present
         result.append({
             "course_code": row[0],
-            "total_classes": row[1],
-            "present": row[4],
-            "absent": row[5],
+            "total_classes": total_classes,
+            "present": present,
+            "absent": absent,
             "percentage": row[6]
         })
     
