@@ -10,10 +10,6 @@ A modern web application for tracking student attendance, exam schedules, and ac
 - [Project Structure](#project-structure)
 - [Installation](#installation)
 - [Usage](#usage)
-- [API Documentation](#api-documentation)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
 
 ## Overview
 
@@ -114,15 +110,7 @@ NIMORA is a comprehensive student portal that provides various features to help 
 - **View Attendance**: Navigate to the attendance page to view your attendance status.
 - **Check Exam Schedule**: Visit the timetable page to see upcoming exams.
 - **Adjust Settings**: Use the slider to set your desired attendance maintenance percentage.
-
-## API Documentation
-
-The application communicates with the backend through several API endpoints:
-
-- **Login**: `/api/login` - Authenticates users
-- **Attendance**: `/api/attendance` - Retrieves attendance data
-- **Exams**: `/api/exams` - Fetches exam schedules
-- **User Info**: `/api/user` - Retrieves user profile and greeting information
+- 
 
 ## Contributing
 
@@ -133,8 +121,3 @@ Contributions are welcome! Please follow these steps:
 3. Commit your changes (`git commit -m 'Add some feature'`)
 4. Push to the branch (`git push origin feature/YourFeature`)Future Enhancements
 
-- "Action Required" courses displayed separately
-- Detailed attendance statistics
-- Interactive course selection
-- Enhanced recommendations based on attendance patterns
-- Push notifications for critical attendance updates
