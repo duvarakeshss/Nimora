@@ -72,7 +72,7 @@ export const getStudentAttendance = async (rollNo, password) => {
     }
 
     const responseText = await response.text();
-    // console.log('Attendance response text:', responseText);
+    console.log('Attendance response text:', responseText);
     
     // Handle empty response
     if (!responseText.trim()) {
@@ -85,12 +85,13 @@ export const getStudentAttendance = async (rollNo, password) => {
       
       // Transform API response to format expected by the frontend
       return data.map(item => [
-        item.course_code,
-        item.total_classes,
-        item.absent,
-        0, // OD value (not provided in the API)
-        item.present,
-        item.percentage
+        item.course_code,               // [0] Course code
+        item.total_classes.toString(),  // [1] Total classes
+        item.absent.toString(),         // [2] Absent
+        "0",                            // [3] OD value (not provided in the API)
+        item.present.toString(),        // [4] Present
+        item.percentage.toString(),     // [5] Percentage
+        item.percentage.toString()      // [6] Percentage (duplicate for compatibility)
       ]);
     } catch (parseError) {
       console.error('JSON parse error:', parseError);
