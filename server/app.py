@@ -355,55 +355,79 @@ def get_user_info(credentials: UserCredentials):
         if not session:
             raise HTTPException(status_code=401, detail="Invalid credentials")
         
-        # Get user info from scholarship page (similar to the greetUser function in Python code)
-        scholarship_url = "https://ecampus.psgtech.ac.in/studzone/Scholar/VallalarScholarship"
-        scholarship_page = session.get(scholarship_url)
+        # Initialize default response
+        default_response = {"username": credentials.rollno, "is_birthday": False}
         
-        if not scholarship_page.ok:
-            logger.warning(f"Could not fetch scholarship page for {credentials.rollno}")
-            return {"username": credentials.rollno, "is_birthday": False}
+        # Try multiple pages to get user info
+        pages_to_try = [
+            "https://ecampus.psgtech.ac.in/studzone/Scholar/VallalarScholarship",  # Primary source
+            "https://ecampus.psgtech.ac.in/studzone/Profile"  # Backup source
+        ]
         
-        try:
-            page_soup = BeautifulSoup(scholarship_page.text, "html.parser")
-            
-            # Get the personal info
-            personal_info_table = page_soup.find("td", {"class": "personal-info"})
-            if not personal_info_table:
-                logger.warning(f"Could not find personal-info table for {credentials.rollno}")
-                return {"username": credentials.rollno, "is_birthday": False}
+        for page_url in pages_to_try:
+            try:
+                logger.info(f"Trying to fetch user info from {page_url}")
+                page_response = session.get(page_url, timeout=10)  # Add timeout
                 
-            personal_info = personal_info_table.find_all("td")
-            
-            # Get the username
-            username = personal_info[0].string.strip() if personal_info and len(personal_info) > 0 else credentials.rollno
-            
-            # Get the birthday
-            is_birthday = False
-            if personal_info and len(personal_info) > 2:
-                birthdate_str = personal_info[2].string.strip()
-                try:
-                    birthdate = datetime.strptime(birthdate_str, "%d/%m/%Y").date()
+                if not page_response.ok:
+                    logger.warning(f"Failed to fetch page {page_url}: {page_response.status_code}")
+                    continue
+                
+                page_soup = BeautifulSoup(page_response.text, "html.parser")
+                
+                # Check if we're on the scholarship page
+                if "VallalarScholarship" in page_url:
+                    personal_info_table = page_soup.find("td", {"class": "personal-info"})
+                    if personal_info_table:
+                        personal_info = personal_info_table.find_all("td")
+                        
+                        # Get username (first item in personal info)
+                        if personal_info and len(personal_info) > 0:
+                            username = personal_info[0].string.strip()
+                            if username and len(username) > 0:
+                                default_response["username"] = username
+                                logger.info(f"Found username from scholarship page: {username}")
+                        
+                        # Get birthday (third item in personal info)
+                        if personal_info and len(personal_info) > 2:
+                            try:
+                                birthdate_str = personal_info[2].string.strip()
+                                birthdate = datetime.strptime(birthdate_str, "%d/%m/%Y").date()
+                                
+                                # Get current date in India timezone
+                                IST = pytz.timezone('Asia/Kolkata')
+                                today = datetime.now(IST).date()
+                                
+                                is_birthday = (birthdate.month == today.month and birthdate.day == today.day)
+                                default_response["is_birthday"] = is_birthday
+                                logger.info(f"Birthdate check: {birthdate_str}, is birthday: {is_birthday}")
+                            except Exception as e:
+                                logger.error(f"Error parsing birthdate: {str(e)}")
+                
+                # Check if we're on the profile page
+                elif "Profile" in page_url and default_response["username"] == credentials.rollno:
+                    # Try to find username in profile page if we couldn't from scholarship page
+                    name_element = page_soup.find("input", {"id": "txtName"})
+                    if name_element and name_element.has_attr("value"):
+                        username = name_element["value"].strip()
+                        if username and len(username) > 0:
+                            default_response["username"] = username
+                            logger.info(f"Found username from profile page: {username}")
+                
+                # If we got a username that's not the roll number, we can stop
+                if default_response["username"] != credentials.rollno:
+                    logger.info(f"Successfully extracted user info")
+                    break
                     
-                    # Get current date in India timezone
-                    IST = pytz.timezone('Asia/Kolkata')
-                    today = datetime.now(IST).date()
-                    
-                    is_birthday = (birthdate.month == today.month and birthdate.day == today.day)
-                except Exception as e:
-                    logger.error(f"Error parsing birthdate: {str(e)}")
-            
-            return {
-                "username": username,
-                "is_birthday": is_birthday
-            }
-        except Exception as e:
-            logger.error(f"Error parsing user info: {str(e)}")
-            logger.error(traceback.format_exc())
-            return {"username": credentials.rollno, "is_birthday": False}
+            except Exception as page_error:
+                logger.error(f"Error accessing {page_url}: {str(page_error)}")
+                continue
+        
+        return default_response
             
     except Exception as e:
         logger.error(f"User info error: {str(e)}")
         logger.error(traceback.format_exc())
-        raise HTTPException(status_code=500, 
-                           detail=f"Error fetching user information. Please try again later.")
+        # Return default response on error instead of raising exception
+        return {"username": credentials.rollno, "is_birthday": False}
 
