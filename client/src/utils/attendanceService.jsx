@@ -3,7 +3,6 @@ const API_URL = import.meta.env.VITE_SERVER_URL ;
 // Function to handle login request
 export const loginUser = async (rollNo, password) => {
   try {
-    console.log(`Attempting login with roll number: ${rollNo}`);
     const response = await fetch(`${API_URL}/login`, {
       method: 'POST',
       headers: {
@@ -12,8 +11,6 @@ export const loginUser = async (rollNo, password) => {
       body: JSON.stringify({ rollno: rollNo, password: password }),
     });
 
-    console.log('Login response status:', response.status);
-    
     if (!response.ok) {
       const errorText = await response.text();
       console.error('Login error response:', errorText);
@@ -26,9 +23,7 @@ export const loginUser = async (rollNo, password) => {
     }
 
     const responseText = await response.text();
-    console.log('Login response text:', responseText);
     
-    // Handle empty response
     if (!responseText.trim()) {
       console.error('Empty response received from server');
       throw new Error('Empty response received from server');
@@ -49,7 +44,6 @@ export const loginUser = async (rollNo, password) => {
 // Function to fetch student attendance
 export const getStudentAttendance = async (rollNo, password) => {
   try {
-    console.log(`Fetching attendance data for: ${rollNo}`);
     const response = await fetch(`${API_URL}/attendance`, {
       method: 'POST',
       headers: {
@@ -57,8 +51,6 @@ export const getStudentAttendance = async (rollNo, password) => {
       },
       body: JSON.stringify({ rollno: rollNo, password: password }),
     });
-
-    console.log('Attendance response status:', response.status);
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -72,9 +64,7 @@ export const getStudentAttendance = async (rollNo, password) => {
     }
 
     const responseText = await response.text();
-    console.log('Attendance response text:', responseText);
     
-    // Handle empty response
     if (!responseText.trim()) {
       console.error('Empty response received from server');
       throw new Error('Empty response received from server');
@@ -106,7 +96,6 @@ export const getStudentAttendance = async (rollNo, password) => {
 // Greet user function
 export const greetUser = async (rollNo, password) => {
   try {
-    console.log(`Fetching user info for greeting: ${rollNo}`);
     const response = await fetch(`${API_URL}/user-info`, {
       method: 'POST',
       headers: {
@@ -114,8 +103,6 @@ export const greetUser = async (rollNo, password) => {
       },
       body: JSON.stringify({ rollno: rollNo, password: password }),
     });
-
-    console.log('User info response status:', response.status);
 
     if (!response.ok) {
       const errorText = await response.text();
