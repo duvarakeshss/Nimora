@@ -22,11 +22,5 @@
   "env": {
     "PYTHONPATH": ".",
     "PYTHONASYNCIODEBUG": "1"
-  },
-  "functions": {
-    "app.py": {
-      "memory": 1024,
-      "maxDuration": 60
-    }
   }
 }
