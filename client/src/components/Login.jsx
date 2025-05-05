@@ -37,8 +37,18 @@ const Login = () => {
     useEffect(() => {
         if (isInputFocused) {
             document.body.classList.add('input-focused');
+            // Add class to login container when input is focused
+            const loginContainer = document.querySelector('.login-container');
+            if (loginContainer) {
+                loginContainer.classList.add('active');
+            }
         } else {
             document.body.classList.remove('input-focused');
+            // Remove class from login container when input is not focused
+            const loginContainer = document.querySelector('.login-container');
+            if (loginContainer) {
+                loginContainer.classList.remove('active');
+            }
         }
     }, [isInputFocused]);
 
@@ -71,9 +81,9 @@ const Login = () => {
 
     return (
         <div className="flex flex-col min-h-screen">
-            <div className="flex-grow flex items-start sm:items-center justify-center bg-gradient-to-r from-slate-400 to-stone-100 pt-10 sm:pt-0">
-                <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md transition-shadow duration-300 hover:shadow-xl mx-4 my-auto login-container">
-                    <div className="text-center mb-6 sm:mb-8">
+            <div className="flex-grow flex items-center justify-center bg-gradient-to-r from-slate-400 to-stone-100">
+                <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md transition-shadow duration-300 hover:shadow-xl mx-4 login-container">
+                    <div className="text-center mb-6">
                         <h1 className="text-2xl font-bold text-blue-700">
                             Student Login
                         </h1>

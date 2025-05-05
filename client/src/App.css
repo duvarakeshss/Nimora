@@ -17,8 +17,14 @@
     font-size: 16px; /* Prevents iOS zoom on input */
   }
   
+  /* Position the login form higher on mobile */
   .login-container {
-    padding-bottom: 20vh; /* Extra padding at bottom for virtual keyboard */
+    transition: transform 0.3s ease;
+  }
+  
+  /* Apply transform when input is active */
+  .login-container.active {
+    transform: translateY(-30%);
   }
 }
 
