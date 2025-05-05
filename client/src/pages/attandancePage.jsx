@@ -252,37 +252,89 @@ const Attandance = () => {
                       <div key={index}>
                         {/* Mobile view - vertical card layout */}
                         <div 
-                          className="md:hidden block p-4 border-b border-red-200 cursor-pointer"
+                          className="md:hidden block p-3 border-b border-gray-300 cursor-pointer"
                           onClick={() => handleCourseClick(course)}
                         >
-                          <div className={`rounded-lg p-4 bg-red-50 shadow ${isSelected ? 'ring-2 ring-red-500' : ''} transition-all duration-300 hover:shadow-lg hover:bg-red-100 hover:scale-102`}>
-                            <div className="text-xl font-bold text-red-700 mb-2 transition-colors duration-300 hover:text-red-800">{course.courseCode}</div>
-                            <div className="grid grid-cols-2 gap-2">
-                              <div className="text-gray-600">Total Classes:</div>
-                              <div className="font-medium text-right">{course.totalClasses}</div>
-                              
-                              <div className="text-gray-600">Present:</div>
-                              <div className="font-medium text-right">{course.present}</div>
-                              
-                              <div className="text-gray-600">Absent:</div>
-                              <div className="font-medium text-right">{course.absent}</div>
-                              
-                              <div className="text-gray-600">Attendance:</div>
-                              <div className="font-medium text-right text-red-600">
-                                {course.percentage}%
+                          <div className={`rounded-lg p-4 ${parseInt(course.percentage) < 75 ? "bg-white" : "bg-white"} shadow-md 
+                            ${course.affordableLeaves >= 0 ? "border-l-4 border-green-500" : "border-l-4 border-red-500"}
+                            ${isSelected ? 'ring-2 ring-blue-500' : ''} 
+                            transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] hover:shadow-lg`}
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="text-xl font-bold text-blue-700">{course.courseCode}</div>
+                              {course.affordableLeaves < 0 ? (
+                                <div className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-semibold">
+                                  Action Needed
+                                </div>
+                              ) : (
+                                <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">
+                                  Good Standing
+                                </div>
+                              )}
+                            </div>
+                            
+                            <div className="mt-3 pb-3 border-b border-gray-200">
+                              <div className="flex justify-between items-center">
+                                <span className="text-gray-600 text-sm">Current Attendance:</span>
+                                <span className={`font-medium text-right ${parseInt(course.percentage) < 75 ? "text-red-600" : "text-green-600"} text-lg`}>
+                                  {course.percentage}%
+                                </span>
+                              </div>
+                              <div className="mt-2 bg-gray-200 rounded-full h-2.5">
+                                <div 
+                                  className={`${parseInt(course.percentage) < 75 ? "bg-red-600" : "bg-green-600"} h-2.5 rounded-full`}
+                                  style={{ width: `${course.percentage}%` }}>
+                                </div>
+                              </div>
+                              <div className="flex justify-between text-xs mt-1">
+                                <span className="text-gray-500">0%</span>
+                                <span className={`${parseInt(course.percentage) < 75 ? "text-red-600" : "text-gray-500"}`}>{customPercentage}%</span>
+                                <span className="text-gray-500">100%</span>
+                              </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-3 mt-3">
+                              <div className="bg-blue-50 rounded-lg p-2 text-center">
+                                <span className="text-xs text-gray-500 block">Total</span>
+                                <span className="text-lg font-semibold text-blue-700">{course.totalClasses}</span>
                               </div>
                               
-                              <div className="text-gray-600">Classes To Attend:</div>
-                              <div className="font-medium text-right text-red-600 transition-all duration-300 hover:font-bold hover:text-red-700">
-                                {Math.abs(course.affordableLeaves)}
+                              <div className="bg-green-50 rounded-lg p-2 text-center">
+                                <span className="text-xs text-gray-500 block">Present</span>
+                                <span className="text-lg font-semibold text-green-700">{course.present}</span>
+                              </div>
+                              
+                              <div className="bg-red-50 rounded-lg p-2 text-center">
+                                <span className="text-xs text-gray-500 block">Absent</span>
+                                <span className="text-lg font-semibold text-red-700">{course.absent}</span>
+                              </div>
+                              
+                              <div className={`${course.affordableLeaves >= 0 ? "bg-green-50" : "bg-red-50"} rounded-lg p-2 text-center`}>
+                                <span className="text-xs text-gray-500 block">Leaves</span>
+                                <span className={`text-lg font-semibold ${course.affordableLeaves >= 0 ? "text-green-700" : "text-red-700"}`}>
+                                  {course.affordableLeaves}
+                                </span>
                               </div>
                             </div>
                             
                             {isSelected && (
-                              <div className="mt-4 pt-4 border-t border-red-200">
-                                <h4 className="font-medium text-red-700 mb-2">Action Required</h4>
+                              <div className={`mt-4 p-3 ${course.affordableLeaves >= 0 ? "bg-green-50" : "bg-red-50"} rounded-lg border ${course.affordableLeaves >= 0 ? "border-green-100" : "border-red-100"}`}>
+                                <h4 className={`font-medium ${course.affordableLeaves >= 0 ? "text-green-700" : "text-red-700"} mb-2 flex items-center`}>
+                                  {course.affordableLeaves >= 0 ? (
+                                    <>
+                                      <CheckCircle className="h-4 w-4 mr-1" /> Attendance Status
+                                    </>
+                                  ) : (
+                                    <>
+                                      <AlertTriangle className="h-4 w-4 mr-1" /> Attendance Warning
+                                    </>
+                                  )}
+                                </h4>
                                 <p className="text-sm text-gray-700">
-                                  You need to attend at least {Math.abs(course.affordableLeaves)} more class{Math.abs(course.affordableLeaves) === 1 ? '' : 'es'} to reach {customPercentage}% attendance.
+                                  {course.affordableLeaves >= 0 
+                                    ? <>You can afford to miss <span className="font-bold text-green-700">{course.affordableLeaves}</span> more class{course.affordableLeaves === 1 ? '' : 'es'} while maintaining {customPercentage}% attendance.</> 
+                                    : <>You need to attend at least <span className="font-bold text-red-700">{Math.abs(course.affordableLeaves)}</span> more class{Math.abs(course.affordableLeaves) === 1 ? '' : 'es'} to reach {customPercentage}% attendance.</>
+                                  }
                                 </p>
                               </div>
                             )}
@@ -424,42 +476,88 @@ const Attandance = () => {
                     <div key={index}>
                       {/* Mobile view - vertical card layout */}
                       <div 
-                        className="md:hidden block p-4 border-b border-gray-300 cursor-pointer"
+                        className="md:hidden block p-3 border-b border-gray-300 cursor-pointer"
                         onClick={() => handleCourseClick(course)}
                       >
-                        <div className={`rounded-lg p-4 ${parseInt(course.percentage) < 75 ? "bg-red-50" : "bg-white"} shadow ${isSelected ? 'ring-2 ring-blue-500' : ''} transition-all duration-300 hover:shadow-lg hover:scale-102 ${parseInt(course.percentage) < 75 ? "hover:bg-red-100" : "hover:bg-blue-50"}`}>
-                          <div className="text-xl font-bold text-blue-700 mb-2 transition-colors duration-300 hover:text-blue-800">{course.courseCode}</div>
-                          <div className="grid grid-cols-2 gap-2">
-                            <div className="text-gray-600">Total Classes:</div>
-                            <div className="font-medium text-right">{course.totalClasses}</div>
-                            
-                            <div className="text-gray-600">Present:</div>
-                            <div className="font-medium text-right">{course.present}</div>
-                            
-                            <div className="text-gray-600">Absent:</div>
-                            <div className="font-medium text-right">{course.absent}</div>
-                            
-                            <div className="text-gray-600">Attendance:</div>
-                            <div className={`font-medium text-right ${parseInt(course.percentage) < 75 ? "text-red-600" : "text-green-600"} transition-colors duration-300 ${parseInt(course.percentage) < 75 ? "hover:text-red-700" : "hover:text-green-700"} hover:font-bold`}>
-                              {course.percentage}%
+                        <div className={`rounded-lg p-4 ${parseInt(course.percentage) < 75 ? "bg-white" : "bg-white"} shadow-md 
+                          ${course.affordableLeaves >= 0 ? "border-l-4 border-green-500" : "border-l-4 border-red-500"}
+                          ${isSelected ? 'ring-2 ring-blue-500' : ''} 
+                          transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] hover:shadow-lg`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="text-xl font-bold text-blue-700">{course.courseCode}</div>
+                            {course.affordableLeaves < 0 ? (
+                              <div className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-semibold">
+                                Action Needed
+                              </div>
+                            ) : (
+                              <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">
+                                Good Standing
+                              </div>
+                            )}
+                          </div>
+                          
+                          <div className="mt-3 pb-3 border-b border-gray-200">
+                            <div className="flex justify-between items-center">
+                              <span className="text-gray-600 text-sm">Current Attendance:</span>
+                              <span className={`font-medium text-right ${parseInt(course.percentage) < 75 ? "text-red-600" : "text-green-600"} text-lg`}>
+                                {course.percentage}%
+                              </span>
+                            </div>
+                            <div className="mt-2 bg-gray-200 rounded-full h-2.5">
+                              <div 
+                                className={`${parseInt(course.percentage) < 75 ? "bg-red-600" : "bg-green-600"} h-2.5 rounded-full`}
+                                style={{ width: `${course.percentage}%` }}>
+                              </div>
+                            </div>
+                            <div className="flex justify-between text-xs mt-1">
+                              <span className="text-gray-500">0%</span>
+                              <span className={`${parseInt(course.percentage) < 75 ? "text-red-600" : "text-gray-500"}`}>{customPercentage}%</span>
+                              <span className="text-gray-500">100%</span>
+                            </div>
+                          </div>
+                          
+                          <div className="grid grid-cols-2 gap-3 mt-3">
+                            <div className="bg-blue-50 rounded-lg p-2 text-center">
+                              <span className="text-xs text-gray-500 block">Total</span>
+                              <span className="text-lg font-semibold text-blue-700">{course.totalClasses}</span>
                             </div>
                             
-                            <div className="text-gray-600">Affordable Leaves:</div>
-                            <div className={`font-medium text-right ${course.affordableLeaves < 0 ? "text-red-600" : "text-green-600"}`}>
-                              {course.affordableLeaves}
-                              {course.affordableLeaves < 0 && 
-                                <span className="ml-1 text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">attend</span>
-                              }
+                            <div className="bg-green-50 rounded-lg p-2 text-center">
+                              <span className="text-xs text-gray-500 block">Present</span>
+                              <span className="text-lg font-semibold text-green-700">{course.present}</span>
+                            </div>
+                            
+                            <div className="bg-red-50 rounded-lg p-2 text-center">
+                              <span className="text-xs text-gray-500 block">Absent</span>
+                              <span className="text-lg font-semibold text-red-700">{course.absent}</span>
+                            </div>
+                            
+                            <div className={`${course.affordableLeaves >= 0 ? "bg-green-50" : "bg-red-50"} rounded-lg p-2 text-center`}>
+                              <span className="text-xs text-gray-500 block">Leaves</span>
+                              <span className={`text-lg font-semibold ${course.affordableLeaves >= 0 ? "text-green-700" : "text-red-700"}`}>
+                                {course.affordableLeaves}
+                              </span>
                             </div>
                           </div>
                           
                           {isSelected && (
-                            <div className="mt-4 pt-4 border-t border-gray-200">
-                              <h4 className="font-medium text-blue-700 mb-2">Attendance Recommendation</h4>
+                            <div className={`mt-4 p-3 ${course.affordableLeaves >= 0 ? "bg-green-50" : "bg-red-50"} rounded-lg border ${course.affordableLeaves >= 0 ? "border-green-100" : "border-red-100"}`}>
+                              <h4 className={`font-medium ${course.affordableLeaves >= 0 ? "text-green-700" : "text-red-700"} mb-2 flex items-center`}>
+                                {course.affordableLeaves >= 0 ? (
+                                  <>
+                                    <CheckCircle className="h-4 w-4 mr-1" /> Attendance Status
+                                  </>
+                                ) : (
+                                  <>
+                                    <AlertTriangle className="h-4 w-4 mr-1" /> Attendance Warning
+                                  </>
+                                )}
+                              </h4>
                               <p className="text-sm text-gray-700">
                                 {course.affordableLeaves >= 0 
-                                  ? `You can afford to miss ${course.affordableLeaves} more class${course.affordableLeaves === 1 ? '' : 'es'} while maintaining ${customPercentage}% attendance.` 
-                                  : `You need to attend at least ${Math.abs(course.affordableLeaves)} more class${Math.abs(course.affordableLeaves) === 1 ? '' : 'es'} to reach ${customPercentage}% attendance.`
+                                  ? <>You can afford to miss <span className="font-bold text-green-700">{course.affordableLeaves}</span> more class{course.affordableLeaves === 1 ? '' : 'es'} while maintaining {customPercentage}% attendance.</> 
+                                  : <>You need to attend at least <span className="font-bold text-red-700">{Math.abs(course.affordableLeaves)}</span> more class{Math.abs(course.affordableLeaves) === 1 ? '' : 'es'} to reach {customPercentage}% attendance.</>
                                 }
                               </p>
                             </div>

@@ -150,55 +150,87 @@ const Home = () => {
 
   return (
     <>
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <h1 className="text-2xl font-bold text-blue-700 mb-4">{greeting}</h1>
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg shadow-md p-6 mb-6 border-l-4 border-blue-500">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center">
+          <div className="bg-blue-100 rounded-full p-3 mb-3 sm:mb-0 sm:mr-4">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-blue-700 mb-2">{greeting}</h1>
+            <p className="text-gray-600">Welcome to your attendance dashboard. Track your classes and plan ahead.</p>
+          </div>
+        </div>
+        
         {greeting.includes("Birthday") && (
-          <div className="p-4 bg-yellow-100 rounded-lg mb-4">
-            <span className="text-yellow-800">🎉 Wishing you a fantastic day! 🎂</span>
+          <div className="p-4 mt-4 bg-gradient-to-r from-yellow-100 to-amber-100 rounded-lg border border-yellow-200 shadow-inner">
+            <div className="flex items-center">
+              <span className="text-2xl mr-2">🎉</span>
+              <div>
+                <span className="font-semibold text-yellow-800">Happy Birthday!</span>
+                <p className="text-yellow-700 text-sm">Wishing you a fantastic day filled with joy and success!</p>
+              </div>
+              <span className="text-2xl ml-2">🎂</span>
+            </div>
           </div>
         )}
       </div>
 
       {combinedData.length > 0 && (
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <div className="flex flex-col md:flex-row items-start md:items-center mb-6 space-y-3 md:space-y-0">
-            <h2 className="text-2xl font-semibold text-blue-700">Attendance Overview</h2>
-            <div className="w-full md:w-auto md:ml-auto flex flex-col items-stretch md:items-end">
-              <div className="flex items-center justify-between w-full">
-                <label htmlFor="customPercentage" className="mr-3 text-sm font-medium text-gray-700">
-                  Maintenance: 
-                </label>
-                <span className="text-sm font-bold bg-blue-100 text-blue-800 px-2 py-1 rounded-full min-w-[50px] text-center">
-                  {customPercentage}%
-                </span>
-              </div>
-              <div className="w-full md:w-64 mt-2 relative">
-                <div className="absolute -top-1 left-0 right-0 flex justify-between px-1">
-                  <div className="w-0.5 h-2 bg-gray-300"></div>
-                  <div className="w-0.5 h-2 bg-gray-300"></div>
-                  <div className="w-0.5 h-2 bg-gray-300"></div>
-                  <div className="w-0.5 h-2 bg-gray-300"></div>
-                  <div className="w-0.5 h-2 bg-gray-300"></div>
-                  <div className="w-0.5 h-2 bg-gray-300"></div>
+          <div className="flex flex-col mb-6 space-y-3">
+            <div className="flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-700 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <h2 className="text-2xl font-semibold text-blue-700">Attendance Overview</h2>
+            </div>
+            
+            <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-100">
+              <div className="w-full flex flex-col">
+                <div className="flex items-center justify-between w-full mb-2">
+                  <div className="flex items-center">
+                    <span className="bg-blue-100 rounded-full w-6 h-6 inline-flex items-center justify-center mr-2 text-sm text-blue-800">%</span>
+                    <label htmlFor="customPercentage" className="text-sm font-medium text-gray-700">
+                      Maintenance Target: 
+                    </label>
+                  </div>
+                  <span className="text-sm font-bold bg-blue-100 text-blue-800 px-3 py-1 rounded-full min-w-[50px] text-center">
+                    {customPercentage}%
+                  </span>
                 </div>
-                <input
-                  type="range"
-                  id="customPercentage"
-                  min="50"
-                  max="100"
-                  step="1"
-                  value={customPercentage}
-                  onChange={handlePercentageChange}
-                  className="w-full h-2 appearance-none rounded-full bg-gradient-to-r from-red-500 via-yellow-400 to-green-500 cursor-pointer"
-                />
-                <div className="flex justify-between text-xs text-gray-500 mt-1 px-1">
-                  <span>50%</span>
-                  <span>60%</span>
-                  <span>70%</span>
-                  <span>80%</span>
-                  <span>90%</span>
-                  <span>100%</span>
+                <div className="w-full relative">
+                  <div className="absolute -top-1 left-0 right-0 flex justify-between px-1">
+                    <div className="w-0.5 h-2 bg-gray-300"></div>
+                    <div className="w-0.5 h-2 bg-gray-300"></div>
+                    <div className="w-0.5 h-2 bg-gray-300"></div>
+                    <div className="w-0.5 h-2 bg-gray-300"></div>
+                    <div className="w-0.5 h-2 bg-gray-300"></div>
+                    <div className="w-0.5 h-2 bg-gray-300"></div>
+                  </div>
+                  <input
+                    type="range"
+                    id="customPercentage"
+                    min="50"
+                    max="100"
+                    step="1"
+                    value={customPercentage}
+                    onChange={handlePercentageChange}
+                    className="w-full h-2 appearance-none rounded-full bg-gradient-to-r from-red-500 via-yellow-400 to-green-500 cursor-pointer"
+                  />
+                  <div className="flex justify-between text-xs text-gray-500 mt-1 px-1">
+                    <span>50%</span>
+                    <span>60%</span>
+                    <span>70%</span>
+                    <span>80%</span>
+                    <span>90%</span>
+                    <span>100%</span>
+                  </div>
                 </div>
+                <p className="text-xs text-gray-500 mt-3">
+                  Drag the slider to adjust your attendance maintenance target. This affects how many classes you can afford to miss.
+                </p>
               </div>
             </div>
           </div>
@@ -213,7 +245,7 @@ const Home = () => {
                 <div className="px-6 py-4 text-center text-sm font-semibold uppercase">Absent</div>
                 <div className="px-6 py-4 text-center text-sm font-semibold uppercase">Attendance %</div>
                 <div className="px-6 py-4 text-center text-sm font-semibold uppercase">
-                      Affordable Leaves ({customPercentage}%)
+                  Affordable Leaves ({customPercentage}%)
                 </div>
               </div>
               
@@ -236,30 +268,68 @@ const Home = () => {
                   return (
                     <div key={index}>
                       {/* Mobile view - vertical card layout */}
-                      <div className="md:hidden block p-4 border-b border-gray-300">
-                        <div className={`rounded-lg p-4 ${parseInt(course.percentage) < 75 ? "bg-red-50" : "bg-white"} shadow`}>
-                          <div className="text-xl font-bold text-blue-700 mb-2">{course.courseCode}</div>
-                          <div className="grid grid-cols-2 gap-2">
-                            <div className="text-gray-600">Total Classes:</div>
-                            <div className="font-medium text-right">{course.totalClasses}</div>
-                            
-                            <div className="text-gray-600">Present:</div>
-                            <div className="font-medium text-right">{course.present}</div>
-                            
-                            <div className="text-gray-600">Absent:</div>
-                            <div className="font-medium text-right">{course.absent}</div>
-                            
-                            <div className="text-gray-600">Attendance:</div>
-                            <div className={`font-medium text-right ${parseInt(course.percentage) < 75 ? "text-red-600" : "text-green-600"}`}>
-                              {course.percentage}%
+                      <div className="md:hidden block p-3 border-b border-gray-300">
+                        <div className={`rounded-lg p-4 ${parseInt(course.percentage) < 75 ? "bg-white" : "bg-white"} shadow-md 
+                          ${course.affordableLeaves >= 0 ? "border-l-4 border-blue-500" : "border-l-4 border-red-500"}
+                          transform transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="text-xl font-bold text-blue-700">{course.courseCode}</div>
+                            {course.affordableLeaves < 0 ? (
+                              <div className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-semibold">
+                                Action Needed
+                              </div>
+                            ) : (
+                              <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">
+                                Good Standing
+                              </div>
+                            )}
+                          </div>
+                          
+                          <div className="mt-3 pb-3 border-b border-gray-200">
+                            <div className="flex justify-between items-center">
+                              <span className="text-gray-600 text-sm">Current Attendance:</span>
+                              <span className={`font-medium text-right ${parseInt(course.percentage) < 75 ? "text-red-600" : "text-green-600"} text-lg`}>
+                                {course.percentage}%
+                              </span>
+                            </div>
+                            <div className="mt-2 bg-gray-200 rounded-full h-2.5">
+                              <div 
+                                className={`${parseInt(course.percentage) < 75 ? "bg-red-600" : "bg-green-600"} h-2.5 rounded-full`}
+                                style={{ width: `${course.percentage}%` }}>
+                              </div>
+                            </div>
+                            <div className="flex justify-between text-xs mt-1">
+                              <span className="text-gray-500">0%</span>
+                              <span className={`${parseInt(course.percentage) < 75 ? "text-red-600" : "text-gray-500"}`}>{customPercentage}%</span>
+                              <span className="text-gray-500">100%</span>
+                            </div>
+                          </div>
+                          
+                          <div className="grid grid-cols-2 gap-3 mt-3">
+                            <div className="bg-blue-50 rounded-lg p-2 text-center">
+                              <span className="text-xs text-gray-500 block">Total</span>
+                              <span className="text-lg font-semibold text-blue-700">{course.totalClasses}</span>
                             </div>
                             
-                            <div className="text-gray-600">Affordable Leaves:</div>
-                            <div className={`font-medium text-right ${course.affordableLeaves < 0 ? "text-red-600" : "text-green-600"}`}>
-                              {course.affordableLeaves}
-                              {course.affordableLeaves < 0 && 
-                                <span className="ml-1 text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">attend</span>
-                              }
+                            <div className="bg-green-50 rounded-lg p-2 text-center">
+                              <span className="text-xs text-gray-500 block">Present</span>
+                              <span className="text-lg font-semibold text-green-700">{course.present}</span>
+                            </div>
+                            
+                            <div className="bg-red-50 rounded-lg p-2 text-center">
+                              <span className="text-xs text-gray-500 block">Absent</span>
+                              <span className="text-lg font-semibold text-red-700">{course.absent}</span>
+                            </div>
+                            
+                            <div className={`${course.affordableLeaves >= 0 ? "bg-green-50" : "bg-red-50"} rounded-lg p-2 text-center`}>
+                              <span className="text-xs text-gray-500 block">Leaves</span>
+                              <span className={`text-lg font-semibold ${course.affordableLeaves >= 0 ? "text-green-700" : "text-red-700"}`}>
+                                {course.affordableLeaves}
+                                {course.affordableLeaves < 0 && 
+                                  <span className="ml-1 text-xs bg-red-200 text-red-800 px-2 py-1 rounded-full">attend</span>
+                                }
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -282,7 +352,7 @@ const Home = () => {
                         </div>
                         <div className={`px-6 py-5 text-base text-center font-medium ${course.affordableLeaves < 0 ? "text-red-600" : "text-green-600"}`}>
                           <span className="inline-flex items-center justify-center">
-                        {course.affordableLeaves}
+                            {course.affordableLeaves}
                             {course.affordableLeaves < 0 && 
                               <span className="ml-1 text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">attend</span>
                             }
