@@ -10,7 +10,7 @@ const Attandance = () => {
   const [loading, setLoading] = useState(true)
   const [attendanceData, setAttendanceData] = useState([])
   const [error, setError] = useState('')
-  const [customPercentage, setCustomPercentage] = useState(75)
+  const [customPercentage, setCustomPercentage] = useState(80)
   const [combinedData, setCombinedData] = useState([])
   const [selectedCourse, setSelectedCourse] = useState(null)
   const [attendanceStats, setAttendanceStats] = useState({

@@ -10,7 +10,7 @@ const Home = () => {
   const [greeting, setGreeting] = useState('')
   const [attendanceData, setAttendanceData] = useState([])
   const [error, setError] = useState('')
-  const [customPercentage, setCustomPercentage] = useState(75)
+  const [customPercentage, setCustomPercentage] = useState(80)
   const [combinedData, setCombinedData] = useState([])
 
   // Prevent going back to login page when back button is clicked
