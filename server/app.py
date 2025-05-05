@@ -12,6 +12,9 @@ from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+from datetime import datetime
+import pytz
+from bs4 import BeautifulSoup
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -340,4 +343,67 @@ def get_exam_schedule(credentials: UserCredentials):
         logger.error(traceback.format_exc())
         raise HTTPException(status_code=500, 
                           detail=f"Error retrieving exam schedule. Please try again or contact support if the issue persists.")
+
+@app.post("/user-info")
+def get_user_info(credentials: UserCredentials):
+    """
+    Get user information for personalized greetings
+    """
+    try:
+        logger.info(f"User info request for {credentials.rollno}")
+        session = getHomePageAttendance(credentials.rollno, credentials.password)
+        if not session:
+            raise HTTPException(status_code=401, detail="Invalid credentials")
+        
+        # Get user info from scholarship page (similar to the greetUser function in Python code)
+        scholarship_url = "https://ecampus.psgtech.ac.in/studzone/Scholar/VallalarScholarship"
+        scholarship_page = session.get(scholarship_url)
+        
+        if not scholarship_page.ok:
+            logger.warning(f"Could not fetch scholarship page for {credentials.rollno}")
+            return {"username": credentials.rollno, "is_birthday": False}
+        
+        try:
+            page_soup = BeautifulSoup(scholarship_page.text, "html.parser")
+            
+            # Get the personal info
+            personal_info_table = page_soup.find("td", {"class": "personal-info"})
+            if not personal_info_table:
+                logger.warning(f"Could not find personal-info table for {credentials.rollno}")
+                return {"username": credentials.rollno, "is_birthday": False}
+                
+            personal_info = personal_info_table.find_all("td")
+            
+            # Get the username
+            username = personal_info[0].string.strip() if personal_info and len(personal_info) > 0 else credentials.rollno
+            
+            # Get the birthday
+            is_birthday = False
+            if personal_info and len(personal_info) > 2:
+                birthdate_str = personal_info[2].string.strip()
+                try:
+                    birthdate = datetime.strptime(birthdate_str, "%d/%m/%Y").date()
+                    
+                    # Get current date in India timezone
+                    IST = pytz.timezone('Asia/Kolkata')
+                    today = datetime.now(IST).date()
+                    
+                    is_birthday = (birthdate.month == today.month and birthdate.day == today.day)
+                except Exception as e:
+                    logger.error(f"Error parsing birthdate: {str(e)}")
+            
+            return {
+                "username": username,
+                "is_birthday": is_birthday
+            }
+        except Exception as e:
+            logger.error(f"Error parsing user info: {str(e)}")
+            logger.error(traceback.format_exc())
+            return {"username": credentials.rollno, "is_birthday": False}
+            
+    except Exception as e:
+        logger.error(f"User info error: {str(e)}")
+        logger.error(traceback.format_exc())
+        raise HTTPException(status_code=500, 
+                           detail=f"Error fetching user information. Please try again later.")
 

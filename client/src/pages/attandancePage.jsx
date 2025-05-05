@@ -110,18 +110,47 @@ const Attandance = () => {
   const calculateIndividualLeaves = (classesPresent, classesTotal, maintenancePercentage) => {
     let affordableLeaves = 0
     let i = 1
+    const MAX_ITERATIONS = 1000 // Safety limit to prevent infinite loops
+
+    // Special case for 100% attendance target
+    if (maintenancePercentage === 100) {
+      // For 100% attendance, you can't miss any more classes if you're already at 100%
+      if ((classesPresent / classesTotal) * 100 === 100) {
+        // Calculate how many more classes you can miss while maintaining 100%
+        // (Which is 0 if you've already missed any)
+        return classesPresent === classesTotal ? 0 : 0;
+      } else {
+        // If not at 100%, you need to attend all remaining classes and any you've missed
+        // (Which is impossible to achieve - so return negative of missed classes)
+        return -(classesTotal - classesPresent);
+      }
+    }
 
     if ((classesPresent / classesTotal) * 100 < maintenancePercentage) {
       // Simulate attendance after attending i classes
-      while (((classesPresent + i) / (classesTotal + i)) * 100 <= maintenancePercentage) {
+      let iterations = 0
+      while (((classesPresent + i) / (classesTotal + i)) * 100 <= maintenancePercentage && iterations < MAX_ITERATIONS) {
         affordableLeaves -= 1 // negative leaves mean unskippable classes
         i += 1
+        iterations += 1
+      }
+      
+      // If we hit the max iterations, just return a reasonable value
+      if (iterations >= MAX_ITERATIONS) {
+        return Math.floor(-MAX_ITERATIONS / 10);
       }
     } else {
       // Calculate how many classes can be skipped
-      while ((classesPresent / (classesTotal + i)) * 100 >= maintenancePercentage) {
+      let iterations = 0
+      while ((classesPresent / (classesTotal + i)) * 100 >= maintenancePercentage && iterations < MAX_ITERATIONS) {
         affordableLeaves += 1
         i += 1
+        iterations += 1
+      }
+      
+      // If we hit the max iterations, cap the result
+      if (iterations >= MAX_ITERATIONS) {
+        return Math.floor(MAX_ITERATIONS / 10);
       }
     }
 
