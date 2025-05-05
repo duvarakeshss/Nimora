@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Lock, User, Eye, EyeOff } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import Footer from './Footer'
@@ -9,7 +9,46 @@ const Login = () => {
     const [password, setPassword] = useState('')
     const [showPassword, setShowPassword] = useState(false)
     const [error, setError] = useState('')
+    const [isInputFocused, setIsInputFocused] = useState(false)
     const navigate = useNavigate()
+
+    // Add effect to handle viewport adjustments on mobile
+    useEffect(() => {
+        // Function to update viewport height on resize
+        const updateViewportHeight = () => {
+            // Set a custom property with the viewport height
+            document.documentElement.style.setProperty(
+                '--vh', 
+                `${window.innerHeight * 0.01}px`
+            );
+        };
+
+        // Initial call
+        updateViewportHeight();
+
+        // Add event listener for resize
+        window.addEventListener('resize', updateViewportHeight);
+        
+        // Clean up
+        return () => window.removeEventListener('resize', updateViewportHeight);
+    }, []);
+
+    // Handle input focus state for mobile
+    useEffect(() => {
+        if (isInputFocused) {
+            document.body.classList.add('input-focused');
+        } else {
+            document.body.classList.remove('input-focused');
+        }
+    }, [isInputFocused]);
+
+    const handleInputFocus = () => {
+        setIsInputFocused(true);
+    };
+
+    const handleInputBlur = () => {
+        setIsInputFocused(false);
+    };
 
     const handleLogin = () => {
         if (!rollNo || !password) {
@@ -32,9 +71,9 @@ const Login = () => {
 
     return (
         <div className="flex flex-col min-h-screen">
-            <div className="flex-grow flex items-center justify-center bg-gradient-to-r from-slate-400 to-stone-100">
-                <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md transition-shadow duration-300 hover:shadow-xl">
-                    <div className="text-center mb-8">
+            <div className="flex-grow flex items-start sm:items-center justify-center bg-gradient-to-r from-slate-400 to-stone-100 pt-10 sm:pt-0">
+                <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md transition-shadow duration-300 hover:shadow-xl mx-4 my-auto login-container">
+                    <div className="text-center mb-6 sm:mb-8">
                         <h1 className="text-2xl font-bold text-blue-700">
                             Student Login
                         </h1>
@@ -48,6 +87,8 @@ const Login = () => {
                                 value={rollNo}
                                 onChange={(e) => setRollNo(e.target.value)}
                                 onKeyDown={handleKeyDown}
+                                onFocus={handleInputFocus}
+                                onBlur={handleInputBlur}
                                 className="flex-grow focus:outline-none"
                             />
                         </div>
@@ -59,6 +100,8 @@ const Login = () => {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 onKeyDown={handleKeyDown}
+                                onFocus={handleInputFocus}
+                                onBlur={handleInputBlur}
                                 className="flex-grow focus:outline-none"
                             />
                             {showPassword ? (

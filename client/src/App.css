@@ -1,1 +1,31 @@
 @import "tailwindcss";
+
+/* Custom viewport height variable for mobile devices */
+:root {
+  --vh: 1vh;
+}
+
+/* Use the custom viewport height for mobile-friendly layouts */
+.min-h-screen {
+  min-height: 100vh; /* Fallback */
+  min-height: calc(var(--vh, 1vh) * 100);
+}
+
+/* Fix for mobile input focus */
+@media (max-width: 640px) {
+  input:focus {
+    font-size: 16px; /* Prevents iOS zoom on input */
+  }
+  
+  .login-container {
+    padding-bottom: 20vh; /* Extra padding at bottom for virtual keyboard */
+  }
+}
+
+/* Prevent content jumping when virtual keyboard appears */
+@media (max-width: 640px) {
+  body.input-focused {
+    height: auto !important;
+    overflow: auto !important;
+  }
+}
