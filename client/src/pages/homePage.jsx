@@ -225,7 +225,7 @@ const Home = () => {
                       Maintenance Target: 
                     </label>
                   </div>
-                  <span className="text-sm font-bold bg-blue-100 text-blue-800 px-3 py-1 rounded-full min-w-[50px] text-center">
+                  <span className="text-sm font-bold bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 px-3 py-1 rounded-full min-w-[50px] text-center shadow-sm">
                     {customPercentage}%
                   </span>
                 </div>
@@ -246,7 +246,7 @@ const Home = () => {
                     step="1"
                     value={customPercentage}
                     onChange={handlePercentageChange}
-                    className="w-full h-2 appearance-none rounded-full bg-gradient-to-r from-red-500 via-yellow-400 to-green-500 cursor-pointer"
+                    className="w-full h-3 appearance-none rounded-full bg-gradient-to-r from-red-500 via-yellow-400 to-green-500 cursor-pointer shadow-inner"
                   />
                   <div className="flex justify-between text-xs text-gray-500 mt-1 px-1">
                     <span>50%</span>
@@ -264,17 +264,17 @@ const Home = () => {
             </div>
           </div>
           
-          <div className="rounded-lg border-2 border-gray-300 shadow-md overflow-hidden overflow-x-auto">
+          <div className="rounded-2xl border border-gray-200 shadow-xl overflow-hidden overflow-x-auto hover:shadow-2xl transition-all duration-300 bg-white">
             <div className="min-w-full">
               {/* Header Row - hidden on small screens, visible from md up */}
-              <div className="hidden md:grid grid-cols-6 bg-blue-50 divide-x divide-gray-200 text-blue-700 border-b-2 border-blue-200">
-                <div className="px-6 py-4 text-left text-sm font-semibold uppercase">Course</div>
-                <div className="px-6 py-4 text-center text-sm font-semibold uppercase">Total Classes</div>
-                <div className="px-6 py-4 text-center text-sm font-semibold uppercase">Present</div>
-                <div className="px-6 py-4 text-center text-sm font-semibold uppercase">Absent</div>
-                <div className="px-6 py-4 text-center text-sm font-semibold uppercase">Attendance %</div>
-                <div className="px-6 py-4 text-center text-sm font-semibold uppercase">
-                  Affordable Leaves ({customPercentage}%)
+              <div className="hidden md:grid grid-cols-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-b border-blue-700">
+                <div className="px-6 py-4 text-left text-sm font-medium uppercase tracking-wider">Course</div>
+                <div className="px-6 py-4 text-center text-sm font-medium uppercase tracking-wider">Total Classes</div>
+                <div className="px-6 py-4 text-center text-sm font-medium uppercase tracking-wider">Present</div>
+                <div className="px-6 py-4 text-center text-sm font-medium uppercase tracking-wider">Absent</div>
+                <div className="px-6 py-4 text-center text-sm font-medium uppercase tracking-wider">Attendance %</div>
+                <div className="px-6 py-4 text-center text-sm font-medium uppercase tracking-wider">
+                  Affordable Leaves
                 </div>
               </div>
               
@@ -283,8 +283,8 @@ const Home = () => {
                 {combinedData.map((course, index) => {
                   // Determine color based on affordable leaves
                   const colorClass = course.affordableLeaves >= 0 
-                    ? "hover:border-l-8 hover:border-blue-500 hover:shadow hover:shadow-blue-100" 
-                    : "hover:border-l-8 hover:border-red-500 hover:shadow hover:shadow-red-100";
+                    ? "hover:border-l-4 hover:border-blue-500 hover:bg-blue-50" 
+                    : "hover:border-l-4 hover:border-red-500 hover:bg-red-50";
                   
                   // Determine background color based on index for zebra striping
                   const bgClass = index % 2 === 0 
@@ -297,68 +297,68 @@ const Home = () => {
                   return (
                     <div key={index}>
                       {/* Mobile view - vertical card layout */}
-                      <div className="md:hidden block p-3 border-b border-gray-300">
-                        <div className={`rounded-lg p-4 ${parseInt(course.percentage) < 75 ? "bg-white" : "bg-white"} shadow-md 
+                      <div className="md:hidden block p-3">
+                        <div className={`rounded-xl p-5 bg-white shadow-lg 
                           ${course.affordableLeaves >= 0 ? "border-l-4 border-blue-500" : "border-l-4 border-red-500"}
-                          transform transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]`}
+                          transform transition-all duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-[0.99]`}
                         >
-                          <div className="flex items-center justify-between">
+                          <div className="flex items-center justify-between mb-3">
                             <div className="text-xl font-bold text-blue-700">{course.courseCode}</div>
                             {course.affordableLeaves < 0 ? (
-                              <div className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-semibold">
+                              <div className="bg-gradient-to-r from-red-100 to-red-200 text-red-800 px-3 py-1 rounded-full text-xs font-medium shadow-sm">
                                 Action Needed
                               </div>
                             ) : (
-                              <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">
+                              <div className="bg-gradient-to-r from-green-100 to-green-200 text-green-800 px-3 py-1 rounded-full text-xs font-medium shadow-sm">
                                 Good Standing
                               </div>
                             )}
                           </div>
                           
-                          <div className="mt-3 pb-3 border-b border-gray-200">
-                            <div className="flex justify-between items-center">
-                              <span className="text-gray-600 text-sm">Current Attendance:</span>
-                              <span className={`font-medium text-right ${parseInt(course.percentage) < 75 ? "text-red-600" : "text-green-600"} text-lg`}>
+                          <div className="mb-4 bg-gray-50 rounded-xl p-4 shadow-inner">
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="text-gray-600 text-sm font-medium">Current Attendance:</span>
+                              <span className={`font-bold text-right ${parseInt(course.percentage) < 75 ? "text-red-600" : "text-green-600"} text-lg px-3 py-1 rounded-lg ${parseInt(course.percentage) < 75 ? "bg-red-50" : "bg-green-50"}`}>
                                 {course.percentage}%
                               </span>
                             </div>
-                            <div className="mt-2 bg-gray-200 rounded-full h-2.5">
+                            <div className="mt-2 bg-gray-200 rounded-full h-3 shadow-inner">
                               <div 
-                                className={`${parseInt(course.percentage) < 75 ? "bg-red-600" : "bg-green-600"} h-2.5 rounded-full`}
+                                className={`${parseInt(course.percentage) < 75 ? "bg-gradient-to-r from-red-500 to-red-600" : "bg-gradient-to-r from-green-500 to-green-600"} h-3 rounded-full shadow-sm`}
                                 style={{ width: `${course.percentage}%` }}>
                               </div>
                             </div>
-                            <div className="flex justify-between text-xs mt-1">
-                              <span className="text-gray-500">0%</span>
-                              <span className={`${parseInt(course.percentage) < 75 ? "text-red-600" : "text-gray-500"}`}>{customPercentage}%</span>
-                              <span className="text-gray-500">100%</span>
+                            <div className="flex justify-between text-xs mt-2">
+                              <span className="text-gray-500 font-medium">0%</span>
+                              <span className={`${parseInt(course.percentage) < 75 ? "text-red-600" : "text-gray-500"} font-medium`}>{customPercentage}%</span>
+                              <span className="text-gray-500 font-medium">100%</span>
                             </div>
                           </div>
                           
-                          <div className="grid grid-cols-2 gap-3 mt-3">
-                            <div className="bg-blue-50 rounded-lg p-2 text-center">
-                              <span className="text-xs text-gray-500 block">Total</span>
-                              <span className="text-lg font-semibold text-blue-700">{course.totalClasses}</span>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-3 text-center shadow-sm">
+                              <span className="text-xs text-gray-600 font-medium block mb-1">Total Classes</span>
+                              <span className="text-xl font-bold text-blue-700">{course.totalClasses}</span>
                             </div>
                             
-                            <div className="bg-green-50 rounded-lg p-2 text-center">
-                              <span className="text-xs text-gray-500 block">Present</span>
-                              <span className="text-lg font-semibold text-green-700">{course.present}</span>
+                            <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-3 text-center shadow-sm">
+                              <span className="text-xs text-gray-600 font-medium block mb-1">Present</span>
+                              <span className="text-xl font-bold text-green-700">{course.present}</span>
                             </div>
                             
-                            <div className="bg-red-50 rounded-lg p-2 text-center">
-                              <span className="text-xs text-gray-500 block">Absent</span>
-                              <span className="text-lg font-semibold text-red-700">{course.absent}</span>
+                            <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-3 text-center shadow-sm">
+                              <span className="text-xs text-gray-600 font-medium block mb-1">Absent</span>
+                              <span className="text-xl font-bold text-red-700">{course.absent}</span>
                             </div>
                             
-                            <div className={`${course.affordableLeaves >= 0 ? "bg-green-50" : "bg-red-50"} rounded-lg p-2 text-center`}>
-                              <span className="text-xs text-gray-500 block">Leaves</span>
-                              <span className={`text-lg font-semibold ${course.affordableLeaves >= 0 ? "text-green-700" : "text-red-700"}`}>
-                                {course.affordableLeaves}
-                                {course.affordableLeaves < 0 && 
-                                  <span className="ml-1 text-xs bg-red-200 text-red-800 px-2 py-1 rounded-full">attend</span>
-                                }
-                              </span>
+                            <div className={`bg-gradient-to-br ${course.affordableLeaves >= 0 ? "from-green-50 to-green-100" : "from-red-50 to-red-100"} rounded-xl p-3 text-center shadow-sm`}>
+                              <span className="text-xs text-gray-600 font-medium block mb-1">Leaves</span>
+                                <span className={`text-xl font-bold ${course.affordableLeaves >= 0 ? "text-green-700" : "text-red-700"} flex items-center justify-center`}>
+                                  {course.affordableLeaves >= 0 ? course.affordableLeaves : Math.abs(course.affordableLeaves)}
+                                  {course.affordableLeaves < 0 && 
+                                    <span className="ml-1 text-xs bg-red-200 text-red-800 px-2 py-1 rounded-full shadow-sm">attend</span>
+                                  }
+                                </span>
                             </div>
                           </div>
                         </div>
@@ -367,10 +367,9 @@ const Home = () => {
                       {/* Desktop view - row layout */}
                       <div 
                         className={`hidden md:grid md:grid-cols-6 ${bgClass} 
-                          hover:bg-blue-50 border-l-8 border-transparent
-                          ${colorClass} divide-x divide-gray-200
-                          ${!isLastRow ? 'border-b border-gray-300' : ''}
-                          transition-all duration-200 ease-in-out cursor-pointer`}
+                          ${colorClass}
+                          ${!isLastRow ? 'border-b border-gray-200' : ''}
+                          transition-all duration-300 ease-in-out cursor-pointer`}
                       >
                         <div className="px-6 py-5 text-base font-medium text-gray-900">{course.courseCode}</div>
                         <div className="px-6 py-5 text-base text-center text-gray-600">{course.totalClasses}</div>
@@ -380,10 +379,10 @@ const Home = () => {
                           {course.percentage}%
                         </div>
                         <div className={`px-6 py-5 text-base text-center font-medium ${course.affordableLeaves < 0 ? "text-red-600" : "text-green-600"}`}>
-                          <span className="inline-flex items-center justify-center">
-                            {course.affordableLeaves}
+                          <span className={`inline-flex items-center justify-center bg-opacity-60 rounded-lg px-3 py-1 ${course.affordableLeaves < 0 ? 'bg-red-100' : 'bg-green-100'}`}>
+                            {course.affordableLeaves >= 0 ? course.affordableLeaves : Math.abs(course.affordableLeaves)}
                             {course.affordableLeaves < 0 && 
-                              <span className="ml-1 text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">attend</span>
+                              <span className="ml-1 text-xs bg-red-200 text-red-800 px-2 py-1 rounded-full">attend</span>
                             }
                           </span>
                         </div>
