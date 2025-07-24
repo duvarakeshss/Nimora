@@ -65,9 +65,11 @@ const Login = () => {
             setError('Please fill in all fields')
             return
         }
-    
+        
         else{
-            navigate('/Home', { state: { rollNo, password } })
+            // Convert rollNo to lowercase
+            const normalizedRollNo = rollNo.toLowerCase()
+            navigate('/Home', { state: { rollNo: normalizedRollNo, password } })
         }
         setError('')
     }
