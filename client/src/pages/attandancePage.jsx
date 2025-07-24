@@ -244,6 +244,22 @@ const Attandance = () => {
         </div>
       </div>
       
+      {combinedData.length === 0 && !loading && !error && (
+        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+          <div className="flex flex-col items-center justify-center py-8">
+            <div className="bg-blue-100 rounded-full p-4 mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h2 className="text-xl font-semibold text-gray-700 mb-2">Attendance Data Unavailable</h2>
+            <p className="text-gray-600 text-center max-w-md">
+              Your attendance data is currently being updated. Please check back later for the latest information.
+            </p>
+          </div>
+        </div>
+      )}
+      
       {/* Action Required Courses Section */}
       {combinedData.length > 0 && combinedData.some(course => course.affordableLeaves < 0) && (
         <div className="bg-gradient-to-r from-red-50 to-red-100 rounded-lg shadow-xl p-6 mb-6 border-l-4 border-red-500 hover:shadow-2xl transition-shadow duration-300">

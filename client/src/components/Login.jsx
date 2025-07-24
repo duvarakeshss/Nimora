@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
-import { Lock, User, Eye, EyeOff } from 'lucide-react'
+import { Lock, User, Eye, EyeOff, Shield } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import Footer from './Footer'
 
@@ -10,6 +10,7 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false)
     const [error, setError] = useState('')
     const [isInputFocused, setIsInputFocused] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
     const navigate = useNavigate()
 
     // Add effect to handle viewport adjustments on mobile
@@ -102,6 +103,7 @@ const Login = () => {
                                 onFocus={handleInputFocus}
                                 onBlur={handleInputBlur}
                                 className="flex-grow focus:outline-none"
+                                disabled={isLoading}
                             />
                         </div>
                         <div className="flex items-center border-b border-gray-300 py-2 transition-all duration-300 hover:border-blue-500 group">
@@ -115,6 +117,7 @@ const Login = () => {
                                 onFocus={handleInputFocus}
                                 onBlur={handleInputBlur}
                                 className="flex-grow focus:outline-none"
+                                disabled={isLoading}
                             />
                             {showPassword ? (
                                 <EyeOff 
@@ -128,12 +131,26 @@ const Login = () => {
                                 />
                             )}
                         </div>
+                        
+                        <div className="flex items-center justify-center text-xs text-gray-500 bg-blue-50 p-2 rounded-md">
+                            <Shield className="h-3 w-3 text-blue-500 mr-1" />
+                            <span>Password is encrypted with SHA-256</span>
+                        </div>
+                        
                         {error && <p className="text-red-500 text-sm">{error}</p>}
                         <button 
                             onClick={handleLogin}
-                            className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                            className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
+                            disabled={isLoading}
                         >
-                            Login
+                            {isLoading ? (
+                                <div className="flex items-center justify-center">
+                                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                                    Logging in...
+                                </div>
+                            ) : (
+                                'Login'
+                            )}
                         </button>
                     </div>
                 </div>
