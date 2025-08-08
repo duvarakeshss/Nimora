@@ -8,14 +8,35 @@ const ExamCard = ({ exam }) => {
   // Determine the date format
   const formatDate = (dateStr) => {
     try {
+      if (!dateStr) return "Invalid Date";
+      
+      // Handle DD-MM-YY format (expected from backend)
       const [day, month, year] = dateStr.split('-');
-      const date = new Date(`20${year}`, month-1, day);
-      return date.toLocaleDateString('en-US', { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-      });
+      if (day && month && year) {
+        const date = new Date(`20${year}`, month-1, day);
+        if (isNaN(date.getTime())) {
+          return dateStr; // Return original if invalid
+        }
+        return date.toLocaleDateString('en-US', { 
+          weekday: 'long', 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        });
+      }
+      
+      // Try other common formats
+      const date = new Date(dateStr);
+      if (!isNaN(date.getTime())) {
+        return date.toLocaleDateString('en-US', { 
+          weekday: 'long', 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        });
+      }
+      
+      return dateStr; // Return original if parsing fails
     } catch (e) {
       return dateStr; // Return original if parsing fails
     }
@@ -24,10 +45,28 @@ const ExamCard = ({ exam }) => {
   // Calculate days remaining
   const getDaysRemaining = (dateStr) => {
     try {
+      if (!dateStr) return "";
+      
+      let examDate;
+      
+      // Handle DD-MM-YY format (expected from backend)
       const [day, month, year] = dateStr.split('-');
-      const examDate = new Date(`20${year}`, month-1, day);
+      if (day && month && year) {
+        examDate = new Date(`20${year}`, month-1, day);
+        if (isNaN(examDate.getTime())) {
+          return "";
+        }
+      } else {
+        // Try parsing as regular date
+        examDate = new Date(dateStr);
+        if (isNaN(examDate.getTime())) {
+          return "";
+        }
+      }
+      
       const today = new Date();
       today.setHours(0, 0, 0, 0); // Set to beginning of day
+      examDate.setHours(0, 0, 0, 0); // Set to beginning of day
       
       const diffTime = examDate - today;
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -44,10 +83,28 @@ const ExamCard = ({ exam }) => {
   // Get status color based on days remaining
   const getStatusColor = (dateStr) => {
     try {
+      if (!dateStr) return "bg-gray-100 text-gray-800";
+      
+      let examDate;
+      
+      // Handle DD-MM-YY format (expected from backend)
       const [day, month, year] = dateStr.split('-');
-      const examDate = new Date(`20${year}`, month-1, day);
+      if (day && month && year) {
+        examDate = new Date(`20${year}`, month-1, day);
+        if (isNaN(examDate.getTime())) {
+          return "bg-gray-100 text-gray-800";
+        }
+      } else {
+        // Try parsing as regular date
+        examDate = new Date(dateStr);
+        if (isNaN(examDate.getTime())) {
+          return "bg-gray-100 text-gray-800";
+        }
+      }
+      
       const today = new Date();
       today.setHours(0, 0, 0, 0);
+      examDate.setHours(0, 0, 0, 0);
       
       const diffTime = examDate - today;
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
