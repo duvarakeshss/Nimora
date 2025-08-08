@@ -160,7 +160,7 @@ const Timetable = () => {
         const API_URL = import.meta.env.VITE_SERVER_URL ;
         // Decode password from base64
         const decodedPassword = atob(password)
-        const response = await axios.post(`${API_URL}/timetable`, {
+        const response = await axios.post(`${API_URL}/exam-schedule`, {
           rollno: rollNo,
           password: decodedPassword
         })
