@@ -56,15 +56,22 @@ const Feedback = () => {
   }
 
   const handleAutoFeedback = async (feedbackIndex) => {
+    if (!rollNo || !password) {
+      setError('Login credentials not found. Please log in again.')
+      return
+    }
+
     setLoading(true)
     setMessage('')
     setError('')
 
     try {
       const API_URL = import.meta.env.VITE_SERVER_URL ;
+      // Decode password from base64
+      const decodedPassword = atob(password)
       const response = await axios.post(`${API_URL}/auto-feedback`, {
         rollno: rollNo,
-        password: password,
+        password: decodedPassword,
         feedback_index: feedbackIndex
       })
       

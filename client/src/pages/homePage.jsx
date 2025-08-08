@@ -63,17 +63,20 @@ const Home = () => {
         // Only show success toast if this is coming from login page
         const isFromLogin = location.state?.fromLogin || false;
         
+        // Decode password from base64
+        const decodedPassword = atob(password)
+        
         // Get user greeting first to verify credentials
-        const userGreeting = await greetUser(rollNo, password)
+        const userGreeting = await greetUser(rollNo, decodedPassword)
         setGreeting(userGreeting)
 
         // Only fetch attendance data if greeting was successful
         if (userGreeting) {
-        const data = await getStudentAttendance(rollNo, password)
-        setAttendanceData(data)
-
-        // Calculate affordable leaves with default percentage
-        calculateCombinedData(data, customPercentage)
+          const data = await getStudentAttendance(rollNo, decodedPassword)
+          setAttendanceData(data)
+  
+          // Calculate affordable leaves with default percentage
+          calculateCombinedData(data, customPercentage)
           
           // Show success toast after data is loaded if coming from login
           if (isFromLogin && !toastShownRef.current) {

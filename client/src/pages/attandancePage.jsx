@@ -53,7 +53,9 @@ const Attandance = () => {
 
       try {
         setLoading(true)
-        const data = await getStudentAttendance(rollNo, password)
+        // Decode password from base64
+        const decodedPassword = atob(password)
+        const data = await getStudentAttendance(rollNo, decodedPassword)
         setAttendanceData(data)
         calculateCombinedData(data, customPercentage)
         calculateOverallStats(data)

@@ -154,13 +154,15 @@ const Timetable = () => {
   const [message, setMessage] = useState(null)
 
   useEffect(() => {
-    const fetchExamSchedule = async () => {
+    const fetchTimetable = async () => {
       try {
         setLoading(true)
         const API_URL = import.meta.env.VITE_SERVER_URL ;
-        const response = await axios.post(`${API_URL}/exam-schedule`, {
+        // Decode password from base64
+        const decodedPassword = atob(password)
+        const response = await axios.post(`${API_URL}/timetable`, {
           rollno: rollNo,
-          password: password
+          password: decodedPassword
         })
         
         if (response.data.exams && response.data.exams.length > 0) {
@@ -177,7 +179,7 @@ const Timetable = () => {
     }
 
     if (rollNo && password) {
-      fetchExamSchedule()
+      fetchTimetable()
     }
   }, [rollNo, password])
 

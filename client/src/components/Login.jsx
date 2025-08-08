@@ -70,7 +70,9 @@ const Login = () => {
         else{
             // Convert rollNo to lowercase
             const normalizedRollNo = rollNo.toLowerCase()
-            navigate('/Home', { state: { rollNo: normalizedRollNo, password, fromLogin: true } })
+            // Encode password using base64
+            const encodedPassword = btoa(password)
+            navigate('/Home', { state: { rollNo: normalizedRollNo, password: encodedPassword, fromLogin: true } })
         }
         setError('')
     }
@@ -134,7 +136,7 @@ const Login = () => {
                         
                         <div className="flex items-center justify-center text-xs text-gray-500 bg-blue-50 p-2 rounded-md">
                             <Shield className="h-3 w-3 text-blue-500 mr-1" />
-                            <span>Password is encrypted with SHA-256</span>
+                            <span>Password is encrypted</span>
                         </div>
                         
                         {error && <p className="text-red-500 text-sm">{error}</p>}

@@ -119,9 +119,11 @@ const Cgpa = () => {
     const fetchCgpaData = async () => {
       try {
         setLoading(true)
+        // Decode password from base64
+        const decodedPassword = atob(password)
         const response = await axios.post(`${API_URL}/cgpa`, {
           rollno: rollNo,
-          password: password
+          password: decodedPassword
         })
         setCgpaData(response.data)
       } catch (err) {
@@ -141,9 +143,11 @@ const Cgpa = () => {
     try {
       setPredictionLoading(true)
       setError(null) // Clear any previous errors
+      // Decode password from base64
+      const decodedPassword = atob(password)
       const response = await axios.post(`${API_URL}/predict-courses`, {
         rollno: rollNo,
-        password: password
+        password: decodedPassword
       })
       
       // Check if we have courses
