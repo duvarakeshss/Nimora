@@ -70,7 +70,7 @@ const Login = () => {
         else{
             // Convert rollNo to lowercase
             const normalizedRollNo = rollNo.toLowerCase()
-            navigate('/Home', { state: { rollNo: normalizedRollNo, password } })
+            navigate('/Home', { state: { rollNo: normalizedRollNo, password, fromLogin: true } })
         }
         setError('')
     }
