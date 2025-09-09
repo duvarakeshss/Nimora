@@ -70,16 +70,6 @@
 
 ### 🤖 Automation Features
 - **Smart Feedback**: Automated feedback submission for courses
-- **Batch Processing**: Handle multiple feedback forms simultaneously
-- **Error Recovery**: Intelligent retry mechanisms for failed operations
-- **Background Processing**: Non-blocking automation tasks
-
-### 🎨 User Experience
-- **Responsive Design**: Seamless experience across desktop, tablet, and mobile
-- **Dark/Light Mode**: Adaptive theming based on user preference
-- **Intuitive Navigation**: Clean, modern interface with smooth animations
-- **Accessibility**: WCAG compliant design for inclusive access
-
 ---
 
 ## 🛠️ Tech Stack
