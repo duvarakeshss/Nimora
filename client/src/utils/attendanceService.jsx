@@ -45,7 +45,7 @@ export const loginUser = async (rollNo, password) => {
 
   try {
     const result = await apiPost('/login', { rollno: rollNo, password: password });
-    
+
     // Store credentials securely after successful login
     secureStorage.setCredentials(rollNo, password);
     return result;
@@ -69,15 +69,16 @@ export const getStudentAttendance = async (rollNo, password) => {
       rollno: credentials.rollNo,
       password: credentials.password
     });
-    
+
     // Transform API response to format expected by the frontend
     return data.map(item => [
       item.course_code || item[0] || '',              // [0] Course code
       (item.total_classes || item[1] || 0).toString(), // [1] Total classes
       (item.absent || item[2] || 0).toString(),       // [2] Absent
       "0",                                           // [3] OD value (not provided in the API)
-      (item.percentage || item[4] || 0).toString(),   // [4] Attendance percentage
-      (item.present || item[5] || 0).toString()       // [5] Present count
+      (item.present || item[4] || 0).toString(),      // [4] Present
+      (item.percentage || item[5] || 0).toString(),   // [5] Percentage
+      (item.percentage || item[6] || 0).toString()    // [6] Percentage (duplicate for compatibility)
     ]);
   } catch (error) {
     console.error('Attendance fetch error:', error);
@@ -100,13 +101,13 @@ export const greetUser = async (rollNo, password) => {
       rollno: credentials.rollNo,
       password: credentials.password
     });
-    
+
     const username = data.username || rollNo;
     const isBirthday = data.is_birthday || false;
-    
+
     const hour = new Date().getHours();
     let timeGreeting = '';
-    
+
     if (hour < 12) {
       timeGreeting = 'Good Morning';
     } else if (hour < 18) {
@@ -114,7 +115,7 @@ export const greetUser = async (rollNo, password) => {
     } else {
       timeGreeting = 'Good Evening';
     }
-    
+
     if (isBirthday) {
       return `${timeGreeting} & Happy Birthday, ${username}!`;
     } else {
@@ -122,11 +123,11 @@ export const greetUser = async (rollNo, password) => {
     }
   } catch (error) {
     console.error('Error fetching user greeting:', error);
-    
+
     // Fallback to basic greeting with roll number if fetch fails
     const hour = new Date().getHours();
     let greeting = '';
-    
+
     if (hour < 12) {
       greeting = 'Good Morning';
     } else if (hour < 18) {
@@ -134,7 +135,7 @@ export const greetUser = async (rollNo, password) => {
     } else {
       greeting = 'Good Evening';
     }
-    
+
     return `${greeting}, ${rollNo}!`;
   }
 };
