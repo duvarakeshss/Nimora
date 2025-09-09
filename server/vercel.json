@@ -22,5 +22,10 @@
   "env": {
     "PYTHONPATH": ".",
     "PYTHONASYNCIODEBUG": "1"
+  },
+  "functions": {
+    "app.py": {
+      "runtime": "@vercel/python"
+    }
   }
 }

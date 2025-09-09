@@ -27,17 +27,42 @@ class PayloadSecurity:
     @staticmethod
     def decode_payload(encoded_data):
         try:
-            # Remove base64 encoding
-            obfuscated = base64.b64decode(encoded_data).decode('utf-8')
+            # Ensure encoded_data is a string
+            if isinstance(encoded_data, bytes):
+                encoded_data = encoded_data.decode('utf-8')
+            
+            logger.info(f"Decoding payload, length: {len(encoded_data)}")
+            
+            # Remove base64 encoding (first layer)
+            try:
+                obfuscated = base64.b64decode(encoded_data).decode('utf-8')
+                logger.info(f"First decode successful, obfuscated length: {len(obfuscated)}")
+            except Exception as e:
+                logger.error(f"First base64 decode failed: {e}")
+                raise
+            
             # Remove salt and reverse
             salt = 'nimora_secure_payload_2025'
+            if not obfuscated.endswith(salt):
+                logger.error(f"Salt not found at end of obfuscated data")
+                raise ValueError("Invalid salt")
+            
             reversed_data = obfuscated[:-len(salt)][::-1]
-            # Decode base64
-            json_string = base64.b64decode(reversed_data).decode('utf-8')
+            logger.info(f"After salt removal and reverse, length: {len(reversed_data)}")
+            
+            # Decode base64 (second layer)
+            try:
+                json_string = base64.b64decode(reversed_data).decode('utf-8')
+                logger.info(f"Second decode successful, JSON string: {json_string[:50]}...")
+            except Exception as e:
+                logger.error(f"Second base64 decode failed: {e}")
+                raise
+            
             # Parse JSON
             return json.loads(json_string)
         except Exception as e:
             logger.error(f"Error decoding payload: {e}")
+            logger.error(f"Encoded data (first 100 chars): {encoded_data[:100] if encoded_data else 'None'}")
             raise HTTPException(status_code=400, detail="Invalid payload format")
 
 # Environment variables
@@ -142,13 +167,18 @@ class FeedbackRequest(BaseModel):
 @app.post("/login")
 def login(request: dict):
     try:
-        # Decode the encoded payload
-        if 'data' not in request:
-            raise HTTPException(status_code=400, detail="Missing encoded data")
-        
-        decoded_data = PayloadSecurity.decode_payload(request['data'])
-        rollno = decoded_data.get('rollno')
-        password = decoded_data.get('password')
+        # Check if this is the new encoded format or old format
+        if 'data' in request:
+            logger.info("Login using encoded payload format")
+            # Decode the encoded payload
+            decoded_data = PayloadSecurity.decode_payload(request['data'])
+            rollno = decoded_data.get('rollno')
+            password = decoded_data.get('password')
+        else:
+            logger.info("Login using legacy format")
+            # Fallback to old format for backward compatibility
+            rollno = request.get('rollno')
+            password = request.get('password')
         
         if not rollno or not password:
             raise HTTPException(status_code=400, detail="Missing credentials")
@@ -170,15 +200,23 @@ def get_attendance(request: dict):
     Get raw attendance data for a student
     """
     try:
-        # Decode the encoded payload
-        if 'data' not in request:
-            raise HTTPException(status_code=400, detail="Missing encoded data")
+        logger.info(f"Received attendance request: {list(request.keys()) if request else 'None'}")
         
-        decoded_data = PayloadSecurity.decode_payload(request['data'])
-        rollno = decoded_data.get('rollno')
-        password = decoded_data.get('password')
+        # Check if this is the new encoded format or old format
+        if 'data' in request:
+            logger.info("Using encoded payload format")
+            # Decode the encoded payload
+            decoded_data = PayloadSecurity.decode_payload(request['data'])
+            rollno = decoded_data.get('rollno')
+            password = decoded_data.get('password')
+        else:
+            logger.info("Using legacy format")
+            # Fallback to old format for backward compatibility
+            rollno = request.get('rollno')
+            password = request.get('password')
         
         if not rollno or not password:
+            logger.error(f"Missing credentials: rollno={rollno}")
             raise HTTPException(status_code=400, detail="Missing credentials")
         
         session = getHomePageAttendance(rollno, password)
@@ -205,21 +243,26 @@ def get_attendance(request: dict):
         
         return result
     except Exception as e:
-        logger.error(f"Attendance error: {e}")
+        logger.error(f"Attendance error: {str(e)}")
+        logger.error(traceback.format_exc())
         raise HTTPException(status_code=400, detail="Invalid request format")
 
 @app.post("/auto-feedback")
 async def auto_feedback(request: dict, background_tasks: BackgroundTasks):
     """API endpoint to trigger auto-feedback process"""
     try:
-        # Decode the encoded payload
-        if 'data' not in request:
-            raise HTTPException(status_code=400, detail="Missing encoded data")
-        
-        decoded_data = PayloadSecurity.decode_payload(request['data'])
-        rollno = decoded_data.get('rollno')
-        password = decoded_data.get('password')
-        feedback_index = decoded_data.get('feedback_index', 0)
+        # Check if this is the new encoded format or old format
+        if 'data' in request:
+            # Decode the encoded payload
+            decoded_data = PayloadSecurity.decode_payload(request['data'])
+            rollno = decoded_data.get('rollno')
+            password = decoded_data.get('password')
+            feedback_index = decoded_data.get('feedback_index', 0)
+        else:
+            # Fallback to old format for backward compatibility
+            rollno = request.get('rollno')
+            password = request.get('password')
+            feedback_index = request.get('feedback_index', 0)
         
         if not rollno or not password:
             raise HTTPException(status_code=400, detail="Missing credentials")
@@ -237,13 +280,16 @@ def get_cgpa(request: dict):
     Get CGPA and GPA data for a student
     """
     try:
-        # Decode the encoded payload
-        if 'data' not in request:
-            raise HTTPException(status_code=400, detail="Missing encoded data")
-        
-        decoded_data = PayloadSecurity.decode_payload(request['data'])
-        rollno = decoded_data.get('rollno')
-        password = decoded_data.get('password')
+        # Check if this is the new encoded format or old format
+        if 'data' in request:
+            # Decode the encoded payload
+            decoded_data = PayloadSecurity.decode_payload(request['data'])
+            rollno = decoded_data.get('rollno')
+            password = decoded_data.get('password')
+        else:
+            # Fallback to old format for backward compatibility
+            rollno = request.get('rollno')
+            password = request.get('password')
         
         if not rollno or not password:
             raise HTTPException(status_code=400, detail="Missing credentials")
@@ -290,13 +336,16 @@ def get_current_courses(request: dict):
     Get current courses from attendance data for CGPA prediction
     """
     try:
-        # Decode the encoded payload
-        if 'data' not in request:
-            raise HTTPException(status_code=400, detail="Missing encoded data")
-        
-        decoded_data = PayloadSecurity.decode_payload(request['data'])
-        rollno = decoded_data.get('rollno')
-        password = decoded_data.get('password')
+        # Check if this is the new encoded format or old format
+        if 'data' in request:
+            # Decode the encoded payload
+            decoded_data = PayloadSecurity.decode_payload(request['data'])
+            rollno = decoded_data.get('rollno')
+            password = decoded_data.get('password')
+        else:
+            # Fallback to old format for backward compatibility
+            rollno = request.get('rollno')
+            password = request.get('password')
         
         if not rollno or not password:
             raise HTTPException(status_code=400, detail="Missing credentials")
@@ -367,13 +416,16 @@ def diagnose_cgpa(request: dict):
     Diagnostic endpoint to troubleshoot CGPA calculation issues
     """
     try:
-        # Decode the encoded payload
-        if 'data' not in request:
-            raise HTTPException(status_code=400, detail="Missing encoded data")
-        
-        decoded_data = PayloadSecurity.decode_payload(request['data'])
-        rollno = decoded_data.get('rollno')
-        password = decoded_data.get('password')
+        # Check if this is the new encoded format or old format
+        if 'data' in request:
+            # Decode the encoded payload
+            decoded_data = PayloadSecurity.decode_payload(request['data'])
+            rollno = decoded_data.get('rollno')
+            password = decoded_data.get('password')
+        else:
+            # Fallback to old format for backward compatibility
+            rollno = request.get('rollno')
+            password = request.get('password')
         
         if not rollno or not password:
             raise HTTPException(status_code=400, detail="Missing credentials")
@@ -415,13 +467,16 @@ def get_exam_schedule(request: dict):
     Get the exam schedule for the student
     """
     try:
-        # Decode the encoded payload
-        if 'data' not in request:
-            raise HTTPException(status_code=400, detail="Missing encoded data")
-        
-        decoded_data = PayloadSecurity.decode_payload(request['data'])
-        rollno = decoded_data.get('rollno')
-        password = decoded_data.get('password')
+        # Check if this is the new encoded format or old format
+        if 'data' in request:
+            # Decode the encoded payload
+            decoded_data = PayloadSecurity.decode_payload(request['data'])
+            rollno = decoded_data.get('rollno')
+            password = decoded_data.get('password')
+        else:
+            # Fallback to old format for backward compatibility
+            rollno = request.get('rollno')
+            password = request.get('password')
         
         if not rollno or not password:
             raise HTTPException(status_code=400, detail="Missing credentials")
@@ -460,15 +515,23 @@ def get_user_info(request: dict):
     Get user information for personalized greetings
     """
     try:
-        # Decode the encoded payload
-        if 'data' not in request:
-            raise HTTPException(status_code=400, detail="Missing encoded data")
+        logger.info(f"Received user-info request: {list(request.keys()) if request else 'None'}")
         
-        decoded_data = PayloadSecurity.decode_payload(request['data'])
-        rollno = decoded_data.get('rollno')
-        password = decoded_data.get('password')
+        # Check if this is the new encoded format or old format
+        if 'data' in request:
+            logger.info("User-info using encoded payload format")
+            # Decode the encoded payload
+            decoded_data = PayloadSecurity.decode_payload(request['data'])
+            rollno = decoded_data.get('rollno')
+            password = decoded_data.get('password')
+        else:
+            logger.info("User-info using legacy format")
+            # Fallback to old format for backward compatibility
+            rollno = request.get('rollno')
+            password = request.get('password')
         
         if not rollno or not password:
+            logger.error(f"Missing credentials in user-info: rollno={rollno}")
             raise HTTPException(status_code=400, detail="Missing credentials")
         
         logger.info(f"User info request for {rollno}")
@@ -550,5 +613,7 @@ def get_user_info(request: dict):
         logger.error(f"User info error: {str(e)}")
         logger.error(traceback.format_exc())
         # Return default response on error instead of raising exception
-        return {"username": rollno, "is_birthday": False}
+        # Use rollno if available, otherwise use a default
+        username = locals().get('rollno', 'User')
+        return {"username": username, "is_birthday": False}
 
