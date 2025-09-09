@@ -7,10 +7,23 @@ from selenium.common.exceptions import StaleElementReferenceException
 from webdriver_manager.chrome import ChromeDriverManager
 from random import randint
 from fastapi import HTTPException
+import logging
+import os
+
+logger = logging.getLogger("nimora-feedback")
+
+# Check if feedback feature is disabled
+FEEDBACK_DISABLED = os.environ.get("DISABLE_FEEDBACK", "false").lower() == "true"
 
 
 def create_driver():
     """Set up and create a Chrome WebDriver instance"""
+    if FEEDBACK_DISABLED:
+        raise HTTPException(
+            status_code=503, 
+            detail="Feedback automation is currently disabled. Please try again later or contact support."
+        )
+    
     options = webdriver.ChromeOptions()
     # Use headless mode
     options.add_argument("--headless=new")
@@ -18,12 +31,66 @@ def create_driver():
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--window-size=1920,1080")
     options.add_argument("--disable-gpu")
+    options.add_argument("--disable-extensions")
+    options.add_argument("--disable-plugins")
+    options.add_argument("--disable-images")
+    options.add_argument("--disable-javascript")
+    options.add_argument("--disable-plugins-discovery")
+    options.add_argument("--disable-background-timer-throttling")
+    options.add_argument("--disable-backgrounding-occluded-windows")
+    options.add_argument("--disable-renderer-backgrounding")
+    options.add_argument("--disable-features=VizDisplayCompositor")
+    options.add_argument("--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36")
     
-    # Use webdriver-manager to handle ChromeDriver installation
-    service = Service(ChromeDriverManager().install())
-    driver = webdriver.Chrome(service=service, options=options)
+    # Set binary location if available
+    options.binary_location = "/usr/bin/google-chrome" if os.path.exists("/usr/bin/google-chrome") else None
     
-    return driver
+    # Try different approaches for ChromeDriver in serverless environment
+    try:
+        # First, try to use system-installed ChromeDriver
+        import shutil
+        chromedriver_path = shutil.which("chromedriver")
+        if chromedriver_path:
+            service = Service(chromedriver_path)
+            driver = webdriver.Chrome(service=service, options=options)
+            return driver
+    except Exception as e:
+        logger.warning(f"System ChromeDriver failed: {e}")
+    
+    try:
+        # Second, try WebDriver Manager with custom path if possible
+        import tempfile
+        import os
+        
+        # Try to use /tmp directory if available (common in serverless)
+        cache_dir = "/tmp" if os.path.exists("/tmp") else None
+        
+        if cache_dir:
+            from webdriver_manager.core.os_manager import ChromeType
+            from webdriver_manager.core.download_manager import WDMDownloadManager
+            
+            # Configure WebDriver Manager to use /tmp
+            manager = ChromeDriverManager(
+                download_manager=WDMDownloadManager(cache_directory=cache_dir),
+                chrome_type=ChromeType.GOOGLE
+            )
+            service = Service(manager.install())
+            driver = webdriver.Chrome(service=service, options=options)
+            return driver
+    except Exception as e:
+        logger.warning(f"WebDriver Manager with custom cache failed: {e}")
+    
+    try:
+        # Third, try WebDriver Manager with default settings (may work in some environments)
+        service = Service(ChromeDriverManager().install())
+        driver = webdriver.Chrome(service=service, options=options)
+        return driver
+    except Exception as e:
+        logger.error(f"All ChromeDriver installation methods failed: {e}")
+        raise HTTPException(
+            status_code=500, 
+            detail="ChromeDriver setup failed. This feature requires a compatible server environment with ChromeDriver support."
+        )
 
 
 def intermediate_feedback(browser):
@@ -99,11 +166,19 @@ def endsem_feedback(browser):
 
 async def auto_feedback_task(index, rollno, password):
     """Background task to complete feedback forms"""
-    # Create a webdriver
-    browser = create_driver()
-    wait = WebDriverWait(browser, 10)
+    if FEEDBACK_DISABLED:
+        logger.warning("Feedback automation is disabled")
+        raise HTTPException(
+            status_code=503, 
+            detail="Feedback automation is currently disabled. Please try again later or contact support."
+        )
     
+    browser = None
     try:
+        # Create a webdriver with error handling
+        browser = create_driver()
+        wait = WebDriverWait(browser, 10)
+        
         browser.get("https://ecampus.psgtech.ac.in/studzone")
         
         # Fill out the credentials
@@ -136,6 +211,16 @@ async def auto_feedback_task(index, rollno, password):
             return intermediate_feedback(browser)
             
     except Exception as e:
+        logger.error(f"Error in feedback automation: {str(e)}")
         if browser:
-            browser.quit()
+            try:
+                browser.quit()
+            except:
+                pass
         raise HTTPException(status_code=500, detail=f"Error in feedback automation: {str(e)}")
+    finally:
+        if browser:
+            try:
+                browser.quit()
+            except:
+                pass
