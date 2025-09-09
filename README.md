@@ -1,6 +1,7 @@
-# 🎓 NIMORA - Smart Student Portal
+
 
 <div align="center">
+# 🎓 NIMORA - Smart Student Portal
 
 ![Nimora Logo](client/public/nimora-logo.svg)
 
