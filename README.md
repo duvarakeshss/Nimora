@@ -1,7 +1,7 @@
 
-
+# 🎓 NIMORA
 <div align="center">
-#🎓 NIMORA
+
 
 ![Nimora Logo](client/public/nimora-logo.svg)
 
