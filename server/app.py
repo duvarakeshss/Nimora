@@ -42,7 +42,7 @@ class PayloadSecurity:
                 raise
             
             # Remove salt and reverse
-            salt = 'nimora_secure_payload_2025'
+            salt = PAYLOAD_SALT
             if not obfuscated.endswith(salt):
                 logger.error(f"Salt not found at end of obfuscated data")
                 raise ValueError("Invalid salt")
@@ -68,6 +68,9 @@ class PayloadSecurity:
 # Environment variables
 DEPLOYMENT_ENV = os.environ.get("VERCEL_ENV", "development")
 IS_VERCEL = DEPLOYMENT_ENV != "development"
+
+# Security configuration
+PAYLOAD_SALT = os.environ.get("PAYLOAD_SALT", "nimora_secure_payload_2025")  # Default for development
 
 app = FastAPI()
 

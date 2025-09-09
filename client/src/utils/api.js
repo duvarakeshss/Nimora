@@ -6,6 +6,9 @@ const API_BASE_URL = import.meta.env.PROD
   ? import.meta.env.VITE_SERVER_URL
   : '/api';
 
+// Get salt from environment variable with fallback
+const PAYLOAD_SALT = import.meta.env.VITE_PAYLOAD_SALT || 'nimora_secure_payload_2025';
+
 // Simple encoding/decoding utility for payload security
 const payloadSecurity = {
   // Encode payload data
@@ -16,8 +19,7 @@ const payloadSecurity = {
       // Base64 encode
       const encoded = btoa(jsonString);
       // Add simple obfuscation (reverse and add salt)
-      const salt = 'nimora_secure_payload_2025';
-      const obfuscated = encoded.split('').reverse().join('') + salt;
+      const obfuscated = encoded.split('').reverse().join('') + PAYLOAD_SALT;
       return btoa(obfuscated);
     } catch (error) {
       console.error('Error encoding payload:', error);
@@ -31,8 +33,7 @@ const payloadSecurity = {
       // Remove base64 encoding
       const obfuscated = atob(encodedData);
       // Remove salt and reverse
-      const salt = 'nimora_secure_payload_2025';
-      const reversed = obfuscated.slice(0, -salt.length).split('').reverse().join('');
+      const reversed = obfuscated.slice(0, -PAYLOAD_SALT.length).split('').reverse().join('');
       // Decode base64
       const jsonString = atob(reversed);
       // Parse JSON
