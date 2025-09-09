@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { getStudentAttendance, greetUser } from '../utils/attendanceService'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import Footer from '../components/Footer'
 
 const Home = () => {
   const location = useLocation()
@@ -467,6 +468,7 @@ const Home = () => {
           )}
         </>
       )}
+      <Footer />
     </>
   )
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { getStudentAttendance } from '../utils/attendanceService'
 import { BarChart3, Calendar, CheckCircle, XCircle, AlertTriangle } from 'lucide-react'
+import Footer from '../components/Footer'
 
 const Attandance = () => {
   const location = useLocation()
@@ -676,6 +677,7 @@ const Attandance = () => {
           </div>
         </div>
       )}
+      <Footer />
     </>
   )
 }

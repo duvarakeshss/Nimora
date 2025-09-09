@@ -85,64 +85,73 @@ const Login = () => {
     }
 
     return (
-        <div className="flex flex-col min-h-screen">
-            <div className="flex-grow flex items-center justify-center bg-gradient-to-r from-slate-400 to-stone-100">
-                <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md transition-shadow duration-300 hover:shadow-xl mx-4 login-container">
-                    <div className="text-center mb-6">
-                        <h1 className="text-2xl font-bold text-blue-700">
-                            Student Login
-                        </h1>
+        <div className="relative min-h-screen flex items-center justify-center bg-[#111418] text-white">
+            <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuBmthQzGCvaiD9b2_Evv3ffGwgO48Tmsz7ugSLIsvL9r3NBZUTV4qN615RiPaWay0VknPl_Q0gD3kQOxRU4vgLJFL-7i_tRS_QImCmCiWu-Q3uIikovSr1K2haRBTF1FinTNeHYmD8-di4Zi4-f3_anrM6wFTJZYkX_zxyBidpx9Q0isTNOsNpAr_o9x9yj-1O1kHKSPfLDvIkHAAVcSHfWcRvb2W0e6kEF5ucWpIVwGZXsDEzw991Q3XUjtEzNFB_9x72LYli-E4o')"}}>
+                <div className="absolute inset-0 bg-slate-900/85"></div>
+            </div>
+            <div className="relative z-10 w-full max-w-md p-8 space-y-8 bg-[#1a202c]/80 backdrop-blur-sm rounded-2xl shadow-2xl">
+                <div className="text-center">
+                    <h1 className="text-4xl font-bold tracking-tight text-white">
+                        Nimora
+                    </h1>
+                    <p className="mt-2 text-lg text-gray-300">Track Your Attendance</p>
+                </div>
+                <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); handleLogin(); }}>
+                    <div>
+                        <label className="sr-only" htmlFor="roll-no">Roll No</label>
+                        <input
+                            className="form-input block w-full appearance-none rounded-lg border-2 border-[#2d3748] bg-[#2d3748] px-4 py-3.5 text-white placeholder-gray-400 shadow-sm focus:border-[#1173d4] focus:ring-0"
+                            id="roll-no"
+                            name="roll-no"
+                            placeholder="Roll No"
+                            required
+                            type="text"
+                            value={rollNo}
+                            onChange={(e) => setRollNo(e.target.value)}
+                            onKeyDown={handleKeyDown}
+                            onFocus={handleInputFocus}
+                            onBlur={handleInputBlur}
+                            disabled={isLoading}
+                        />
                     </div>
-                    <div className="space-y-6">
-                        <div className="flex items-center border-b border-gray-300 py-2 transition-all duration-300 hover:border-blue-500 group">
-                            <User className="text-gray-500 mr-2 group-hover:text-blue-500 transition-colors duration-300" />
-                            <input
-                                type="text"
-                                placeholder="Roll No"
-                                value={rollNo}
-                                onChange={(e) => setRollNo(e.target.value)}
-                                onKeyDown={handleKeyDown}
-                                onFocus={handleInputFocus}
-                                onBlur={handleInputBlur}
-                                className="flex-grow focus:outline-none"
-                                disabled={isLoading}
+                    <div className="relative">
+                        <label className="sr-only" htmlFor="password">Password</label>
+                        <input
+                            className="form-input block w-full appearance-none rounded-lg border-2 border-[#2d3748] bg-[#2d3748] px-4 py-3.5 text-white placeholder-gray-400 shadow-sm focus:border-[#1173d4] focus:ring-0 pr-12"
+                            id="password"
+                            name="password"
+                            placeholder="Password"
+                            required
+                            type={showPassword ? 'text' : 'password'}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            onKeyDown={handleKeyDown}
+                            onFocus={handleInputFocus}
+                            onBlur={handleInputBlur}
+                            disabled={isLoading}
+                        />
+                        {showPassword ? (
+                            <EyeOff 
+                                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer hover:text-white transition-colors duration-300" 
+                                onClick={() => setShowPassword(!showPassword)} 
                             />
-                        </div>
-                        <div className="flex items-center border-b border-gray-300 py-2 transition-all duration-300 hover:border-blue-500 group">
-                            <Lock className="text-gray-500 mr-2 group-hover:text-blue-500 transition-colors duration-300" />
-                            <input
-                                type={showPassword ? 'text' : 'password'}
-                                placeholder="Password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                onKeyDown={handleKeyDown}
-                                onFocus={handleInputFocus}
-                                onBlur={handleInputBlur}
-                                className="flex-grow focus:outline-none"
-                                disabled={isLoading}
+                        ) : (
+                            <Eye 
+                                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer hover:text-white transition-colors duration-300" 
+                                onClick={() => setShowPassword(!showPassword)} 
                             />
-                            {showPassword ? (
-                                <EyeOff 
-                                    className="text-gray-500 cursor-pointer hover:text-blue-500 transition-colors duration-300" 
-                                    onClick={() => setShowPassword(!showPassword)} 
-                                />
-                            ) : (
-                                <Eye 
-                                    className="text-gray-500 cursor-pointer hover:text-blue-500 transition-colors duration-300" 
-                                    onClick={() => setShowPassword(!showPassword)} 
-                                />
-                            )}
-                        </div>
-                        
-                        <div className="flex items-center justify-center text-xs text-gray-500 bg-blue-50 p-2 rounded-md">
-                            <Shield className="h-3 w-3 text-blue-500 mr-1" />
-                            <span>Password is encrypted</span>
-                        </div>
-                        
-                        {error && <p className="text-red-500 text-sm">{error}</p>}
+                        )}
+                    </div>
+                    
+                    <div className="flex items-center justify-center text-xs text-gray-400 bg-blue-900/30 p-2 rounded-md border border-blue-800/50">
+                        <Shield className="h-3 w-3 text-blue-400 mr-1" />
+                        <span>Password is encrypted</span>
+                    </div>
+                    
+                    <div>
                         <button 
-                            onClick={handleLogin}
-                            className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
+                            className="flex w-full justify-center rounded-lg bg-[#1173d4] px-4 py-3.5 text-base font-semibold leading-6 text-white shadow-sm hover:bg-gradient-to-r hover:from-[#1173d4] hover:to-[#0f6ac0] hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1173d4] transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
+                            type="submit"
                             disabled={isLoading}
                         >
                             {isLoading ? (
@@ -155,9 +164,18 @@ const Login = () => {
                             )}
                         </button>
                     </div>
+                </form>
+                {error && <p className="text-red-400 text-sm text-center">{error}</p>}
+            </div>
+            
+            {/* Bottom Bar */}
+            <div className="absolute bottom-0 left-0 right-0 bg-black/50 backdrop-blur-sm border-t border-gray-700/50">
+                <div className="max-w-md mx-auto px-8 py-4">
+                    <p className="text-center text-gray-400 text-sm">
+                        © 2025 Nimora. All rights reserved.
+                    </p>
                 </div>
             </div>
-            <Footer />
         </div>
     )
 }
