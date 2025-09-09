@@ -1,11 +1,11 @@
 
 
 <div align="center">
-# 🎓 NIMORA - Smart Student Portal
+#🎓 NIMORA
 
 ![Nimora Logo](client/public/nimora-logo.svg)
 
-**A comprehensive student management system built with modern web technologies**
+**A student management system built with modern web technologies**
 
 [![React](https://img.shields.io/badge/React-18.2.0-61DAFB?style=flat-square&logo=react)](https://reactjs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.104.1-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com/)
