@@ -1,7 +1,10 @@
 // API utility for secure backend communication
 // This file centralizes all API calls and uses the proxy to hide backend URLs
 
-const API_BASE_URL = '/api';
+// Use full backend URL in production, proxy path in development
+const API_BASE_URL = import.meta.env.PROD
+  ? import.meta.env.VITE_SERVER_URL
+  : '/api';
 
 // Simple encoding/decoding utility for payload security
 const payloadSecurity = {
