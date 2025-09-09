@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
-import axios from 'axios'
+import { apiPost } from '../utils/api.js'
 
 const Feedback = () => {
   const location = useLocation()
@@ -66,17 +66,15 @@ const Feedback = () => {
     setError('')
 
     try {
-      // Use proxy path to hide backend server URL
-      const API_URL = '/api';
       // Decode password from base64
       const decodedPassword = atob(password)
-      const response = await axios.post(`${API_URL}/auto-feedback`, {
+      const response = await apiPost('/auto-feedback', {
         rollno: rollNo,
         password: decodedPassword,
         feedback_index: feedbackIndex
       })
       
-      setMessage(response.data.message || 'Feedback automation started successfully!')
+      setMessage(response.message || 'Feedback automation started successfully!')
     } catch (err) {
       setError(err.response?.data?.detail || 'An error occurred while starting the feedback automation')
       console.error('Error:', err)

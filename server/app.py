@@ -7,6 +7,8 @@ import pandas as pd
 import os
 import traceback
 import logging
+import base64
+import json
 from fastapi import FastAPI, HTTPException, BackgroundTasks, Request
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
@@ -19,6 +21,24 @@ from bs4 import BeautifulSoup
 # Setup logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("nimora-api")
+
+# Payload security utilities
+class PayloadSecurity:
+    @staticmethod
+    def decode_payload(encoded_data):
+        try:
+            # Remove base64 encoding
+            obfuscated = base64.b64decode(encoded_data).decode('utf-8')
+            # Remove salt and reverse
+            salt = 'nimora_secure_payload_2025'
+            reversed_data = obfuscated[:-len(salt)][::-1]
+            # Decode base64
+            json_string = base64.b64decode(reversed_data).decode('utf-8')
+            # Parse JSON
+            return json.loads(json_string)
+        except Exception as e:
+            logger.error(f"Error decoding payload: {e}")
+            raise HTTPException(status_code=400, detail="Invalid payload format")
 
 # Environment variables
 DEPLOYMENT_ENV = os.environ.get("VERCEL_ENV", "development")
@@ -120,59 +140,116 @@ class FeedbackRequest(BaseModel):
 
 
 @app.post("/login")
-def login(credentials: UserCredentials):
-    session = getHomePageAttendance(credentials.rollno, credentials.password)
-    if not session:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-    data = getStudentAttendance(session)
-    atten = getAffordableLeaves(data, 70)
-    # Convert DataFrame to dict for JSON serialization
-    return atten.to_dict(orient='records')
+def login(request: dict):
+    try:
+        # Decode the encoded payload
+        if 'data' not in request:
+            raise HTTPException(status_code=400, detail="Missing encoded data")
+        
+        decoded_data = PayloadSecurity.decode_payload(request['data'])
+        rollno = decoded_data.get('rollno')
+        password = decoded_data.get('password')
+        
+        if not rollno or not password:
+            raise HTTPException(status_code=400, detail="Missing credentials")
+        
+        session = getHomePageAttendance(rollno, password)
+        if not session:
+            raise HTTPException(status_code=401, detail="Invalid credentials")
+        data = getStudentAttendance(session)
+        atten = getAffordableLeaves(data, 70)
+        # Convert DataFrame to dict for JSON serialization
+        return atten.to_dict(orient='records')
+    except Exception as e:
+        logger.error(f"Login error: {e}")
+        raise HTTPException(status_code=400, detail="Invalid request format")
 
 @app.post("/attendance")
-def get_attendance(credentials: UserCredentials):
+def get_attendance(request: dict):
     """
     Get raw attendance data for a student
     """
-    session = getHomePageAttendance(credentials.rollno, credentials.password)
-    if not session:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-    
-    # Get the attendance data
-    data = getStudentAttendance(session)
-    
-    # Convert the list of lists to a list of dictionaries for better JSON representation
-    result = []
-    for row in data:
-        total_classes = int(row[1])
-        present = int(row[4])
-        # Correctly calculate absent as total_classes minus present
-        absent = total_classes - present
-        result.append({
-            "course_code": row[0],
-            "total_classes": total_classes,
-            "present": present,
-            "absent": absent,
-            "percentage": row[6]
-        })
-    
-    return result
+    try:
+        # Decode the encoded payload
+        if 'data' not in request:
+            raise HTTPException(status_code=400, detail="Missing encoded data")
+        
+        decoded_data = PayloadSecurity.decode_payload(request['data'])
+        rollno = decoded_data.get('rollno')
+        password = decoded_data.get('password')
+        
+        if not rollno or not password:
+            raise HTTPException(status_code=400, detail="Missing credentials")
+        
+        session = getHomePageAttendance(rollno, password)
+        if not session:
+            raise HTTPException(status_code=401, detail="Invalid credentials")
+        
+        # Get the attendance data
+        data = getStudentAttendance(session)
+        
+        # Convert the list of lists to a list of dictionaries for better JSON representation
+        result = []
+        for row in data:
+            total_classes = int(row[1])
+            present = int(row[4])
+            # Correctly calculate absent as total_classes minus present
+            absent = total_classes - present
+            result.append({
+                "course_code": row[0],
+                "total_classes": total_classes,
+                "present": present,
+                "absent": absent,
+                "percentage": row[6]
+            })
+        
+        return result
+    except Exception as e:
+        logger.error(f"Attendance error: {e}")
+        raise HTTPException(status_code=400, detail="Invalid request format")
 
 @app.post("/auto-feedback")
-async def auto_feedback(request: FeedbackRequest, background_tasks: BackgroundTasks):
+async def auto_feedback(request: dict, background_tasks: BackgroundTasks):
     """API endpoint to trigger auto-feedback process"""
-    # Start feedback task in the background
-    background_tasks.add_task(auto_feedback_task, request.feedback_index, request.rollno, request.password)
-    return {"status": "started", "message": "Feedback automation started in background"}
+    try:
+        # Decode the encoded payload
+        if 'data' not in request:
+            raise HTTPException(status_code=400, detail="Missing encoded data")
+        
+        decoded_data = PayloadSecurity.decode_payload(request['data'])
+        rollno = decoded_data.get('rollno')
+        password = decoded_data.get('password')
+        feedback_index = decoded_data.get('feedback_index', 0)
+        
+        if not rollno or not password:
+            raise HTTPException(status_code=400, detail="Missing credentials")
+        
+        # Start feedback task in the background
+        background_tasks.add_task(auto_feedback_task, feedback_index, rollno, password)
+        return {"status": "started", "message": "Feedback automation started in background"}
+    except Exception as e:
+        logger.error(f"Auto-feedback error: {e}")
+        raise HTTPException(status_code=400, detail="Invalid request format")
 
 @app.post("/cgpa")
-def get_cgpa(credentials: UserCredentials):
+def get_cgpa(request: dict):
     """
     Get CGPA and GPA data for a student
     """
     try:
-        logger.info(f"CGPA request for {credentials.rollno}")
-        session = getHomePageAttendance(credentials.rollno, credentials.password)
+        # Decode the encoded payload
+        if 'data' not in request:
+            raise HTTPException(status_code=400, detail="Missing encoded data")
+        
+        decoded_data = PayloadSecurity.decode_payload(request['data'])
+        rollno = decoded_data.get('rollno')
+        password = decoded_data.get('password')
+        
+        if not rollno or not password:
+            raise HTTPException(status_code=400, detail="Missing credentials")
+        
+        logger.info(f"CGPA request for {rollno}")
+        session = getHomePageAttendance(rollno, password)
         if not session:
             raise HTTPException(status_code=401, detail="Invalid credentials")
         
@@ -191,7 +268,7 @@ def get_cgpa(credentials: UserCredentials):
             if he.status_code == 404 and ("No completed courses found" in he.detail or 
                                           "Could not find completed courses data" in he.detail):
                 # Return empty array for new students
-                logger.info(f"No CGPA data for {credentials.rollno} (new student)")
+                logger.info(f"No CGPA data for {rollno} (new student)")
                 return []
             # Re-raise other HTTP exceptions
             logger.error(f"CGPA HTTP error: {he.detail}")
@@ -208,12 +285,23 @@ def get_cgpa(credentials: UserCredentials):
                            detail=f"Error calculating CGPA. Please try again or contact support if the issue persists.")
 
 @app.post("/predict-courses")
-def get_current_courses(credentials: UserCredentials):
+def get_current_courses(request: dict):
     """
     Get current courses from attendance data for CGPA prediction
     """
     try:
-        session = getHomePageAttendance(credentials.rollno, credentials.password)
+        # Decode the encoded payload
+        if 'data' not in request:
+            raise HTTPException(status_code=400, detail="Missing encoded data")
+        
+        decoded_data = PayloadSecurity.decode_payload(request['data'])
+        rollno = decoded_data.get('rollno')
+        password = decoded_data.get('password')
+        
+        if not rollno or not password:
+            raise HTTPException(status_code=400, detail="Missing credentials")
+        
+        session = getHomePageAttendance(rollno, password)
         if not session:
             raise HTTPException(status_code=401, detail="Invalid credentials")
         
@@ -274,12 +362,23 @@ def get_current_courses(credentials: UserCredentials):
         raise HTTPException(status_code=500, detail=f"Error getting current courses: {str(e)}")
 
 @app.post("/diagnose-cgpa")
-def diagnose_cgpa(credentials: UserCredentials):
+def diagnose_cgpa(request: dict):
     """
     Diagnostic endpoint to troubleshoot CGPA calculation issues
     """
     try:
-        session = getHomePageAttendance(credentials.rollno, credentials.password)
+        # Decode the encoded payload
+        if 'data' not in request:
+            raise HTTPException(status_code=400, detail="Missing encoded data")
+        
+        decoded_data = PayloadSecurity.decode_payload(request['data'])
+        rollno = decoded_data.get('rollno')
+        password = decoded_data.get('password')
+        
+        if not rollno or not password:
+            raise HTTPException(status_code=400, detail="Missing credentials")
+        
+        session = getHomePageAttendance(rollno, password)
         if not session:
             raise HTTPException(status_code=401, detail="Invalid credentials")
         
@@ -311,13 +410,24 @@ def diagnose_cgpa(credentials: UserCredentials):
         raise HTTPException(status_code=500, detail=f"Diagnostic error: {str(e)}")
 
 @app.post("/exam-schedule")
-def get_exam_schedule(credentials: UserCredentials):
+def get_exam_schedule(request: dict):
     """
     Get the exam schedule for the student
     """
     try:
-        logger.info(f"Exam schedule request for {credentials.rollno}")
-        session = getHomePageAttendance(credentials.rollno, credentials.password)
+        # Decode the encoded payload
+        if 'data' not in request:
+            raise HTTPException(status_code=400, detail="Missing encoded data")
+        
+        decoded_data = PayloadSecurity.decode_payload(request['data'])
+        rollno = decoded_data.get('rollno')
+        password = decoded_data.get('password')
+        
+        if not rollno or not password:
+            raise HTTPException(status_code=400, detail="Missing credentials")
+        
+        logger.info(f"Exam schedule request for {rollno}")
+        session = getHomePageAttendance(rollno, password)
         if not session:
             raise HTTPException(status_code=401, detail="Invalid credentials")
         
@@ -328,14 +438,14 @@ def get_exam_schedule(credentials: UserCredentials):
         if isinstance(schedule, pd.DataFrame):
             # Check if it's empty
             if schedule.empty:
-                logger.info(f"No exam schedule for {credentials.rollno}")
+                logger.info(f"No exam schedule for {rollno}")
                 return {"exams": [], "message": "No upcoming exams found."}
             else:
                 # Convert DataFrame to dict for JSON serialization
                 return {"exams": schedule.to_dict(orient='records')}
         else:
             # Handle non-DataFrame return (like empty list)
-            logger.info(f"Non-DataFrame exam schedule for {credentials.rollno}")
+            logger.info(f"Non-DataFrame exam schedule for {rollno}")
             return {"exams": [], "message": "No upcoming exams found."}
         
     except Exception as e:
@@ -345,18 +455,29 @@ def get_exam_schedule(credentials: UserCredentials):
                           detail=f"Error retrieving exam schedule. Please try again or contact support if the issue persists.")
 
 @app.post("/user-info")
-def get_user_info(credentials: UserCredentials):
+def get_user_info(request: dict):
     """
     Get user information for personalized greetings
     """
     try:
-        logger.info(f"User info request for {credentials.rollno}")
-        session = getHomePageAttendance(credentials.rollno, credentials.password)
+        # Decode the encoded payload
+        if 'data' not in request:
+            raise HTTPException(status_code=400, detail="Missing encoded data")
+        
+        decoded_data = PayloadSecurity.decode_payload(request['data'])
+        rollno = decoded_data.get('rollno')
+        password = decoded_data.get('password')
+        
+        if not rollno or not password:
+            raise HTTPException(status_code=400, detail="Missing credentials")
+        
+        logger.info(f"User info request for {rollno}")
+        session = getHomePageAttendance(rollno, password)
         if not session:
             raise HTTPException(status_code=401, detail="Invalid credentials")
         
         # Initialize default response
-        default_response = {"username": credentials.rollno, "is_birthday": False}
+        default_response = {"username": rollno, "is_birthday": False}
         
         # Try multiple pages to get user info
         pages_to_try = [
@@ -405,7 +526,7 @@ def get_user_info(credentials: UserCredentials):
                                 logger.error(f"Error parsing birthdate: {str(e)}")
                 
                 # Check if we're on the profile page
-                elif "Profile" in page_url and default_response["username"] == credentials.rollno:
+                elif "Profile" in page_url and default_response["username"] == rollno:
                     # Try to find username in profile page if we couldn't from scholarship page
                     name_element = page_soup.find("input", {"id": "txtName"})
                     if name_element and name_element.has_attr("value"):
@@ -415,7 +536,7 @@ def get_user_info(credentials: UserCredentials):
                             logger.info(f"Found username from profile page: {username}")
                 
                 # If we got a username that's not the roll number, we can stop
-                if default_response["username"] != credentials.rollno:
+                if default_response["username"] != rollno:
                     logger.info(f"Successfully extracted user info")
                     break
                     
@@ -429,5 +550,5 @@ def get_user_info(credentials: UserCredentials):
         logger.error(f"User info error: {str(e)}")
         logger.error(traceback.format_exc())
         # Return default response on error instead of raising exception
-        return {"username": credentials.rollno, "is_birthday": False}
+        return {"username": rollno, "is_birthday": False}
 

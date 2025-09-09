@@ -1,5 +1,5 @@
-// Use proxy path to hide backend server URL
-const API_URL = '/api';
+// Import API utilities for secure payload handling
+import { apiPost } from './api.js';
 
 // Secure storage utilities
 const secureStorage = {
@@ -44,33 +44,11 @@ export const loginUser = async (rollNo, password) => {
   enforceHTTPS();
 
   try {
-    const response = await fetch(`${API_URL}/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ rollno: rollNo, password: password }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(errorText || response.statusText);
-    }
-
-    const responseText = await response.text();
-
-    if (!responseText.trim()) {
-      throw new Error('Empty response received from server');
-    }
-
-    try {
-      const result = JSON.parse(responseText);
-      // Store credentials securely after successful login
-      secureStorage.setCredentials(rollNo, password);
-      return result;
-    } catch (parseError) {
-      throw new Error('Invalid response format from server');
-    }
+    const result = await apiPost('/login', { rollno: rollNo, password: password });
+    
+    // Store credentials securely after successful login
+    secureStorage.setCredentials(rollNo, password);
+    return result;
   } catch (error) {
     throw error;
   }
@@ -87,45 +65,20 @@ export const getStudentAttendance = async (rollNo, password) => {
   }
 
   try {
-    const response = await fetch(`${API_URL}/attendance`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        rollno: credentials.rollNo,
-        password: credentials.password
-      }),
+    const data = await apiPost('/attendance', {
+      rollno: credentials.rollNo,
+      password: credentials.password
     });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(errorText || response.statusText);
-    }
-
-    const responseText = await response.text();
-
-    if (!responseText.trim()) {
-      throw new Error('Empty response received from server');
-    }
-
-    try {
-      const data = JSON.parse(responseText);
-      
-      // Transform API response to format expected by the frontend
-      return data.map(item => [
-        item.course_code,               // [0] Course code
-        item.total_classes.toString(),  // [1] Total classes
-        item.absent.toString(),         // [2] Absent
-        "0",                            // [3] OD value (not provided in the API)
-        item.present.toString(),        // [4] Present
-        item.percentage.toString(),     // [5] Percentage
-        item.percentage.toString()      // [6] Percentage (duplicate for compatibility)
-      ]);
-    } catch (parseError) {
-      console.error('JSON parse error:', parseError);
-      throw new Error('Invalid JSON response from server');
-    }
+    
+    // Transform API response to format expected by the frontend
+    return data.map(item => [
+      item.course_code,               // [0] Course code
+      item.total_classes.toString(),  // [1] Total classes
+      item.absent.toString(),         // [2] Absent
+      "0",                            // [3] OD value (not provided in the API)
+      item.attendance_percentage.toString(), // [4] Attendance percentage
+      item.present.toString()         // [5] Present count
+    ]);
   } catch (error) {
     console.error('Attendance fetch error:', error);
     throw error;
@@ -143,23 +96,11 @@ export const greetUser = async (rollNo, password) => {
   }
 
   try {
-    const response = await fetch(`${API_URL}/user-info`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        rollno: credentials.rollNo,
-        password: credentials.password
-      }),
+    const data = await apiPost('/user-info', {
+      rollno: credentials.rollNo,
+      password: credentials.password
     });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(errorText || response.statusText);
-    }
-
-    const data = await response.json();
+    
     const username = data.username || rollNo;
     const isBirthday = data.is_birthday || false;
     

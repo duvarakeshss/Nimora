@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
-import axios from 'axios'
+import { apiPost } from '../utils/api.js'
 
 const ExamCard = ({ exam }) => {
   // Determine the date format
@@ -157,19 +157,17 @@ const Timetable = () => {
     const fetchTimetable = async () => {
       try {
         setLoading(true)
-        // Use proxy path to hide backend server URL
-        const API_URL = '/api';
         // Decode password from base64
         const decodedPassword = atob(password)
-        const response = await axios.post(`${API_URL}/exam-schedule`, {
+        const response = await apiPost('/exam-schedule', {
           rollno: rollNo,
           password: decodedPassword
         })
         
-        if (response.data.exams && response.data.exams.length > 0) {
-          setExams(response.data.exams)
+        if (response.exams && response.exams.length > 0) {
+          setExams(response.exams)
         } else {
-          setMessage(response.data.message || "No upcoming exams found.")
+          setMessage(response.message || "No upcoming exams found.")
         }
       } catch (err) {
         console.error("Error fetching exam schedule:", err)

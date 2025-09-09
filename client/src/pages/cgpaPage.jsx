@@ -2,9 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
-import axios from 'axios'
-// Use proxy path to hide backend server URL
-const API_URL = '/api';
+import { apiPost } from '../utils/api.js'
 
 const SemesterCard = ({ semester, gpa, cgpa, credits, totalCredits, totalPoints }) => {
   return (
@@ -122,11 +120,11 @@ const Cgpa = () => {
         setLoading(true)
         // Decode password from base64
         const decodedPassword = atob(password)
-        const response = await axios.post(`${API_URL}/cgpa`, {
+        const response = await apiPost('/cgpa', {
           rollno: rollNo,
           password: decodedPassword
         })
-        setCgpaData(response.data)
+        setCgpaData(response)
       } catch (err) {
         console.error("Error fetching CGPA data:", err)
         setError(err.response?.data?.detail || "Failed to fetch CGPA data")
@@ -146,23 +144,23 @@ const Cgpa = () => {
       setError(null) // Clear any previous errors
       // Decode password from base64
       const decodedPassword = atob(password)
-      const response = await axios.post(`${API_URL}/predict-courses`, {
+      const response = await apiPost('/predict-courses', {
         rollno: rollNo,
         password: decodedPassword
       })
       
       // Check if we have courses
-      if (!response.data.courses || response.data.courses.length === 0) {
+      if (!response.courses || response.courses.length === 0) {
         setError("No current courses found for prediction.")
         setShowPrediction(false)
         return
       }
       
-      setCurrentCourses(response.data.courses)
+      setCurrentCourses(response.courses)
       setPredictionData({
-        previousCgpa: response.data.previous_cgpa,
-        totalCredits: response.data.total_credits || 0,
-        totalPoints: response.data.total_points || 0
+        previousCgpa: response.previous_cgpa,
+        totalCredits: response.total_credits || 0,
+        totalPoints: response.total_points || 0
       })
       
       // Initialize coursesData with default values
