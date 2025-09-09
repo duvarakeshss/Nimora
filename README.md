@@ -28,7 +28,6 @@
 - [🎯 Usage](#-usage)
 - [🔒 Security](#-security)
 - [🚀 Deployment](#-deployment)
-- [🤝 Contributing](#-contributing)
 - [📄 License](#-license)
 
 ---
@@ -213,21 +212,7 @@ const loginData = {
 };
 ```
 
-### 📊 Attendance Tracking
 
-```javascript
-// Fetch attendance data
-const attendance = await getStudentAttendance(rollNo, password);
-// Returns formatted attendance array with percentages
-```
-
-### 📅 Exam Schedule
-
-```javascript
-// Get exam timetable
-const exams = await apiPost('/exam-schedule', credentials);
-// Returns upcoming exams with countdown timers
-```
 
 ### 🤖 Automated Feedback
 
@@ -260,41 +245,6 @@ const result = await apiPost('/auto-feedback', {
 
 ---
 
-## 🚀 Deployment
-
-### Vercel Deployment
-
-The application is configured for seamless deployment on Vercel:
-
-```json
-// vercel.json
-{
-  "version": 2,
-  "builds": [
-    {
-      "src": "server/app.py",
-      "use": "@vercel/python"
-    },
-    {
-      "src": "client/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/server/app.py"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/client/$1"
-    }
-  ]
-}
-```
 
 ### Environment Variables
 
@@ -346,18 +296,6 @@ We welcome contributions! Please follow these guidelines:
    ```bash
    git push origin feature/amazing-feature
    ```
-
-### 🧪 Testing
-
-```bash
-# Frontend tests
-cd client
-npm test
-
-# Backend tests
-cd ../server
-python -m pytest
-```
 
 ### 📋 Code Style
 
