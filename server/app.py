@@ -19,7 +19,22 @@ import pytz
 from bs4 import BeautifulSoup
 
 # Setup logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.WARNING)  # Default to WARNING, will be updated after env vars
+logger = logging.getLogger("nimora-api")
+import logging
+import base64
+import json
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Request
+from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
+from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
+from datetime import datetime
+import pytz
+from bs4 import BeautifulSoup
+
+# Setup logging
+logging.basicConfig(level=logging.WARNING)  # Default to WARNING, will be updated after env vars
 logger = logging.getLogger("nimora-api")
 
 # Payload security utilities
@@ -71,6 +86,10 @@ IS_VERCEL = DEPLOYMENT_ENV != "development"
 
 # Security configuration
 PAYLOAD_SALT = os.environ.get("PAYLOAD_SALT", "nimora_secure_payload_2025")  # Default for development
+
+# Update logging level based on environment
+log_level = os.environ.get("LOG_LEVEL", "WARNING" if DEPLOYMENT_ENV == "production" else "INFO")
+logging.getLogger().setLevel(getattr(logging, log_level.upper()))
 
 app = FastAPI()
 
@@ -138,22 +157,25 @@ async def general_exception_handler(request: Request, exc: Exception):
 @app.get("/")
 def root():
     """
-    Root endpoint that provides welcome message and API information
+    Root endpoint - minimal response to avoid logging sensitive API information
     """
     return {
-        "name": "Nimora Student Information API",
-        "description": "API for accessing student attendance, CGPA, exam schedules, and more",
+        "message": "NIMORA API Server",
+        "status": "running",
+        "docs": "/docs"  # Point to FastAPI automatic documentation
+    }
+
+@app.get("/health")
+def health_check():
+    """
+    Health check endpoint for monitoring and load balancers
+    """
+    return {
+        "status": "healthy",
+        "timestamp": datetime.now(pytz.UTC).isoformat(),
+        "service": "nimora-api",
         "version": "1.0.0",
-        "environment": DEPLOYMENT_ENV,
-        "endpoints": {
-            "/login": "Authenticate and get attendance summary",
-            "/attendance": "Get detailed attendance information",
-            "/cgpa": "Get CGPA and semester-wise GPA",
-            "/exam-schedule": "Get upcoming exam schedule",
-            "/auto-feedback": "Submit automated feedback",
-            "/predict-courses": "Get current courses for CGPA prediction"
-        },
-        "status": "online"
+        "environment": DEPLOYMENT_ENV
     }
 
 class UserCredentials(BaseModel):
