@@ -72,12 +72,12 @@ export const getStudentAttendance = async (rollNo, password) => {
     
     // Transform API response to format expected by the frontend
     return data.map(item => [
-      item.course_code,               // [0] Course code
-      item.total_classes.toString(),  // [1] Total classes
-      item.absent.toString(),         // [2] Absent
-      "0",                            // [3] OD value (not provided in the API)
-      item.attendance_percentage.toString(), // [4] Attendance percentage
-      item.present.toString()         // [5] Present count
+      item.course_code || item[0] || '',              // [0] Course code
+      (item.total_classes || item[1] || 0).toString(), // [1] Total classes
+      (item.absent || item[2] || 0).toString(),       // [2] Absent
+      "0",                                           // [3] OD value (not provided in the API)
+      (item.percentage || item[4] || 0).toString(),   // [4] Attendance percentage
+      (item.present || item[5] || 0).toString()       // [5] Present count
     ]);
   } catch (error) {
     console.error('Attendance fetch error:', error);
