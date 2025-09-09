@@ -389,14 +389,6 @@ copies or substantial portions of the Software.
 
 ---
 
-## 👥 Authors
-
-**Duvarakesh S**
-- 📧 Email: duvarakeshss@gmail.com
-- 🔗 LinkedIn: [duvarakeshss](https://linkedin.com/in/duvarakeshss)
-- 🐙 GitHub: [@duvarakeshss](https://github.com/duvarakeshss)
-
----
 
 <div align="center">
 
