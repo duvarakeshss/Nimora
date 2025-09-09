@@ -248,7 +248,7 @@ const Home = () => {
           </div>
           <div className="flex-1">
             <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-1">{greeting}</h1>
-            <p className="text-gray-600 text-base">Welcome to your premium attendance dashboard.</p>
+            <p className="text-gray-600 text-base">Welcome to your attendance dashboard.</p>
           </div>
         </div>
         
