@@ -91,6 +91,7 @@ const Login = () => {
             </div>
             <div className="relative z-10 w-full max-w-md p-8 space-y-8 bg-[#1a202c]/80 backdrop-blur-sm rounded-2xl shadow-2xl">
                 <div className="text-center">
+                    <img src="/nimora-logo.svg" alt="Nimora Logo" className="h-16 w-16 mx-auto mb-4" />
                     <h1 className="text-4xl font-bold tracking-tight text-white">
                         Nimora
                     </h1>

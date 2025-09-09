@@ -119,19 +119,19 @@ const ExamCard = ({ exam }) => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl border border-gray-200 hover:border-purple-300 hover:scale-105 hover:bg-purple-50">
-      <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-purple-100 to-purple-200">
-        <h3 className="font-bold text-xl text-purple-800 transition-colors duration-300 group-hover:text-purple-900">{exam.COURSE_CODE}</h3>
+    <div className="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl border border-gray-200 hover:border-blue-300 hover:scale-105 hover:bg-blue-50">
+      <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-100 to-purple-200">
+        <h3 className="font-bold text-xl text-blue-800 transition-colors duration-300 group-hover:text-blue-900">{exam.COURSE_CODE}</h3>
       </div>
       <div className="p-6">
         <div className="flex flex-col sm:flex-row gap-4 mb-5">
-          <div className="bg-purple-50 rounded-lg p-4 shadow-sm w-full sm:w-1/2">
-            <p className="text-sm text-purple-600 font-medium mb-2">Date</p>
-            <p className="font-medium transition-colors duration-300 text-purple-800 text-lg">{formatDate(exam.DATE)}</p>
+          <div className="bg-blue-50 rounded-lg p-4 shadow-sm w-full sm:w-1/2">
+            <p className="text-sm text-blue-600 font-medium mb-2">Date</p>
+            <p className="font-medium transition-colors duration-300 text-blue-800 text-lg">{formatDate(exam.DATE)}</p>
           </div>
-          <div className="bg-indigo-50 rounded-lg p-4 shadow-sm w-full sm:w-1/2">
-            <p className="text-sm text-indigo-600 font-medium mb-2">Time</p>
-            <p className="font-medium transition-colors duration-300 text-indigo-800 text-lg">{exam.TIME}</p>
+          <div className="bg-purple-50 rounded-lg p-4 shadow-sm w-full sm:w-1/2">
+            <p className="text-sm text-purple-600 font-medium mb-2">Time</p>
+            <p className="font-medium transition-colors duration-300 text-purple-800 text-lg">{exam.TIME}</p>
           </div>
         </div>
         <div className="mt-5 flex justify-end">
@@ -247,11 +247,11 @@ const Timetable = () => {
         <div className="max-w-6xl mx-auto">
           <Navbar />
           <div className="bg-white rounded-2xl shadow-xl p-4 md:p-6 hover:shadow-2xl transition-all duration-300">
-            <h1 className="text-2xl font-bold text-purple-700 mb-2 border-b-2 border-purple-100 pb-2">Exam Schedule</h1>
+            <h1 className="text-2xl font-bold text-blue-700 mb-2 border-b-2 border-blue-100 pb-2">Exam Schedule</h1>
             
             {loading ? (
               <div className="flex justify-center items-center py-16">
-                <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-purple-600"></div>
+                <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-600"></div>
               </div>
             ) : error ? (
               <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-xl shadow-sm">
@@ -259,17 +259,17 @@ const Timetable = () => {
                 <p>{error}</p>
               </div>
             ) : message ? (
-              <div className="text-center py-12 bg-purple-50 rounded-xl shadow-inner px-4">
-                <div className="mx-auto w-20 h-20 mb-6 text-purple-400">
+              <div className="text-center py-12 bg-blue-50 rounded-xl shadow-inner px-4">
+                <div className="mx-auto w-20 h-20 mb-6 text-blue-400">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                 </div>
-                <p className="text-purple-600 font-medium text-lg">{message}</p>
+                <p className="text-blue-600 font-medium text-lg">{message}</p>
               </div>
                           ) : (
               <div>
-                <div className="mb-8 bg-purple-50 p-4 md:p-6 rounded-xl shadow-inner">
+                <div className="mb-8 bg-blue-50 p-4 md:p-6 rounded-xl shadow-inner">
                   <p className="text-gray-700 mb-4">Your upcoming exams are listed below. They are automatically sorted by date.</p>
                   <div className="flex flex-wrap gap-3 mb-4">
                     <span className="px-4 py-1.5 rounded-full text-sm font-medium bg-red-100 text-red-800 shadow-sm">0-2 days: Urgent</span>

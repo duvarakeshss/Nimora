@@ -209,8 +209,12 @@ const Home = () => {
     return (
       <div className="flex items-center justify-center min-h-full">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-4 text-gray-700">Loading your data...</p>
+          <div className="relative">
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-slate-200 border-t-emerald-500 mx-auto shadow-lg"></div>
+            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-emerald-400/20 to-teal-500/20 animate-pulse"></div>
+          </div>
+          <p className="mt-6 text-gray-700 text-lg font-medium">Loading your data...</p>
+          <p className="mt-2 text-gray-500 text-sm">Please wait while we fetch your attendance information</p>
         </div>
       </div>
     )
@@ -232,26 +236,29 @@ const Home = () => {
       />
       {greeting && (
     <>
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg shadow-md p-6 mb-6 border-l-4 border-blue-500">
+      <div className="bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-50 rounded-xl shadow-lg p-6 mb-6 border border-gray-200/50 backdrop-blur-sm">
         <div className="flex flex-col sm:flex-row items-start sm:items-center">
-          <div className="bg-blue-100 rounded-full p-3 mb-3 sm:mb-0 sm:mr-4">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-            </svg>
+          <div className="relative">
+            <div className="bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl p-3 mb-3 sm:mb-0 sm:mr-4 shadow-md">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+              </svg>
+            </div>
+            <div className="absolute -inset-1 bg-gradient-to-br from-emerald-400/30 to-teal-500/30 rounded-xl blur-lg -z-10"></div>
           </div>
-          <div>
-            <h1 className="text-2xl font-bold text-blue-700 mb-2">{greeting}</h1>
-            <p className="text-gray-600">Welcome to your attendance dashboard. Track your classes and plan ahead.</p>
+          <div className="flex-1">
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-1">{greeting}</h1>
+            <p className="text-gray-600 text-base">Welcome to your premium attendance dashboard.</p>
           </div>
         </div>
         
         {greeting.includes("Birthday") && (
-          <div className="p-4 mt-4 bg-gradient-to-r from-yellow-100 to-amber-100 rounded-lg border border-yellow-200 shadow-inner">
-            <div className="flex items-center">
+          <div className="p-4 mt-4 bg-gradient-to-r from-amber-50 to-yellow-50 rounded-lg border border-amber-200/50 shadow-md">
+            <div className="flex items-center justify-center">
               <span className="text-2xl mr-2">🎉</span>
-              <div>
-                <span className="font-semibold text-yellow-800">Happy Birthday!</span>
-                <p className="text-yellow-700 text-sm">Wishing you a fantastic day filled with joy and success!</p>
+              <div className="text-center">
+                <span className="font-semibold text-amber-800 text-base">Happy Birthday!</span>
+                <p className="text-amber-700 text-sm">Wishing you a fantastic day!</p>
               </div>
               <span className="text-2xl ml-2">🎂</span>
             </div>
@@ -260,38 +267,42 @@ const Home = () => {
       </div>
 
       {combinedData.length > 0 && (
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <div className="flex flex-col mb-6 space-y-3">
+        <div className="bg-white rounded-xl shadow-lg p-4 mb-6 border border-gray-100">
+          <div className="flex flex-col mb-6 space-y-4">
             <div className="flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-700 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              <h2 className="text-2xl font-semibold text-blue-700">Attendance Overview</h2>
+              <div className="bg-gradient-to-br from-emerald-400 to-teal-500 rounded-lg p-2 mr-3 shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <h2 className="text-xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">Attendance Overview</h2>
             </div>
             
-            <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-100">
+            <div className="mt-3 p-3 bg-gradient-to-br from-slate-50 to-gray-50 rounded-lg border border-gray-200/50 shadow-inner">
               <div className="w-full flex flex-col">
-                <div className="flex items-center justify-between w-full mb-2">
+                <div className="flex items-center justify-between w-full mb-3">
                   <div className="flex items-center">
-                    <span className="bg-blue-100 rounded-full w-6 h-6 inline-flex items-center justify-center mr-2 text-sm text-blue-800">%</span>
-                    <label htmlFor="customPercentage" className="text-sm font-medium text-gray-700">
+                    <div className="bg-gradient-to-br from-emerald-400 to-teal-500 rounded-md p-1.5 mr-2 shadow-sm">
+                      <span className="text-white font-bold text-xs">%</span>
+                    </div>
+                    <label htmlFor="customPercentage" className="text-base font-semibold text-gray-700">
                       Maintenance Target: 
                     </label>
                   </div>
-                      <div className="flex items-center">
-                  <span className="text-sm font-bold bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 px-3 py-1 rounded-full min-w-[50px] text-center shadow-sm">
-                    {customPercentage}%
-                  </span>
-                      </div>
+                  <div className="flex items-center">
+                    <span className="text-base font-bold bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-3 py-1.5 rounded-lg min-w-[50px] text-center shadow-md">
+                      {customPercentage}%
+                    </span>
+                  </div>
                 </div>
                 <div className="w-full relative">
                   <div className="absolute -top-1 left-0 right-0 flex justify-between px-1">
-                    <div className="w-0.5 h-2 bg-gray-300"></div>
-                    <div className="w-0.5 h-2 bg-gray-300"></div>
-                    <div className="w-0.5 h-2 bg-gray-300"></div>
-                    <div className="w-0.5 h-2 bg-gray-300"></div>
-                    <div className="w-0.5 h-2 bg-gray-300"></div>
-                    <div className="w-0.5 h-2 bg-gray-300"></div>
+                    <div className="w-1 h-2 bg-gradient-to-b from-gray-400 to-gray-300 rounded-full"></div>
+                    <div className="w-1 h-2 bg-gradient-to-b from-gray-400 to-gray-300 rounded-full"></div>
+                    <div className="w-1 h-2 bg-gradient-to-b from-gray-400 to-gray-300 rounded-full"></div>
+                    <div className="w-1 h-2 bg-gradient-to-b from-gray-400 to-gray-300 rounded-full"></div>
+                    <div className="w-1 h-2 bg-gradient-to-b from-gray-400 to-gray-300 rounded-full"></div>
+                    <div className="w-1 h-2 bg-gradient-to-b from-gray-400 to-gray-300 rounded-full"></div>
                   </div>
                   <input
                     type="range"
@@ -301,7 +312,7 @@ const Home = () => {
                     step="1"
                     value={customPercentage}
                     onChange={handlePercentageChange}
-                        className={`w-full h-3 appearance-none rounded-full bg-gradient-to-r from-red-500 via-yellow-400 to-green-500 cursor-pointer shadow-inner`}
+                        className={`w-full h-3 appearance-none rounded-full bg-gradient-to-r from-slate-300 via-gray-400 to-slate-500 cursor-pointer shadow-inner hover:shadow-md transition-shadow duration-300`}
                   />
                   <div className="flex justify-between text-xs text-gray-500 mt-1 px-1">
                     <span>50%</span>
@@ -312,8 +323,8 @@ const Home = () => {
                     <span>100%</span>
                   </div>
                 </div>
-                <p className="text-xs text-gray-500 mt-3">
-                  Drag the slider to adjust your attendance maintenance target. This affects how many classes you can afford to miss.
+                <p className="text-xs text-gray-500 mt-2">
+                  Drag the slider to adjust your attendance maintenance target.
                 </p>
               </div>
             </div>
@@ -322,13 +333,13 @@ const Home = () => {
           <div className="rounded-2xl border border-gray-200 shadow-xl overflow-hidden overflow-x-auto hover:shadow-2xl transition-all duration-300 bg-white">
             <div className="min-w-full">
               {/* Header Row - hidden on small screens, visible from md up */}
-              <div className="hidden md:grid grid-cols-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-b border-blue-700">
-                <div className="px-6 py-4 text-left text-sm font-medium uppercase tracking-wider">Course</div>
-                <div className="px-6 py-4 text-center text-sm font-medium uppercase tracking-wider">Total Classes</div>
-                <div className="px-6 py-4 text-center text-sm font-medium uppercase tracking-wider">Present</div>
-                <div className="px-6 py-4 text-center text-sm font-medium uppercase tracking-wider">Absent</div>
-                <div className="px-6 py-4 text-center text-sm font-medium uppercase tracking-wider">Attendance %</div>
-                <div className="px-6 py-4 text-center text-sm font-medium uppercase tracking-wider">
+              <div className="hidden md:grid grid-cols-6 bg-gradient-to-r from-slate-700 via-gray-700 to-slate-800 text-white border-b border-gray-600 shadow-md">
+                <div className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider">Course</div>
+                <div className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider">Total Classes</div>
+                <div className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider">Present</div>
+                <div className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider">Absent</div>
+                <div className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider">Attendance %</div>
+                <div className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider">
                   Affordable Leaves
                 </div>
               </div>
@@ -338,13 +349,13 @@ const Home = () => {
                 {combinedData.map((course, index) => {
                   // Determine color based on affordable leaves
                   const colorClass = course.affordableLeaves >= 0 
-                    ? "hover:border-l-4 hover:border-blue-500 hover:bg-blue-50" 
-                    : "hover:border-l-4 hover:border-red-500 hover:bg-red-50";
+                    ? "hover:border-l-4 hover:border-emerald-500 hover:bg-emerald-50/50" 
+                    : "hover:border-l-4 hover:border-amber-500 hover:bg-amber-50/50";
                   
                   // Determine background color based on index for zebra striping
                   const bgClass = index % 2 === 0 
-                    ? (parseInt(course.percentage) < 75 ? "bg-red-50" : "bg-white") 
-                    : (parseInt(course.percentage) < 75 ? "bg-red-50" : "bg-gray-50");
+                    ? (parseInt(course.percentage) < 75 ? "bg-amber-50/30" : "bg-white") 
+                    : (parseInt(course.percentage) < 75 ? "bg-amber-50/20" : "bg-gray-50/50");
                   
                   // This is the last row
                   const isLastRow = index === combinedData.length - 1;
@@ -352,66 +363,66 @@ const Home = () => {
                   return (
                     <div key={index}>
                       {/* Mobile view - vertical card layout */}
-                      <div className="md:hidden block p-3">
-                        <div className={`rounded-xl p-5 bg-white shadow-lg 
-                          ${course.affordableLeaves >= 0 ? "border-l-4 border-blue-500" : "border-l-4 border-red-500"}
-                          transform transition-all duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-[0.99]`}
+                      <div className="md:hidden block p-3 mb-2">
+                        <div className={`rounded-lg p-4 bg-white shadow-md border border-gray-200
+                          ${course.affordableLeaves >= 0 ? "border-l-4 border-emerald-500" : "border-l-4 border-amber-500"}
+                          transform transition-all duration-300 hover:scale-[1.01] hover:shadow-lg active:scale-[0.99]`}
                         >
-                          <div className="flex items-center justify-between mb-3">
-                            <div className="text-xl font-bold text-blue-700">{course.courseCode}</div>
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="text-lg font-bold text-slate-700">{course.courseCode}</div>
                             {course.affordableLeaves < 0 ? (
-                              <div className="bg-gradient-to-r from-red-100 to-red-200 text-red-800 px-3 py-1 rounded-full text-xs font-medium shadow-sm">
+                              <div className="bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 px-2 py-1 rounded-md text-xs font-medium shadow-sm border border-amber-200">
                                 Action Needed
                               </div>
                             ) : (
-                              <div className="bg-gradient-to-r from-green-100 to-green-200 text-green-800 px-3 py-1 rounded-full text-xs font-medium shadow-sm">
+                              <div className="bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-800 px-2 py-1 rounded-md text-xs font-medium shadow-sm border border-emerald-200">
                                 Good Standing
                               </div>
                             )}
                           </div>
                           
-                          <div className="mb-4 bg-gray-50 rounded-xl p-4 shadow-inner">
-                            <div className="flex justify-between items-center mb-2">
+                          <div className="mb-3 bg-gray-50 rounded-lg p-3 shadow-inner">
+                            <div className="flex justify-between items-center mb-1">
                               <span className="text-gray-600 text-sm font-medium">Current Attendance:</span>
-                              <span className={`font-bold text-right ${parseInt(course.percentage) < 75 ? "text-red-600" : "text-green-600"} text-lg px-3 py-1 rounded-lg ${parseInt(course.percentage) < 75 ? "bg-red-50" : "bg-green-50"}`}>
+                              <span className={`font-bold text-sm ${parseInt(course.percentage) < 75 ? "text-amber-600" : "text-emerald-600"} px-2 py-1 rounded-md ${parseInt(course.percentage) < 75 ? "bg-amber-50 border border-amber-200" : "bg-emerald-50 border border-emerald-200"}`}>
                                 {course.percentage}%
                               </span>
                             </div>
-                            <div className="mt-2 bg-gray-200 rounded-full h-3 shadow-inner">
+                            <div className="mt-1 bg-gray-200 rounded-full h-2 shadow-inner border border-gray-300">
                               <div 
-                                className={`${parseInt(course.percentage) < 75 ? "bg-gradient-to-r from-red-500 to-red-600" : "bg-gradient-to-r from-green-500 to-green-600"} h-3 rounded-full shadow-sm`}
+                                className={`${parseInt(course.percentage) < 75 ? "bg-gradient-to-r from-amber-400 to-orange-500" : "bg-gradient-to-r from-emerald-400 to-teal-500"} h-2 rounded-full shadow-sm border border-white/50`}
                                 style={{ width: `${course.percentage}%` }}>
                               </div>
                             </div>
-                            <div className="flex justify-between text-xs mt-2">
+                            <div className="flex justify-between text-xs mt-1">
                               <span className="text-gray-500 font-medium">0%</span>
-                              <span className={`${parseInt(course.percentage) < 75 ? "text-red-600" : "text-gray-500"} font-medium`}>{customPercentage}%</span>
+                              <span className={`${parseInt(course.percentage) < 75 ? "text-amber-600" : "text-gray-500"} font-medium`}>{customPercentage}%</span>
                               <span className="text-gray-500 font-medium">100%</span>
                             </div>
                           </div>
                           
-                          <div className="grid grid-cols-2 gap-4">
-                            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-3 text-center shadow-sm">
-                              <span className="text-xs text-gray-600 font-medium block mb-1">Total Classes</span>
-                              <span className="text-xl font-bold text-blue-700">{course.totalClasses}</span>
+                          <div className="grid grid-cols-2 gap-3">
+                            <div className="bg-gradient-to-br from-slate-50 to-gray-100 rounded-lg p-2 text-center shadow-sm border border-gray-200">
+                              <span className="text-xs text-gray-600 font-medium block mb-0.5">Total Classes</span>
+                              <span className="text-lg font-bold text-slate-700">{course.totalClasses}</span>
                             </div>
                             
-                            <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-3 text-center shadow-sm">
-                              <span className="text-xs text-gray-600 font-medium block mb-1">Present</span>
-                              <span className="text-xl font-bold text-green-700">{course.present}</span>
+                            <div className="bg-gradient-to-br from-emerald-50 to-teal-100 rounded-lg p-2 text-center shadow-sm border border-emerald-200">
+                              <span className="text-xs text-gray-600 font-medium block mb-0.5">Present</span>
+                              <span className="text-lg font-bold text-emerald-700">{course.present}</span>
                             </div>
                             
-                            <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-3 text-center shadow-sm">
-                              <span className="text-xs text-gray-600 font-medium block mb-1">Absent</span>
-                              <span className="text-xl font-bold text-red-700">{course.absent}</span>
+                            <div className="bg-gradient-to-br from-amber-50 to-orange-100 rounded-lg p-2 text-center shadow-sm border border-amber-200">
+                              <span className="text-xs text-gray-600 font-medium block mb-0.5">Absent</span>
+                              <span className="text-lg font-bold text-amber-700">{course.absent}</span>
                             </div>
                             
-                            <div className={`bg-gradient-to-br ${course.affordableLeaves >= 0 ? "from-green-50 to-green-100" : "from-red-50 to-red-100"} rounded-xl p-3 text-center shadow-sm`}>
-                              <span className="text-xs text-gray-600 font-medium block mb-1">Leaves</span>
-                                <span className={`text-xl font-bold ${course.affordableLeaves >= 0 ? "text-green-700" : "text-red-700"} flex items-center justify-center`}>
+                            <div className={`bg-gradient-to-br ${course.affordableLeaves >= 0 ? "from-emerald-50 to-teal-100 border-emerald-200" : "from-amber-50 to-orange-100 border-amber-200"} rounded-lg p-2 text-center shadow-sm border`}>
+                              <span className="text-xs text-gray-600 font-medium block mb-0.5">Leaves</span>
+                                <span className={`text-lg font-bold ${course.affordableLeaves >= 0 ? "text-emerald-700" : "text-amber-700"} flex items-center justify-center`}>
                                   {course.affordableLeaves >= 0 ? course.affordableLeaves : Math.abs(course.affordableLeaves)}
                                   {course.affordableLeaves < 0 && 
-                                    <span className="ml-1 text-xs bg-red-200 text-red-800 px-2 py-1 rounded-full shadow-sm">attend</span>
+                                    <span className="ml-1 text-xs bg-amber-200 text-amber-800 px-1.5 py-0.5 rounded-md shadow-sm">attend</span>
                                   }
                                 </span>
                             </div>
@@ -426,18 +437,18 @@ const Home = () => {
                           ${!isLastRow ? 'border-b border-gray-200' : ''}
                           transition-all duration-300 ease-in-out cursor-pointer`}
                       >
-                        <div className="px-6 py-5 text-base font-medium text-gray-900">{course.courseCode}</div>
-                        <div className="px-6 py-5 text-base text-center text-gray-600">{course.totalClasses}</div>
-                        <div className="px-6 py-5 text-base text-center text-gray-600">{course.present}</div>
-                        <div className="px-6 py-5 text-base text-center text-gray-600">{course.absent}</div>
-                        <div className={`px-6 py-5 text-base text-center font-medium ${parseInt(course.percentage) < 75 ? "text-red-600" : "text-green-600"}`}>
+                        <div className="px-4 py-3 text-base font-medium text-gray-900">{course.courseCode}</div>
+                        <div className="px-4 py-3 text-base text-center text-gray-600">{course.totalClasses}</div>
+                        <div className="px-4 py-3 text-base text-center text-gray-600">{course.present}</div>
+                        <div className="px-4 py-3 text-base text-center text-gray-600">{course.absent}</div>
+                        <div className={`px-4 py-3 text-base text-center font-medium ${parseInt(course.percentage) < 75 ? "text-amber-600" : "text-emerald-600"}`}>
                           {course.percentage}%
                         </div>
-                        <div className={`px-6 py-5 text-base text-center font-medium ${course.affordableLeaves < 0 ? "text-red-600" : "text-green-600"}`}>
-                          <span className={`inline-flex items-center justify-center bg-opacity-60 rounded-lg px-3 py-1 ${course.affordableLeaves < 0 ? 'bg-red-100' : 'bg-green-100'}`}>
+                        <div className={`px-4 py-3 text-base text-center font-medium ${course.affordableLeaves < 0 ? "text-amber-600" : "text-emerald-600"}`}>
+                          <span className={`inline-flex items-center justify-center bg-opacity-60 rounded-lg px-2 py-0.5 text-sm ${course.affordableLeaves < 0 ? 'bg-amber-100 border border-amber-200' : 'bg-emerald-100 border border-emerald-200'}`}>
                             {course.affordableLeaves >= 0 ? course.affordableLeaves : Math.abs(course.affordableLeaves)}
                             {course.affordableLeaves < 0 && 
-                              <span className="ml-1 text-xs bg-red-200 text-red-800 px-2 py-1 rounded-full">attend</span>
+                              <span className="ml-1 text-sm bg-amber-200 text-amber-800 px-1.5 py-0.5 rounded-full">attend</span>
                             }
                           </span>
                         </div>
@@ -452,17 +463,23 @@ const Home = () => {
           )}
           
           {combinedData.length === 0 && !loading && (
-            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-              <div className="flex flex-col items-center justify-center py-8">
-                <div className="bg-blue-100 rounded-full p-4 mb-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+            <div className="bg-white rounded-2xl shadow-xl p-8 mb-8 border border-gray-100">
+              <div className="flex flex-col items-center justify-center py-12">
+                <div className="relative mb-6">
+                  <div className="bg-gradient-to-br from-slate-100 to-gray-200 rounded-2xl p-6 shadow-inner">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div className="absolute -inset-1 bg-gradient-to-br from-slate-400/30 to-gray-500/30 rounded-2xl blur-lg -z-10"></div>
                 </div>
-                <h2 className="text-xl font-semibold text-gray-700 mb-2">Attendance Data Unavailable</h2>
-                <p className="text-gray-600 text-center max-w-md">
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-3">Attendance Data Unavailable</h2>
+                <p className="text-gray-600 text-center max-w-md text-lg leading-relaxed">
                   Your attendance data is currently being updated. Please check back later for the latest information.
                 </p>
+                <div className="mt-6 px-6 py-3 bg-gradient-to-r from-slate-100 to-gray-100 rounded-xl border border-gray-200">
+                  <p className="text-sm text-gray-500 text-center">Data synchronization in progress...</p>
+                </div>
               </div>
             </div>
           )}

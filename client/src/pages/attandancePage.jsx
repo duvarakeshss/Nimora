@@ -227,7 +227,7 @@ const Attandance = () => {
             <p className="text-3xl font-bold text-green-700">{attendanceStats.presentClasses}</p>
           </div>
           
-          <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-4 shadow-md flex flex-col items-center justify-center transition-all duration-300 hover:shadow-lg hover:scale-105">
+          <div className="bg-gradient-to-br from-amber-50 to-orange-100 rounded-xl p-4 shadow-md flex flex-col items-center justify-center transition-all duration-300 hover:shadow-lg hover:scale-105">
             <div className="bg-red-100 rounded-full p-3 mb-2 transition-colors duration-300 hover:bg-red-200">
               <XCircle className="h-6 w-6 text-red-700" />
             </div>
@@ -235,7 +235,7 @@ const Attandance = () => {
             <p className="text-3xl font-bold text-red-700">{attendanceStats.absentClasses}</p>
           </div>
           
-          <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4 shadow-md flex flex-col items-center justify-center transition-all duration-300 hover:shadow-lg hover:scale-105">
+          <div className="bg-gradient-to-br from-blue-50 to-purple-100 rounded-xl p-4 shadow-md flex flex-col items-center justify-center transition-all duration-300 hover:shadow-lg hover:scale-105">
             <div className="bg-purple-100 rounded-full p-3 mb-2 transition-colors duration-300 hover:bg-purple-200">
               <BarChart3 className="h-6 w-6 text-purple-700" />
             </div>
@@ -265,7 +265,7 @@ const Attandance = () => {
       
       {/* Action Required Courses Section */}
       {combinedData.length > 0 && combinedData.some(course => course.affordableLeaves < 0) && (
-        <div className="bg-gradient-to-r from-red-50 to-red-100 rounded-lg shadow-xl p-6 mb-6 border-l-4 border-red-500 hover:shadow-2xl transition-shadow duration-300">
+        <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg shadow-xl p-6 mb-6 border-l-4 border-blue-500 hover:shadow-2xl transition-shadow duration-300">
           <div className="flex items-center mb-4">
             <AlertTriangle className="h-6 w-6 text-red-600 mr-2" />
             <h2 className="text-2xl font-semibold text-red-700">Action Needed</h2>
@@ -274,13 +274,13 @@ const Attandance = () => {
           <div className="rounded-2xl border border-red-200 shadow-xl overflow-hidden overflow-x-auto mb-4 bg-white hover:shadow-2xl transition-all duration-300">
             <div className="min-w-full">
               {/* Header Row - hidden on small screens, visible from md up */}
-              <div className="hidden md:grid grid-cols-6 bg-gradient-to-r from-red-600 to-pink-600 text-white border-b border-red-700">
-                <div className="px-6 py-4 text-left text-sm font-medium uppercase tracking-wider">Course</div>
-                <div className="px-6 py-4 text-center text-sm font-medium uppercase tracking-wider">Total Classes</div>
-                <div className="px-6 py-4 text-center text-sm font-medium uppercase tracking-wider">Present</div>
-                <div className="px-6 py-4 text-center text-sm font-medium uppercase tracking-wider">Absent</div>
-                <div className="px-6 py-4 text-center text-sm font-medium uppercase tracking-wider">Attendance %</div>
-                <div className="px-6 py-4 text-center text-sm font-medium uppercase tracking-wider">
+              <div className="hidden md:grid grid-cols-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white border-b border-blue-700">
+                <div className="px-6 py-4 text-left text-base font-medium uppercase tracking-wider">Course</div>
+                <div className="px-6 py-4 text-center text-base font-medium uppercase tracking-wider">Total Classes</div>
+                <div className="px-6 py-4 text-center text-base font-medium uppercase tracking-wider">Present</div>
+                <div className="px-6 py-4 text-center text-base font-medium uppercase tracking-wider">Absent</div>
+                <div className="px-6 py-4 text-center text-base font-medium uppercase tracking-wider">Attendance %</div>
+                <div className="px-6 py-4 text-center text-base font-medium uppercase tracking-wider">
                   Classes To Attend
                 </div>
               </div>
@@ -311,11 +311,11 @@ const Attandance = () => {
                             <div className="flex items-center justify-between mb-3">
                               <div className="text-xl font-bold text-blue-700">{course.courseCode}</div>
                               {course.affordableLeaves < 0 ? (
-                                <div className="bg-gradient-to-r from-red-100 to-red-200 text-red-800 px-3 py-1 rounded-full text-xs font-medium shadow-sm">
+                                <div className="bg-gradient-to-r from-amber-100 to-orange-200 text-amber-800 px-3 py-1 rounded-full text-sm font-medium shadow-sm">
                                   Action Needed
                                 </div>
                               ) : (
-                                <div className="bg-gradient-to-r from-green-100 to-green-200 text-green-800 px-3 py-1 rounded-full text-xs font-medium shadow-sm">
+                                <div className="bg-gradient-to-r from-emerald-100 to-teal-200 text-emerald-800 px-3 py-1 rounded-full text-sm font-medium shadow-sm">
                                   Good Standing
                                 </div>
                               )}
@@ -330,7 +330,7 @@ const Attandance = () => {
                               </div>
                               <div className="mt-2 bg-gray-200 rounded-full h-3 shadow-inner">
                                 <div 
-                                  className={`${parseInt(course.percentage) < 75 ? "bg-gradient-to-r from-red-500 to-red-600" : "bg-gradient-to-r from-green-500 to-green-600"} h-3 rounded-full shadow-sm`}
+                                  className={`${parseInt(course.percentage) < 75 ? "bg-gradient-to-r from-amber-400 to-orange-500" : "bg-gradient-to-r from-emerald-400 to-teal-500"} h-3 rounded-full shadow-sm`}
                                   style={{ width: `${course.percentage}%` }}>
                                 </div>
                               </div>
@@ -362,7 +362,7 @@ const Attandance = () => {
                                 <span className={`text-lg font-semibold ${course.affordableLeaves >= 0 ? "text-green-700" : "text-red-700"}`}>
                                   {course.affordableLeaves >= 0 ? course.affordableLeaves : Math.abs(course.affordableLeaves)}
                                   {course.affordableLeaves < 0 && 
-                                    <span className="text-xs ml-1 bg-red-100 text-red-800 px-1 py-0.5 rounded-full">attend</span>
+                                    <span className="text-sm ml-1 bg-red-100 text-red-800 px-1 py-0.5 rounded-full">attend</span>
                                   }
                                 </span>
                               </div>
@@ -412,7 +412,7 @@ const Attandance = () => {
                           <div className="px-6 py-5 text-base text-center font-medium text-red-600">
                             <span className="inline-flex items-center justify-center bg-red-100 bg-opacity-60 rounded-lg px-3 py-1">
                               {Math.abs(course.affordableLeaves)}
-                              <span className="ml-1 text-xs bg-red-200 text-red-800 px-2 py-1 rounded-full">attend</span>
+                              <span className="ml-1 text-sm bg-red-200 text-red-800 px-2 py-1 rounded-full">attend</span>
                             </span>
                           </div>
                         </div>
@@ -455,7 +455,7 @@ const Attandance = () => {
                 <label htmlFor="customPercentage" className="mr-3 text-sm font-medium text-gray-700">
                   Target Percentage: 
                 </label>
-                <span className="text-sm font-bold bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 px-3 py-1 rounded-full min-w-[50px] text-center shadow-sm">
+                <span className="text-sm font-bold bg-gradient-to-r from-blue-500 to-purple-600 text-white px-3 py-1 rounded-full min-w-[50px] text-center shadow-sm">
                   {customPercentage}%
                 </span>
               </div>
@@ -476,7 +476,7 @@ const Attandance = () => {
                   step="1"
                   value={customPercentage}
                   onChange={handlePercentageChange}
-                  className="w-full h-3 appearance-none rounded-full bg-gradient-to-r from-red-500 via-yellow-400 to-green-500 cursor-pointer shadow-inner"
+                  className="w-full h-3 appearance-none rounded-full bg-gradient-to-r from-blue-300 via-purple-400 to-blue-500 cursor-pointer shadow-inner"
                 />
                 <div className="flex justify-between text-xs text-gray-500 mt-1 px-1">
                   <span>50%</span>
@@ -493,13 +493,13 @@ const Attandance = () => {
           <div className="rounded-2xl border border-gray-200 shadow-xl overflow-hidden overflow-x-auto bg-white hover:shadow-2xl transition-all duration-300">
             <div className="min-w-full">
               {/* Header Row - hidden on small screens, visible from md up */}
-              <div className="hidden md:grid grid-cols-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-b border-blue-700">
-                <div className="px-6 py-4 text-left text-sm font-medium uppercase tracking-wider">Course</div>
-                <div className="px-6 py-4 text-center text-sm font-medium uppercase tracking-wider">Total Classes</div>
-                <div className="px-6 py-4 text-center text-sm font-medium uppercase tracking-wider">Present</div>
-                <div className="px-6 py-4 text-center text-sm font-medium uppercase tracking-wider">Absent</div>
-                <div className="px-6 py-4 text-center text-sm font-medium uppercase tracking-wider">Attendance %</div>
-                <div className="px-6 py-4 text-center text-sm font-medium uppercase tracking-wider">
+              <div className="hidden md:grid grid-cols-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white border-b border-blue-700">
+                <div className="px-6 py-4 text-left text-base font-medium uppercase tracking-wider">Course</div>
+                <div className="px-6 py-4 text-center text-base font-medium uppercase tracking-wider">Total Classes</div>
+                <div className="px-6 py-4 text-center text-base font-medium uppercase tracking-wider">Present</div>
+                <div className="px-6 py-4 text-center text-base font-medium uppercase tracking-wider">Absent</div>
+                <div className="px-6 py-4 text-center text-base font-medium uppercase tracking-wider">Attendance %</div>
+                <div className="px-6 py-4 text-center text-base font-medium uppercase tracking-wider">
                   Affordable Leaves
                 </div>
               </div>
@@ -640,7 +640,7 @@ const Attandance = () => {
                           <span className={`inline-flex items-center justify-center bg-opacity-60 rounded-lg px-3 py-1 ${course.affordableLeaves < 0 ? 'bg-red-100' : 'bg-green-100'}`}>
                             {course.affordableLeaves >= 0 ? course.affordableLeaves : Math.abs(course.affordableLeaves)}
                             {course.affordableLeaves < 0 && 
-                              <span className="ml-1 text-xs bg-red-200 text-red-800 px-2 py-1 rounded-full">attend</span>
+                              <span className="ml-1 text-sm bg-red-200 text-red-800 px-2 py-1 rounded-full">attend</span>
                             }
                           </span>
                         </div>

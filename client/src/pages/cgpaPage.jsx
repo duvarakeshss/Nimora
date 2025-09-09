@@ -7,28 +7,28 @@ const API_URL = import.meta.env.VITE_SERVER_URL ;
 
 const SemesterCard = ({ semester, gpa, cgpa, credits, totalCredits, totalPoints }) => {
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:border-purple-500 hover:border-2 border-2 border-transparent">
-      <h2 className="text-xl font-bold text-purple-800 mb-3">Semester {semester}</h2>
+    <div className="bg-white rounded-lg shadow-md p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:border-blue-500 hover:border-2 border-2 border-transparent">
+      <h2 className="text-xl font-bold text-blue-800 mb-3">Semester {semester}</h2>
       <div className="grid grid-cols-2 gap-4 mb-4">
-        <div className="bg-purple-50 p-3 rounded-lg">
-          <p className="text-sm text-purple-600 font-medium">GPA</p>
-          <p className="text-2xl font-bold text-purple-900">{gpa !== "-" ? gpa : "N/A"}</p>
+        <div className="bg-blue-50 p-3 rounded-lg">
+          <p className="text-sm text-blue-600 font-medium">GPA</p>
+          <p className="text-2xl font-bold text-blue-900">{gpa !== "-" ? gpa : "N/A"}</p>
           {credits !== "-" && (
-            <p className="text-xs text-purple-500 mt-1">{credits} Credits</p>
+            <p className="text-xs text-blue-500 mt-1">{credits} Credits</p>
           )}
         </div>
-        <div className="bg-indigo-50 p-3 rounded-lg">
-          <p className="text-sm text-indigo-600 font-medium">CGPA</p>
-          <p className="text-2xl font-bold text-indigo-900">{cgpa !== "-" ? cgpa : "N/A"}</p>
+        <div className="bg-purple-50 p-3 rounded-lg">
+          <p className="text-sm text-purple-600 font-medium">CGPA</p>
+          <p className="text-2xl font-bold text-purple-900">{cgpa !== "-" ? cgpa : "N/A"}</p>
           {totalCredits !== "-" && (
-            <p className="text-xs text-indigo-500 mt-1">{totalCredits} Total Credits</p>
+            <p className="text-xs text-purple-500 mt-1">{totalCredits} Total Credits</p>
           )}
         </div>
       </div>
       {totalPoints && (
-        <div className="bg-purple-100 p-3 rounded-lg mt-2">
-          <p className="text-sm text-purple-700 font-medium">Total Grade Points</p>
-          <p className="text-lg font-bold text-purple-900">{totalPoints}</p>
+        <div className="bg-blue-100 p-3 rounded-lg mt-2">
+          <p className="text-sm text-blue-700 font-medium">Total Grade Points</p>
+          <p className="text-lg font-bold text-blue-900">{totalPoints}</p>
         </div>
       )}
     </div>
@@ -52,13 +52,13 @@ const CourseGradeInput = ({ course, index, updateCourseData }) => {
   }
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 mb-4 transition-all duration-300 hover:shadow-md hover:border-purple-300 hover:bg-purple-50">
-      <h3 className="font-semibold text-purple-800 mb-3 transition-colors duration-300 hover:text-purple-900">{course.course_code}</h3>
+    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 mb-4 transition-all duration-300 hover:shadow-md hover:border-blue-300 hover:bg-blue-50">
+      <h3 className="font-semibold text-blue-800 mb-3 transition-colors duration-300 hover:text-blue-900">{course.course_code}</h3>
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Credits</label>
           <select 
-            className="w-full border border-gray-300 rounded-md p-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-300 hover:border-purple-400"
+            className="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-300 hover:border-blue-400"
             value={credits}
             onChange={handleCreditChange}
           >
@@ -70,7 +70,7 @@ const CourseGradeInput = ({ course, index, updateCourseData }) => {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Grade</label>
           <select 
-            className="w-full border border-gray-300 rounded-md p-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-300 hover:border-purple-400"
+            className="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-300 hover:border-blue-400"
             value={grade}
             onChange={handleGradeChange}
           >
@@ -295,11 +295,11 @@ const Cgpa = () => {
         <div className="max-w-6xl mx-auto">
           <Navbar />
           <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h1 className="text-2xl font-bold text-purple-700 mb-4">CGPA Calculator</h1>
+            <h1 className="text-2xl font-bold text-blue-700 mb-4">CGPA Calculator</h1>
             
             {loading ? (
               <div className="flex justify-center items-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
               </div>
             ) : error ? (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
@@ -309,7 +309,7 @@ const Cgpa = () => {
             ) : (
               <div>
                 {latestCgpaData && (
-                  <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-6 rounded-lg shadow-lg mb-8">
+                  <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-lg shadow-lg mb-8">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div>
                         <p className="text-lg font-medium mb-2">Current CGPA</p>
@@ -330,7 +330,7 @@ const Cgpa = () => {
                 {/* CGPA Prediction Section */}
                 <div className="mb-8">
                   <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-bold text-purple-800">CGPA Prediction</h2>
+                    <h2 className="text-xl font-bold text-blue-800">CGPA Prediction</h2>
                     <button 
                       onClick={() => {
                         if (!showPrediction) {
@@ -338,7 +338,7 @@ const Cgpa = () => {
                         }
                         setShowPrediction(!showPrediction)
                       }}
-                      className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+                      className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
                     >
                       {showPrediction ? 'Hide Prediction' : 'Predict CGPA'}
                     </button>
