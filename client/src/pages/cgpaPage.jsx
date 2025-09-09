@@ -3,7 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import axios from 'axios'
-const API_URL = import.meta.env.VITE_SERVER_URL ;
+// Use proxy path to hide backend server URL
+const API_URL = '/api';
 
 const SemesterCard = ({ semester, gpa, cgpa, credits, totalCredits, totalPoints }) => {
   return (

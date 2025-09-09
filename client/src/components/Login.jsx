@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react'
 import { Lock, User, Eye, EyeOff, Shield } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import Footer from './Footer'
+import { securityUtils } from '../utils/securityUtils'
+import { loginUser } from '../utils/attendanceService'
 
 const Login = () => {
     const [rollNo, setRollNo] = useState('')
@@ -61,20 +63,55 @@ const Login = () => {
         setIsInputFocused(false);
     };
 
-    const handleLogin = () => {
-        if (!rollNo || !password) {
-            setError('Please fill in all fields')
-            return
-        }
-        
-        else{
-            // Convert rollNo to lowercase
-            const normalizedRollNo = rollNo.toLowerCase()
-            // Encode password using base64
-            const encodedPassword = btoa(password)
-            navigate('/Home', { state: { rollNo: normalizedRollNo, password: encodedPassword, fromLogin: true } })
-        }
+    const handleLogin = async () => {
+        // Clear previous errors
         setError('')
+        setIsLoading(true)
+
+        try {
+            // Validate inputs
+            if (!rollNo || !password) {
+                setError('Please fill in all fields')
+                return
+            }
+
+            // Sanitize and validate roll number
+            const sanitizedRollNo = securityUtils.sanitizeInput(rollNo.toLowerCase().trim())
+            if (!securityUtils.validateRollNumber(sanitizedRollNo)) {
+                setError('Please enter a valid roll number')
+                return
+            }
+
+            // Validate password
+            if (!securityUtils.validatePassword(password)) {
+                setError('Password must be at least 6 characters long')
+                return
+            }
+
+            // Check HTTPS security
+            if (!securityUtils.isSecure()) {
+                setError('Connection is not secure. Please use HTTPS.')
+                return
+            }
+
+            // Attempt login
+            const result = await loginUser(sanitizedRollNo, password)
+
+            if (result) {
+                // Navigate to home with credentials
+                navigate('/Home', {
+                    state: {
+                        rollNo: sanitizedRollNo,
+                        password: btoa(password), // Keep base64 for backward compatibility
+                        fromLogin: true
+                    }
+                })
+            }
+        } catch (error) {
+            setError(error.message || 'Login failed. Please try again.')
+        } finally {
+            setIsLoading(false)
+        }
     }
     
     // Handle Enter key press

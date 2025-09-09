@@ -66,7 +66,8 @@ const Feedback = () => {
     setError('')
 
     try {
-      const API_URL = import.meta.env.VITE_SERVER_URL ;
+      // Use proxy path to hide backend server URL
+      const API_URL = '/api';
       // Decode password from base64
       const decodedPassword = atob(password)
       const response = await axios.post(`${API_URL}/auto-feedback`, {

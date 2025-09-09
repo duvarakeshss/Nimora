@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { BookOpen, Calendar, BarChart, MessageSquare, Home as HomeIcon, LogOut, Menu, X } from 'lucide-react'
+import { clearCredentials } from '../utils/attendanceService'
 
 const Navbar = () => {
   const location = useLocation()
@@ -17,6 +17,8 @@ const Navbar = () => {
   ]
   
   const handleLogout = () => {
+    // Clear stored credentials
+    clearCredentials()
     // Clear any stored data if needed
     navigate('/')
   }
