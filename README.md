@@ -1,10 +1,11 @@
-# 🎓 NIMORA - Smart Student Portal
 
+# 🎓 NIMORA
 <div align="center">
+
 
 ![Nimora Logo](client/public/nimora-logo.svg)
 
-**A comprehensive student management system built with modern web technologies**
+**A student management system built with modern web technologies**
 
 [![React](https://img.shields.io/badge/React-18.2.0-61DAFB?style=flat-square&logo=react)](https://reactjs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.104.1-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com/)
@@ -28,7 +29,6 @@
 - [🎯 Usage](#-usage)
 - [🔒 Security](#-security)
 - [🚀 Deployment](#-deployment)
-- [🤝 Contributing](#-contributing)
 - [📄 License](#-license)
 
 ---
@@ -70,16 +70,6 @@
 
 ### 🤖 Automation Features
 - **Smart Feedback**: Automated feedback submission for courses
-- **Batch Processing**: Handle multiple feedback forms simultaneously
-- **Error Recovery**: Intelligent retry mechanisms for failed operations
-- **Background Processing**: Non-blocking automation tasks
-
-### 🎨 User Experience
-- **Responsive Design**: Seamless experience across desktop, tablet, and mobile
-- **Dark/Light Mode**: Adaptive theming based on user preference
-- **Intuitive Navigation**: Clean, modern interface with smooth animations
-- **Accessibility**: WCAG compliant design for inclusive access
-
 ---
 
 ## 🛠️ Tech Stack
@@ -116,15 +106,15 @@
 ## 🏗️ Architecture
 
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
 │   React SPA     │    │   FastAPI        │    │   External      │
 │   (Frontend)    │◄──►│   (Backend)      │◄──►│   Services      │
-│                 │    │                 │    │                 │
-│ • Components    │    │ • REST API      │    │ • PSG Tech      │
-│ • Pages         │    │ • Web Scraping  │    │   eCampus       │
+│                 │    │                  │    │                 │
+│ • Components    │    │ • REST API       │    │ • PSG Tech      │
+│ • Pages         │    │ • Web Scraping   │    │   eCampus       │
 │ • Services      │    │ • Data Processing│    │ • Authentication│
 │ • Utils         │    │ • Background Jobs│    │                 │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
+└─────────────────┘    └──────────────────┘    └─────────────────┘
          │                       │                       │
          └───────────────────────┼───────────────────────┘
                                  │
@@ -223,21 +213,7 @@ const loginData = {
 };
 ```
 
-### 📊 Attendance Tracking
 
-```javascript
-// Fetch attendance data
-const attendance = await getStudentAttendance(rollNo, password);
-// Returns formatted attendance array with percentages
-```
-
-### 📅 Exam Schedule
-
-```javascript
-// Get exam timetable
-const exams = await apiPost('/exam-schedule', credentials);
-// Returns upcoming exams with countdown timers
-```
 
 ### 🤖 Automated Feedback
 
@@ -270,41 +246,6 @@ const result = await apiPost('/auto-feedback', {
 
 ---
 
-## 🚀 Deployment
-
-### Vercel Deployment
-
-The application is configured for seamless deployment on Vercel:
-
-```json
-// vercel.json
-{
-  "version": 2,
-  "builds": [
-    {
-      "src": "server/app.py",
-      "use": "@vercel/python"
-    },
-    {
-      "src": "client/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/server/app.py"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/client/$1"
-    }
-  ]
-}
-```
 
 ### Environment Variables
 
@@ -357,18 +298,6 @@ We welcome contributions! Please follow these guidelines:
    git push origin feature/amazing-feature
    ```
 
-### 🧪 Testing
-
-```bash
-# Frontend tests
-cd client
-npm test
-
-# Backend tests
-cd ../server
-python -m pytest
-```
-
 ### 📋 Code Style
 
 - **JavaScript**: ESLint configuration
@@ -399,14 +328,6 @@ copies or substantial portions of the Software.
 
 ---
 
-## 👥 Authors
-
-**Duvarakesh S**
-- 📧 Email: duvarakeshss@gmail.com
-- 🔗 LinkedIn: [duvarakeshss](https://linkedin.com/in/duvarakeshss)
-- 🐙 GitHub: [@duvarakeshss](https://github.com/duvarakeshss)
-
----
 
 <div align="center">
 
