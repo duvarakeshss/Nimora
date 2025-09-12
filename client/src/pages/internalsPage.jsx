@@ -40,31 +40,10 @@ const InternalCard = ({ course, marks, index }) => {
     const final50 = marksArray[6] || '' // 7th element (index 6)
     const final40 = marksArray[marksArray.length - 1] || '' // Last element
 
-    // Create actual marks array for calculations
-    const actualMarks = [test1, test2, final50, final40].filter(mark => mark && mark !== '*' && mark !== ' ')
-
-    return { courseCode, courseName, test1, test2, final50, final40, actualMarks }
+    return { courseCode, courseName, test1, test2, final50, final40 }
   }
 
-  const { courseCode, courseName, test1, test2, final50, final40, actualMarks } = processCourseData(course, marks)
-
-  // Calculate total marks and status
-  const getTotalMarks = () => {
-    const marks = actualMarks.map(m => parseFloat(m)).filter(m => !isNaN(m))
-    return marks.length > 0 ? marks.reduce((sum, mark) => sum + mark, 0) : 0
-  }
-
-  const getMarksStatus = () => {
-    const total = getTotalMarks()
-    if (total === 0) return { text: "No Marks", color: "bg-gray-100 text-gray-800" }
-    if (total >= 80) return { text: "Excellent", color: "bg-green-100 text-green-800" }
-    if (total >= 60) return { text: "Good", color: "bg-blue-100 text-blue-800" }
-    if (total >= 40) return { text: "Average", color: "bg-yellow-100 text-yellow-800" }
-    return { text: "Needs Improvement", color: "bg-red-100 text-red-800" }
-  }
-
-  const totalMarks = getTotalMarks()
-  const status = getMarksStatus()
+  const { courseCode, courseName, test1, test2, final50, final40 } = processCourseData(course, marks)
 
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl border border-gray-200 hover:border-blue-300 hover:scale-105 hover:bg-blue-50">
@@ -73,7 +52,7 @@ const InternalCard = ({ course, marks, index }) => {
         <p className="text-sm text-blue-600 mt-1">{courseName || 'Course Name Not Available'}</p>
       </div>
       <div className="p-6">
-        <div className="grid grid-cols-2 gap-4 mb-5">
+        <div className="grid grid-cols-2 gap-4">
           <div className="bg-blue-50 rounded-lg p-4 shadow-sm">
             <p className="text-sm text-blue-600 font-medium mb-2">Test 1</p>
             <p className="font-medium transition-colors duration-300 text-blue-800 text-lg">
@@ -98,14 +77,6 @@ const InternalCard = ({ course, marks, index }) => {
               {final40 && final40 !== '*' && final40 !== ' ' ? final40 : '-'}
             </p>
           </div>
-        </div>
-        <div className="mt-5 flex justify-between items-center">
-          <div className="text-sm text-gray-600">
-            Total: <span className="font-semibold text-gray-800">{totalMarks > 0 ? totalMarks : '-'}</span>
-          </div>
-          <span className={`inline-block px-4 py-2 rounded-full text-sm font-medium shadow-sm transition-all duration-300 ${status.color}`}>
-            {status.text}
-          </span>
         </div>
       </div>
     </div>
@@ -222,18 +193,122 @@ const Internals = () => {
               <div>
                 <div className="mb-8 bg-blue-50 p-4 md:p-6 rounded-xl shadow-inner">
                   <p className="text-gray-700 mb-4">Your internal assessment marks are listed below. They are organized by course with individual test scores and final assessments.</p>
-                  <div className="flex flex-wrap gap-3 mb-4">
-                    <span className="px-4 py-1.5 rounded-full text-sm font-medium bg-green-100 text-green-800 shadow-sm">Excellent: 80+</span>
-                    <span className="px-4 py-1.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800 shadow-sm">Good: 60-79</span>
-                    <span className="px-4 py-1.5 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 shadow-sm">Average: 40-59</span>
-                    <span className="px-4 py-1.5 rounded-full text-sm font-medium bg-red-100 text-red-800 shadow-sm">Needs Improvement: &lt;40</span>
-                  </div>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Mobile view - Card layout */}
+                <div className="md:hidden grid grid-cols-1 gap-6 mb-6">
                   {processedData.map((item, index) => (
                     <InternalCard key={index} course={item.course} marks={item.marks} index={index} />
                   ))}
+                </div>
+                
+                {/* Desktop view - Table layout */}
+                <div className="hidden md:block">
+                  <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gradient-to-r from-slate-700 via-gray-700 to-slate-800">
+                          <tr>
+                            <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                              Course
+                            </th>
+                            <th className="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">
+                              Test 1
+                            </th>
+                            <th className="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">
+                              Test 2
+                            </th>
+                            <th className="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">
+                              Final /50
+                            </th>
+                            <th className="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">
+                              Final /40
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {processedData.map((item, index) => {
+                            // Extract course data for table
+                            const processCourseData = (courseString, marksArray) => {
+                              let courseCode = courseString.split(' - ')[0] || courseString
+                              let courseName = marksArray[0] || ''
+                              
+                              const unwantedPatterns = ['BDAMD', 'JP', 'BTECH', 'CSE', 'ECE', 'EEE', 'MECH', 'CIVIL']
+                              
+                              unwantedPatterns.forEach(pattern => {
+                                courseCode = courseCode.replace(new RegExp(pattern, 'gi'), '').trim()
+                              })
+                              
+                              if (courseName) {
+                                unwantedPatterns.forEach(pattern => {
+                                  courseName = courseName.replace(new RegExp(pattern, 'gi'), '').trim()
+                                })
+                              }
+                              
+                              courseCode = courseCode.replace(/\s+/g, ' ').replace(/^[-\s]+|[-\s]+$/g, '').trim()
+                              courseName = courseName.replace(/\s+/g, ' ').replace(/^[-\s]+|[-\s]+$/g, '').trim()
+                              
+                              const test1 = marksArray[1] || ''
+                              const test2 = marksArray[2] || ''
+                              const final50 = marksArray[6] || ''
+                              const final40 = marksArray[marksArray.length - 1] || ''
+                              
+                              return { courseCode, courseName, test1, test2, final50, final40 }
+                            }
+                            
+                            const { courseCode, courseName, test1, test2, final50, final40 } = processCourseData(item.course, item.marks)
+                            
+                            return (
+                              <tr key={index} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50 transition-colors duration-200`}>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <div className="flex flex-col">
+                                    <div className="text-sm font-semibold text-gray-900">{courseCode || 'N/A'}</div>
+                                    <div className="text-sm text-gray-600">{courseName || 'Course Name Not Available'}</div>
+                                  </div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-center">
+                                  <span className={`inline-flex items-center justify-center w-12 h-8 rounded-lg text-sm font-medium ${
+                                    test1 && test1 !== '*' && test1 !== ' ' 
+                                      ? 'bg-blue-100 text-blue-800 border border-blue-200' 
+                                      : 'bg-gray-100 text-gray-500 border border-gray-200'
+                                  }`}>
+                                    {test1 && test1 !== '*' && test1 !== ' ' ? test1 : '-'}
+                                  </span>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-center">
+                                  <span className={`inline-flex items-center justify-center w-12 h-8 rounded-lg text-sm font-medium ${
+                                    test2 && test2 !== '*' && test2 !== ' ' 
+                                      ? 'bg-purple-100 text-purple-800 border border-purple-200' 
+                                      : 'bg-gray-100 text-gray-500 border border-gray-200'
+                                  }`}>
+                                    {test2 && test2 !== '*' && test2 !== ' ' ? test2 : '-'}
+                                  </span>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-center">
+                                  <span className={`inline-flex items-center justify-center w-12 h-8 rounded-lg text-sm font-medium ${
+                                    final50 && final50 !== '*' && final50 !== ' ' 
+                                      ? 'bg-green-100 text-green-800 border border-green-200' 
+                                      : 'bg-gray-100 text-gray-500 border border-gray-200'
+                                  }`}>
+                                    {final50 && final50 !== '*' && final50 !== ' ' ? final50 : '-'}
+                                  </span>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-center">
+                                  <span className={`inline-flex items-center justify-center w-12 h-8 rounded-lg text-sm font-medium ${
+                                    final40 && final40 !== '*' && final40 !== ' ' 
+                                      ? 'bg-orange-100 text-orange-800 border border-orange-200' 
+                                      : 'bg-gray-100 text-gray-500 border border-gray-200'
+                                  }`}>
+                                    {final40 && final40 !== '*' && final40 !== ' ' ? final40 : '-'}
+                                  </span>
+                                </td>
+                              </tr>
+                            )
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
