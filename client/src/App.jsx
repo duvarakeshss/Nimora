@@ -2,10 +2,10 @@ import React from 'react'
 import './App.css'
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import Home from './pages/homePage'
-import Attandance from './pages/attandancePage'
 import Feedback from './pages/feedbackPage'
 import TimeTable from './pages/timetablePage'
 import Cgpa from './pages/cgpaPage'
+import Internals from './pages/internalsPage'
 import Login from './components/Login'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
@@ -35,11 +35,6 @@ function App() {
             <Home />
           </PageLayout>
         } />
-        <Route path='/attandance' element={
-          <PageLayout>
-            <Attandance />
-          </PageLayout>
-        } />
         <Route path='/feedback' element={
           <PageLayout>
             <Feedback />
@@ -53,6 +48,11 @@ function App() {
         <Route path='/cgpa' element={
           <PageLayout>
             <Cgpa />
+          </PageLayout>
+        } />
+        <Route path='/internals' element={
+          <PageLayout>
+            <Internals />
           </PageLayout>
         } />
       </Routes>

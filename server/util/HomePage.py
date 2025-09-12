@@ -69,6 +69,37 @@ def getHomePageCGPA(rollno, password):
         "abcd3"                : abcd3
     }
 
+def getHomePageCGPA(rollno, password):
+    #Start a session
+    login_url = "https://ecampus.psgtech.ac.in/studzone2/"
+    session = Session()
+
+    #Get the login page
+    login_page = session.get(login_url)
+
+    #Extract the html from the page using lxml parser
+    login_soup = BeautifulSoup(login_page.text , "lxml")
+
+    #Get the dynamic tokens used for login
+    viewstate           = login_soup.find("input",{"name":"__VIEWSTATE"})["value"]
+    viewstate_generator = login_soup.find("input",{"name":"__VIEWSTATEGENERATOR"})["value"]
+    event_validation    = login_soup.find("input",{"name" : "__EVENTVALIDATION"})["value"]
+    abcd3               = login_soup.find("input",{"name" : "abcd3"})["value"]
+
+    #Create a payload to POST to the login form
+    payload = {
+        "__EVENTTARGET"        : "",
+        "__EVENTARGUMENT"      : "",
+        "__LASTFOCUS"          : "",
+        "__VIEWSTATE"          : viewstate,
+        "__VIEWSTATEGENERATOR" : viewstate_generator,
+        "__EVENTVALIDATION"    : event_validation,
+        "rdolst"               : "S",
+        "txtusercheck"         : rollno,
+        "txtpwdcheck"          : password,
+        "abcd3"                : abcd3
+    }
+
     #Send a POST request from current session
     session.post(login_url, data=payload)
 

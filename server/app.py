@@ -1,8 +1,9 @@
-from util.HomePage import getHomePageAttendance
+from util.HomePage import getHomePageAttendance, getHomePageCGPA
 from util.Attendance import *
 from util.Feedback import auto_feedback_task
-from util.Cgpa import getStudentCourses, getCGPA
+from util.Cgpa import getStudentCourses, getCompletedSemester, getCGPA
 from util.Timetable import getExamSchedule
+from util.Internals import getInternals, getTargetScore, calculateTarget
 import pandas as pd
 import os
 import traceback
@@ -120,7 +121,7 @@ async def custom_404_handler(request: Request, exc):
                 "/cgpa": "Get CGPA and semester-wise GPA",
                 "/exam-schedule": "Get upcoming exam schedule",
                 "/auto-feedback": "Submit automated feedback",
-                "/predict-courses": "Get current courses for CGPA prediction"
+                "/internals": "Get internal marks and assessment data",
             }
         }
     )
@@ -324,13 +325,14 @@ def get_cgpa(request: dict):
             raise HTTPException(status_code=400, detail="Missing credentials")
         
         logger.info(f"CGPA request for {rollno}")
-        session = getHomePageAttendance(rollno, password)
+        session = getHomePageCGPA(rollno, password)
         if not session:
             raise HTTPException(status_code=401, detail="Invalid credentials")
         
         try:
             # Get course data and completed semester
-            course_data, completed_semester = getStudentCourses(session)
+            course_data = getStudentCourses(session)
+            completed_semester = getCompletedSemester(session)
             
             # Calculate CGPA
             cgpa_data = getCGPA(course_data, completed_semester)
@@ -359,10 +361,10 @@ def get_cgpa(request: dict):
         raise HTTPException(status_code=500, 
                            detail=f"Error calculating CGPA. Please try again or contact support if the issue persists.")
 
-@app.post("/predict-courses")
-def get_current_courses(request: dict):
+@app.post("/internals")
+def get_internals(request: dict):
     """
-    Get current courses from attendance data for CGPA prediction
+    Get internal marks and continuous assessment data
     """
     try:
         # Check if this is the new encoded format or old format
@@ -379,65 +381,37 @@ def get_current_courses(request: dict):
         if not rollno or not password:
             raise HTTPException(status_code=400, detail="Missing credentials")
         
+        logger.info(f"Internals request for {rollno}")
         session = getHomePageAttendance(rollno, password)
         if not session:
             raise HTTPException(status_code=401, detail="Invalid credentials")
         
-        # Get the attendance data for current courses
-        attendance_data = getStudentAttendance(session)
-        
-        if not attendance_data or len(attendance_data) == 0:
-            raise HTTPException(status_code=404, detail="No current courses found")
-        
-        # Extract only course codes for prediction
-        courses = []
-        for row in attendance_data:
-            if not row or len(row) < 1:
-                continue
-            # Extract course code (splitting at first space if needed)
-            course_code = row[0].split()[0] if ' ' in row[0] else row[0]
-            courses.append({"course_code": course_code})
-        
-        # Handle case with no valid courses
-        if not courses:
-            raise HTTPException(status_code=404, detail="No valid course codes found")
-        
-        # Default values for CGPA data (for new students or when data is unavailable)
-        result = {
-            "courses": courses,
-            "previous_cgpa": None,
-            "total_credits": 0,
-            "total_points": 0
-        }
-        
         try:
-            # Try to get CGPA data for previous semesters
-            course_data, completed_semester = getStudentCourses(session)
-            cgpa_data = getCGPA(course_data, completed_semester)
+            # Get internal marks data
+            internals_data = getInternals(session)
             
-            # Get latest CGPA and total credits/points
-            latest_cgpa_row = None
-            for i in range(len(cgpa_data) - 1, -1, -1):
-                if cgpa_data.iloc[i]['CGPA'] != '-':
-                    latest_cgpa_row = cgpa_data.iloc[i]
-                    break
+            if not internals_data:
+                raise HTTPException(status_code=404, detail="No internal marks data found")
             
-            # Update result with CGPA data if available
-            if latest_cgpa_row is not None:
-                result["previous_cgpa"] = float(latest_cgpa_row['CGPA'])
-                result["total_credits"] = int(latest_cgpa_row['TOTAL_CREDITS'])
-                result["total_points"] = float(latest_cgpa_row['TOTAL_POINTS'])
-        except Exception as cgpa_error:
-            # If there's an error getting CGPA data, just log it but don't fail the request
-            result["error"] = f"Could not fetch previous CGPA data: {str(cgpa_error)}"
-        
-        return result
-        
+            # Return the internals data
+            return {
+                "internals": internals_data,
+                "message": "Internal marks data retrieved successfully"
+            }
+            
+        except HTTPException as he:
+            logger.error(f"Internals HTTP error: {he.detail}")
+            raise he
+            
     except HTTPException as he:
         # Re-raise HTTP exceptions
+        logger.error(f"Internals request error: {he.detail}")
         raise he
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error getting current courses: {str(e)}")
+        logger.error(f"Internals error: {str(e)}")
+        logger.error(traceback.format_exc())
+        raise HTTPException(status_code=500, 
+                           detail=f"Error retrieving internal marks. Please try again or contact support if the issue persists.")
 
 @app.post("/diagnose-cgpa")
 def diagnose_cgpa(request: dict):

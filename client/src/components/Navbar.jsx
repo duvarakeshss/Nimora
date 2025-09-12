@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Home as HomeIcon, BookOpen, Calendar, BarChart, MessageSquare, LogOut, Menu, X } from 'lucide-react'
+import { Home as HomeIcon, Calendar, BarChart, MessageSquare, LogOut, Menu, X, ClipboardList } from 'lucide-react'
 import { clearCredentials } from '../utils/attendanceService'
 
 const Navbar = () => {
@@ -11,7 +11,7 @@ const Navbar = () => {
   // Define navigation items
   const navItems = [
     { path: '/Home', name: 'Home', icon: HomeIcon },
-    { path: '/attandance', name: 'Attendance', icon: BookOpen },
+    { path: '/internals', name: 'Internal Marks', icon: ClipboardList },
     { path: '/timetable', name: 'Time Table', icon: Calendar },
     { path: '/cgpa', name: 'CGPA', icon: BarChart },
     { path: '/feedback', name: 'Feedback', icon: MessageSquare },
