@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
-import { apiPost } from '../utils/api.js'
+import { getExamSchedule } from '../utils/attendanceService'
 
 const ExamCard = ({ exam }) => {
   // Determine the date format
@@ -157,17 +157,13 @@ const Timetable = () => {
     const fetchTimetable = async () => {
       try {
         setLoading(true)
-        // Decode password from base64
-        const decodedPassword = atob(password)
-        const response = await apiPost('/exam-schedule', {
-          rollno: rollNo,
-          password: decodedPassword
-        })
+        // Use the service function which checks stored data first
+        const response = await getExamSchedule(rollNo, atob(password))
         
-        if (response.exams && response.exams.length > 0) {
-          setExams(response.exams)
+        if (response && response.length > 0) {
+          setExams(response)
         } else {
-          setMessage(response.message || "No upcoming exams found.")
+          setMessage("No upcoming exams found.")
         }
       } catch (err) {
         console.error("Error fetching exam schedule:", err)

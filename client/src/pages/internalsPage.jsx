@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
-import { apiPost } from '../utils/api.js'
+import { getInternalsData } from '../utils/attendanceService'
 
 // Card Component for Internal Marks
 const InternalCard = ({ course, marks, index }) => {
@@ -96,13 +96,9 @@ const Internals = () => {
     const fetchInternalsData = async () => {
       try {
         setLoading(true)
-        // Decode password from base64
-        const decodedPassword = atob(password)
-        const response = await apiPost('/internals', {
-          rollno: rollNo,
-          password: decodedPassword
-        })
-        setInternalsData(response.internals || [])
+        // Use the service function which checks stored data first
+        const response = await getInternalsData(rollNo, atob(password))
+        setInternalsData(response || [])
       } catch (err) {
         console.error("Error fetching internals data:", err)
         
@@ -167,6 +163,23 @@ const Internals = () => {
       })
     : []
 
+  // Check if there are any valid marks to display
+  const hasValidMarks = processedData.some(item => {
+    const { test1, test2, final50, final40 } = (() => {
+      let courseCode = item.course.split(' - ')[0] || item.course
+      const test1 = item.marks[1] || ''
+      const test2 = item.marks[2] || ''
+      const final50 = item.marks[6] || ''
+      const final40 = item.marks[item.marks.length - 1] || ''
+      return { test1, test2, final50, final40 }
+    })()
+    
+    return (test1 && test1 !== '*' && test1 !== ' ') ||
+           (test2 && test2 !== '*' && test2 !== ' ') ||
+           (final50 && final50 !== '*' && final50 !== ' ') ||
+           (final40 && final40 !== '*' && final40 !== ' ')
+  })
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <div className="flex-grow p-4 md:p-6">
@@ -186,8 +199,28 @@ const Internals = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                   </svg>
                 </div>
+                <p className="text-blue-600 font-medium text-lg">{error}</p>
+                <p className="text-gray-600 mt-2">Your internal assessment data will appear here once it's published by your institution.</p>
+              </div>
+            ) : processedData.length === 0 ? (
+              <div className="text-center py-12 bg-blue-50 rounded-xl shadow-inner px-4">
+                <div className="mx-auto w-20 h-20 mb-6 text-blue-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                </div>
                 <p className="text-blue-600 font-medium text-lg">No Internal Marks Data Available</p>
                 <p className="text-gray-600 mt-2">Your internal assessment data will appear here once it's published by your institution.</p>
+              </div>
+            ) : !hasValidMarks ? (
+              <div className="text-center py-12 bg-yellow-50 rounded-xl shadow-inner px-4">
+                <div className="mx-auto w-20 h-20 mb-6 text-yellow-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
+                </div>
+                <p className="text-yellow-600 font-medium text-lg">No Marks Published Yet</p>
+                <p className="text-gray-600 mt-2">Internal assessment marks have not been published for your courses yet. Please check back later.</p>
               </div>
             ) : (
               <div>
@@ -197,9 +230,26 @@ const Internals = () => {
                 
                 {/* Mobile view - Card layout */}
                 <div className="md:hidden grid grid-cols-1 gap-6 mb-6">
-                  {processedData.map((item, index) => (
-                    <InternalCard key={index} course={item.course} marks={item.marks} index={index} />
-                  ))}
+                  {processedData.map((item, index) => {
+                    // Check if this course has any valid marks before rendering
+                    const { test1, test2, final50, final40 } = (() => {
+                      let courseCode = item.course.split(' - ')[0] || item.course
+                      const test1 = item.marks[1] || ''
+                      const test2 = item.marks[2] || ''
+                      const final50 = item.marks[6] || ''
+                      const final40 = item.marks[item.marks.length - 1] || ''
+                      return { test1, test2, final50, final40 }
+                    })()
+                    
+                    const hasAnyValidMark = (test1 && test1 !== '*' && test1 !== ' ') ||
+                                           (test2 && test2 !== '*' && test2 !== ' ') ||
+                                           (final50 && final50 !== '*' && final50 !== ' ') ||
+                                           (final40 && final40 !== '*' && final40 !== ' ')
+                    
+                    if (!hasAnyValidMark) return null
+                    
+                    return <InternalCard key={index} course={item.course} marks={item.marks} index={index} />
+                  })}
                 </div>
                 
                 {/* Desktop view - Table layout */}
@@ -207,25 +257,27 @@ const Internals = () => {
                   <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
                     <div className="overflow-x-auto">
                       <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gradient-to-r from-slate-700 via-gray-700 to-slate-800">
-                          <tr>
-                            <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                              Course
-                            </th>
-                            <th className="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">
-                              Test 1
-                            </th>
-                            <th className="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">
-                              Test 2
-                            </th>
-                            <th className="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">
-                              Final /50
-                            </th>
-                            <th className="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">
-                              Final /40
-                            </th>
-                          </tr>
-                        </thead>
+                        {hasValidMarks && (
+                          <thead className="bg-gradient-to-r from-slate-700 via-gray-700 to-slate-800">
+                            <tr>
+                              <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                                Course
+                              </th>
+                              <th className="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">
+                                Test 1
+                              </th>
+                              <th className="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">
+                                Test 2
+                              </th>
+                              <th className="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">
+                                Final /50
+                              </th>
+                              <th className="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">
+                                Final /40
+                              </th>
+                            </tr>
+                          </thead>
+                        )}
                         <tbody className="bg-white divide-y divide-gray-200">
                           {processedData.map((item, index) => {
                             // Extract course data for table
@@ -257,6 +309,14 @@ const Internals = () => {
                             }
                             
                             const { courseCode, courseName, test1, test2, final50, final40 } = processCourseData(item.course, item.marks)
+                            
+                            // Only show rows that have at least one valid mark
+                            const hasAnyValidMark = (test1 && test1 !== '*' && test1 !== ' ') ||
+                                                   (test2 && test2 !== '*' && test2 !== ' ') ||
+                                                   (final50 && final50 !== '*' && final50 !== ' ') ||
+                                                   (final40 && final40 !== '*' && final40 !== ' ')
+                            
+                            if (!hasAnyValidMark) return null
                             
                             return (
                               <tr key={index} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50 transition-colors duration-200`}>

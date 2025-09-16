@@ -1,8 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { getStudentAttendance, greetUser } from '../utils/attendanceService'
-import { ToastContainer, toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 import Footer from '../components/Footer'
 
 const Home = () => {
@@ -14,7 +12,6 @@ const Home = () => {
   const [attendanceData, setAttendanceData] = useState([])
   const [customPercentage, setCustomPercentage] = useState(80)
   const [combinedData, setCombinedData] = useState([])
-  const toastShownRef = useRef(false)
 
   // Prevent going back to login page when back button is clicked
   useEffect(() => {
@@ -42,27 +39,17 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (!rollNo || !password) {
-        toast.error('Login credentials not found. Please log in again.', {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true
-        });
-        setLoading(false);
+        console.error('Login credentials not found. Please log in again.')
+        setLoading(false)
         // Redirect to login page after a short delay
         setTimeout(() => {
-          navigate('/');
-        }, 1500);
-        return;
+          navigate('/')
+        }, 1500)
+        return
       }
 
       try {
         setLoading(true)
-        
-        // Only show success toast if this is coming from login page
-        const isFromLogin = location.state?.fromLogin || false;
         
         // Decode password from base64
         const decodedPassword = atob(password)
@@ -78,41 +65,15 @@ const Home = () => {
   
           // Calculate affordable leaves with default percentage
           calculateCombinedData(data, customPercentage)
-          
-          // Show success toast after data is loaded if coming from login
-          if (isFromLogin && !toastShownRef.current) {
-            toastShownRef.current = true;
-            setTimeout(() => {
-              toast.success(`Welcome! Successfully logged in as ${rollNo}`, {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                theme: "light"
-              })
-            }, 500);
-          }
         }
       } catch (err) {
         console.error('Error loading data:', err)
         
-        // Show error toast with the specific error message
-        toast.error(`${err.message}`, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true
-        });
-        
         // If error is about invalid credentials, redirect to login
-        if (err.message.includes('Invalid credentials')) {
+        if (err.message && err.message.includes('Invalid credentials')) {
           setTimeout(() => {
-            navigate('/');
-          }, 1500);
+            navigate('/')
+          }, 1500)
         }
       } finally {
         setLoading(false)
@@ -222,18 +183,6 @@ const Home = () => {
 
   return (
     <>
-      <ToastContainer 
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
       {greeting && (
     <>
       <div className="bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-50 rounded-xl shadow-lg p-6 mb-6 border border-gray-200/50 backdrop-blur-sm">

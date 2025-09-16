@@ -37,7 +37,7 @@ const Navbar = () => {
             <img src="/nimora-logo.svg" alt="Nimora Logo" className="h-10 w-10 mr-3 drop-shadow-lg" />
             <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur opacity-30"></div>
           </div>
-          <span className="text-white font-bold text-2xl cursor-pointer transition-colors duration-300 hover:text-gray-200">NIMORA</span>
+          <span className="text-white font-bold text-2xl cursor-pointer transition-colors duration-300 hover:text-gray-200">Skipp</span>
         </div>
         
         {/* Mobile menu button */}

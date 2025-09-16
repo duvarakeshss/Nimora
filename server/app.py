@@ -10,6 +10,7 @@ import traceback
 import logging
 import base64
 import json
+import asyncio
 from fastapi import FastAPI, HTTPException, BackgroundTasks, Request
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
@@ -129,12 +130,13 @@ async def custom_404_handler(request: Request, exc):
             "detail": "Endpoint not found. Please check the API documentation.",
             "available_endpoints": {
                 "/": "API information",
-                "/login": "Authenticate and get attendance summary",
+                "/login": "DEPRECATED: Use /data instead - Authenticate and get combined data",
                 "/attendance": "Get detailed attendance information",
                 "/cgpa": "Get CGPA and semester-wise GPA",
                 "/exam-schedule": "Get upcoming exam schedule",
                 "/auto-feedback": "Submit automated feedback",
                 "/internals": "Get internal marks and assessment data",
+                "/data": "Get combined data for attendance, timetable, cgpa, internals, and user info",
             }
         }
     )
@@ -207,7 +209,11 @@ class FeedbackRequest(BaseModel):
 
 
 @app.post("/login")
-def login(request: dict):
+async def login(request: dict):
+    """
+    DEPRECATED: Use /data endpoint instead.
+    This endpoint is maintained for backward compatibility.
+    """
     try:
         # Check if this is the new encoded format or old format
         if 'data' in request:
@@ -223,13 +229,16 @@ def login(request: dict):
         if not rollno or not password:
             raise HTTPException(status_code=400, detail="Missing credentials")
         
-        session = getHomePageAttendance(rollno, password)
-        if not session:
-            raise HTTPException(status_code=401, detail="Invalid credentials")
-        data = getStudentAttendance(session)
-        atten = getAffordableLeaves(data, 70)
-        # Convert DataFrame to dict for JSON serialization
-        return atten.to_dict(orient='records')
+        # Call the /data endpoint internally to get all combined data
+        data_request = {'rollno': rollno, 'password': password}
+        combined_data = await get_combined_data(data_request)
+        
+        # Add deprecation warning to response
+        combined_data["deprecation_warning"] = "This endpoint is deprecated. Please use /data endpoint instead."
+        
+        # Return the combined data instead of just attendance
+        return combined_data
+        
     except Exception as e:
         raise HTTPException(status_code=400, detail="Invalid request format")
 
@@ -591,4 +600,183 @@ def get_user_info(request: dict):
         # Use rollno if available, otherwise use a default
         username = locals().get('rollno', 'User')
         return {"username": username, "is_birthday": False}
+
+@app.post("/data")
+async def get_combined_data(request: dict):
+    """
+    Get combined data for attendance, timetable, cgpa, internals, and user info
+    """
+    try:
+        # Check if this is the new encoded format or old format
+        if 'data' in request:
+            # Decode the encoded payload
+            decoded_data = PayloadSecurity.decode_payload(request['data'])
+            rollno = decoded_data.get('rollno')
+            password = decoded_data.get('password')
+        else:
+            # Fallback to old format for backward compatibility
+            rollno = request.get('rollno')
+            password = request.get('password')
+        
+        if not rollno or not password:
+            raise HTTPException(status_code=400, detail="Missing credentials")
+        
+        # Create session once
+        session = getHomePageAttendance(rollno, password)
+        if not session:
+            raise HTTPException(status_code=401, detail="Invalid credentials")
+        
+        # Define async functions for each data type
+        async def fetch_attendance():
+            try:
+                data = await asyncio.to_thread(getStudentAttendance, session)
+                result = []
+                for row in data:
+                    total_classes = int(row[1])
+                    present = int(row[4])
+                    absent = total_classes - present
+                    result.append({
+                        "course_code": row[0],
+                        "total_classes": total_classes,
+                        "present": present,
+                        "absent": absent,
+                        "percentage": row[6]
+                    })
+                return {"attendance": result}
+            except Exception as e:
+                logger.error(f"Error fetching attendance: {e}")
+                return {"attendance": []}
+        
+        async def fetch_cgpa():
+            try:
+                session_cgpa = await asyncio.to_thread(getHomePageCGPA, rollno, password)
+                if not session_cgpa:
+                    return {"cgpa": []}
+                
+                course_data = await asyncio.to_thread(getStudentCourses, session_cgpa)
+                completed_semester = await asyncio.to_thread(getCompletedSemester, session_cgpa)
+                cgpa_data = await asyncio.to_thread(getCGPA, course_data, completed_semester)
+                return {"cgpa": cgpa_data.to_dict(orient='records')}
+            except Exception as e:
+                logger.error(f"Error fetching CGPA: {e}")
+                return {"cgpa": []}
+        
+        async def fetch_timetable():
+            try:
+                schedule = await asyncio.to_thread(getExamSchedule, session)
+                if isinstance(schedule, pd.DataFrame):
+                    if schedule.empty:
+                        return {"timetable": []}
+                    else:
+                        return {"timetable": schedule.to_dict(orient='records')}
+                else:
+                    return {"timetable": []}
+            except Exception as e:
+                logger.error(f"Error fetching timetable: {e}")
+                return {"timetable": []}
+        
+        async def fetch_internals():
+            try:
+                internals_data = await asyncio.to_thread(getInternals, session)
+                if not internals_data:
+                    return {"internals": []}
+                return {"internals": internals_data}
+            except Exception as e:
+                logger.error(f"Error fetching internals: {e}")
+                return {"internals": []}
+        
+        async def fetch_user_info():
+            try:
+                # Initialize default response
+                default_response = {"username": rollno, "is_birthday": False}
+                
+                # Try multiple pages to get user info
+                pages_to_try = [
+                    "https://ecampus.psgtech.ac.in/studzone/Scholar/VallalarScholarship",  # Primary source
+                    "https://ecampus.psgtech.ac.in/studzone/Profile"  # Backup source
+                ]
+                
+                for page_url in pages_to_try:
+                    try:
+                        page_response = await asyncio.to_thread(session.get, page_url, timeout=10)
+                        
+                        if not page_response.ok:
+                            continue
+                        
+                        page_soup = BeautifulSoup(page_response.text, "html.parser")
+                        
+                        # Check if we're on the scholarship page
+                        if "VallalarScholarship" in page_url:
+                            personal_info_table = page_soup.find("td", {"class": "personal-info"})
+                            if personal_info_table:
+                                personal_info = personal_info_table.find_all("td")
+                                
+                                # Get username (first item in personal info)
+                                if personal_info and len(personal_info) > 0:
+                                    username = personal_info[0].string.strip()
+                                    if username and len(username) > 0:
+                                        default_response["username"] = username
+                                
+                                # Get birthday (third item in personal info)
+                                if personal_info and len(personal_info) > 2:
+                                    try:
+                                        birthdate_str = personal_info[2].string.strip()
+                                        birthdate = datetime.strptime(birthdate_str, "%d/%m/%Y").date()
+                                        
+                                        # Get current date in India timezone
+                                        IST = pytz.timezone('Asia/Kolkata')
+                                        today = datetime.now(IST).date()
+                                        
+                                        is_birthday = (birthdate.month == today.month and birthdate.day == today.day)
+                                        default_response["is_birthday"] = is_birthday
+                                    except Exception as e:
+                                        pass
+                        
+                        # Check if we're on the profile page
+                        elif "Profile" in page_url and default_response["username"] == rollno:
+                            # Try to find username in profile page if we couldn't from scholarship page
+                            name_element = page_soup.find("input", {"id": "txtName"})
+                            if name_element and name_element.has_attr("value"):
+                                username = name_element["value"].strip()
+                                if username and len(username) > 0:
+                                    default_response["username"] = username
+                        
+                        # If we got a username that's not the roll number, we can stop
+                        if default_response["username"] != rollno:
+                            break
+                            
+                    except Exception as page_error:
+                        continue
+                
+                return {"user_info": default_response}
+            except Exception as e:
+                logger.error(f"Error fetching user info: {e}")
+                return {"user_info": {"username": rollno, "is_birthday": False}}
+        
+        # Run all fetches concurrently
+        results = await asyncio.gather(
+            fetch_attendance(),
+            fetch_cgpa(),
+            fetch_timetable(),
+            fetch_internals(),
+            fetch_user_info()
+        )
+        
+        # Combine results
+        combined_data = {}
+        for result in results:
+            combined_data.update(result)
+        
+        return {
+            "status": "success",
+            "data": combined_data,
+            "message": "Combined data retrieved successfully"
+        }
+        
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        logger.error(f"Error in /data endpoint: {e}")
+        raise HTTPException(status_code=500, 
+                           detail="Error retrieving combined data. Please try again or contact support if the issue persists.")
 

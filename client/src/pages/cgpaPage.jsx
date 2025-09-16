@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
-import { apiPost } from '../utils/api.js'
+import { getStudentCGPA } from '../utils/attendanceService'
 
 // Enhanced Semester Card with better design
 const SemesterCard = ({ semester, gpa, cgpa, credits }) => {
@@ -87,12 +87,8 @@ const Cgpa = () => {
     const fetchCgpaData = async () => {
       try {
         setLoading(true)
-        // Decode password from base64
-        const decodedPassword = atob(password)
-        const response = await apiPost('/cgpa', {
-          rollno: rollNo,
-          password: decodedPassword
-        })
+        // Use the service function which checks stored data first
+        const response = await getStudentCGPA(rollNo, atob(password))
         setCgpaData(response)
       } catch (err) {
         console.error("Error fetching CGPA data:", err)

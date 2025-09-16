@@ -130,7 +130,7 @@ const Login = () => {
                 <div className="text-center">
                     <img src="/nimora-logo.svg" alt="Nimora Logo" className="h-16 w-16 mx-auto mb-4" />
                     <h1 className="text-4xl font-bold tracking-tight text-white">
-                        Nimora
+                        Skipp
                     </h1>
                     <p className="mt-2 text-lg text-gray-300">Track Your Attendance</p>
                 </div>
