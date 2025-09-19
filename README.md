@@ -1,5 +1,5 @@
 
-# 🎓 NIMORA
+# 🎓 Skipp
 <div align="center">
 
 
@@ -35,7 +35,7 @@
 
 ## ✨ Overview
 
-**NIMORA** is a modern, full-stack web application designed to streamline student academic life. Built with cutting-edge technologies, it provides a unified platform for attendance tracking, exam scheduling, CGPA calculation, and automated feedback submission. The application features a responsive design that works seamlessly across all devices, ensuring students can access their academic information anytime, anywhere.
+**Skipp** is a modern, full-stack web application designed to streamline student academic life. Built with cutting-edge technologies, it provides a unified platform for attendance tracking, exam scheduling, CGPA calculation, and automated feedback submission. The application features a responsive design that works seamlessly across all devices, ensuring students can access their academic information anytime, anywhere.
 
 ### 🎯 Key Highlights
 
