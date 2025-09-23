@@ -27,42 +27,42 @@ const SemesterCard = ({ semester, gpa, cgpa, credits }) => {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:border-2 hover:border-indigo-200 border border-gray-100 group">
+    <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:border-2 hover:border-indigo-200 border border-gray-100 group">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold text-gray-800 group-hover:text-indigo-700 transition-colors duration-300">
+        <h2 className="text-lg sm:text-xl font-bold text-gray-800 group-hover:text-indigo-700 transition-colors duration-300">
           Semester {semester}
         </h2>
-        <div className="w-3 h-3 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full opacity-60 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div className="hidden sm:block w-3 h-3 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full opacity-60 group-hover:opacity-100 transition-opacity duration-300"></div>
       </div>
 
-      <div className="space-y-4">
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-100">
-          <div className="flex items-center justify-between">
+      <div className="space-y-3 sm:space-y-4">
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-3 sm:p-4 rounded-lg border border-blue-100">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
             <div>
-              <p className="text-sm font-medium text-blue-700 mb-1">GPA</p>
-              <p className={`text-3xl font-bold ${getGpaColor(gpa)}`}>
+              <p className="text-xs sm:text-sm font-medium text-blue-700 mb-1">GPA</p>
+              <p className={`text-2xl sm:text-3xl font-bold ${getGpaColor(gpa)}`}>
                 {gpa !== "-" ? gpa : "N/A"}
               </p>
             </div>
-            <div className="text-right">
+            <div className="text-left sm:text-right">
               {credits !== "-" && (
-                <p className="text-xs text-blue-600 font-medium">{credits} Credits</p>
+                <p className="hidden sm:block text-xs text-blue-600 font-medium">{credits} Credits</p>
               )}
             </div>
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-lg border border-purple-100">
-          <div className="flex items-center justify-between">
+        <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-3 sm:p-4 rounded-lg border border-purple-100">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
             <div>
-              <p className="text-sm font-medium text-purple-700 mb-1">CGPA</p>
-              <p className={`text-3xl font-bold ${getCgpaColor(cgpa)}`}>
+              <p className="text-xs sm:text-sm font-medium text-purple-700 mb-1">CGPA</p>
+              <p className={`text-2xl sm:text-3xl font-bold ${getCgpaColor(cgpa)}`}>
                 {cgpa !== "-" ? cgpa : "N/A"}
               </p>
             </div>
-            <div className="text-right">
-              <div className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
-                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+            <div className="hidden sm:flex justify-center sm:justify-end">
+              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
+                <svg className="w-3 h-3 sm:w-4 sm:h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
               </div>
@@ -158,57 +158,57 @@ const Cgpa = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex flex-col">
-      <div className="flex-grow p-6">
+      <div className="flex-grow p-4 sm:p-6">
         <div className="max-w-7xl mx-auto">
           <Navbar />
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 mb-6 border border-white/20">
-            <div className="flex items-center justify-between mb-6">
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-4 sm:p-6 md:p-8 mb-6 border border-white/20">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
               <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                   CGPA Dashboard
                 </h1>
-                <p className="text-gray-600 mt-1">Track your academic performance</p>
+                <p className="text-gray-600 mt-1 text-sm sm:text-base">Track your academic performance</p>
               </div>
             </div>
             
             {loading ? (
-              <div className="flex flex-col items-center justify-center py-20">
+              <div className="flex flex-col items-center justify-center py-12 sm:py-20">
                 <div className="relative">
-                  <div className="animate-spin rounded-full h-16 w-16 border-4 border-indigo-200"></div>
-                  <div className="animate-spin rounded-full h-16 w-16 border-4 border-indigo-500 border-t-transparent absolute top-0"></div>
+                  <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-4 border-indigo-200"></div>
+                  <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-4 border-indigo-500 border-t-transparent absolute top-0"></div>
                 </div>
-                <p className="text-gray-600 mt-4 font-medium">Loading your CGPA data...</p>
+                <p className="text-sm sm:text-base text-gray-600 mt-4 font-medium">Loading your CGPA data...</p>
               </div>
             ) : error ? (
-              <div className="bg-red-50 border-2 border-red-200 text-red-800 px-6 py-4 rounded-xl flex items-center space-x-3">
-                <svg className="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+              <div className="bg-red-50 border-2 border-red-200 text-red-800 px-4 sm:px-6 py-3 sm:py-4 rounded-xl flex items-center space-x-3">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-red-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                 </svg>
                 <div>
-                  <p className="font-semibold">Error Loading Data</p>
-                  <p className="text-sm">{error}</p>
+                  <p className="font-semibold text-sm sm:text-base">Error Loading Data</p>
+                  <p className="text-xs sm:text-sm">{error}</p>
                 </div>
               </div>
             ) : (
               <div>
                 {latestCgpaData && (
-                  <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white p-8 rounded-2xl shadow-2xl mb-8 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
-                    <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12"></div>
+                  <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white p-4 sm:p-6 md:p-8 rounded-2xl shadow-2xl mb-8 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-24 h-24 sm:w-32 sm:h-32 bg-white/10 rounded-full -mr-12 sm:-mr-16 -mt-12 sm:-mt-16"></div>
+                    <div className="absolute bottom-0 left-0 w-16 h-16 sm:w-24 sm:h-24 bg-white/10 rounded-full -ml-8 sm:-ml-12 -mb-8 sm:-mb-12"></div>
                     <div className="relative z-10">
-                      <div className="flex items-center justify-between mb-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 space-y-4 sm:space-y-0">
                         <div>
-                          <p className="text-lg font-medium opacity-90">Current CGPA</p>
-                          <p className="text-6xl font-bold">{latestCgpaData.CGPA}</p>
+                          <p className="text-base sm:text-lg font-medium opacity-90">Current CGPA</p>
+                          <p className="text-4xl sm:text-5xl md:text-6xl font-bold">{latestCgpaData.CGPA}</p>
                         </div>
-                        <div className="text-right">
-                          <div className="flex items-center space-x-2 mb-2">
-                            <svg className="w-5 h-5 opacity-80" fill="currentColor" viewBox="0 0 20 20">
+                        <div className="text-left sm:text-right">
+                          <div className="hidden sm:flex items-center space-x-2 mb-2">
+                            <svg className="w-4 h-4 sm:w-5 sm:h-5 opacity-80" fill="currentColor" viewBox="0 0 20 20">
                               <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <span className="text-sm opacity-90">Latest Semester</span>
+                            <span className="text-xs sm:text-sm opacity-90">Latest Semester</span>
                           </div>
-                          <p className="text-2xl font-semibold opacity-90">Semester {latestCgpaData.SEMESTER}</p>
+                          <p className="text-lg sm:text-xl md:text-2xl font-semibold opacity-90">Semester {latestCgpaData.SEMESTER}</p>
                         </div>
                       </div>
                       <div className="w-full bg-white/20 rounded-full h-2">
@@ -221,9 +221,9 @@ const Cgpa = () => {
                   </div>
                 )}
                 
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-gray-800 flex items-center">
-                    <svg className="w-6 h-6 mr-3 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-3 sm:space-y-0">
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-800 flex items-center">
+                    <svg className="hidden sm:block w-5 h-5 sm:w-6 sm:h-6 mr-3 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
                     </svg>
                     Semester History
@@ -259,14 +259,14 @@ const Cgpa = () => {
                         (semester.TOTAL_CREDITS && semester.TOTAL_CREDITS > 0)
                       ).length === 0 && (
                         <div className="col-span-full">
-                          <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-12 text-center border-2 border-dashed border-gray-300">
-                            <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                              <svg className="w-8 h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                          <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-8 sm:p-12 text-center border-2 border-dashed border-gray-300">
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                              <svg className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                               </svg>
                             </div>
-                            <h3 className="text-xl font-semibold text-gray-700 mb-2">No Semester Data Yet</h3>
-                            <p className="text-gray-500 mb-4">Your CGPA data will appear here once you have completed courses.</p>
+                            <h3 className="text-lg sm:text-xl font-semibold text-gray-700 mb-2">No Semester Data Yet</h3>
+                            <p className="text-sm sm:text-base text-gray-500 mb-4">Your CGPA data will appear here once you have completed courses.</p>
                             <div className="flex justify-center space-x-2">
                               <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce"></div>
                               <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
@@ -278,14 +278,14 @@ const Cgpa = () => {
                     </>
                   ) : (
                     <div className="col-span-full">
-                      <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-12 text-center border-2 border-dashed border-gray-300">
-                        <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                          <svg className="w-8 h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                      <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-8 sm:p-12 text-center border-2 border-dashed border-gray-300">
+                        <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <svg className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
                         </div>
-                        <h3 className="text-xl font-semibold text-gray-700 mb-2">No Semester Data Yet</h3>
-                        <p className="text-gray-500 mb-4">Your CGPA data will appear here once you have completed courses.</p>
+                        <h3 className="text-lg sm:text-xl font-semibold text-gray-700 mb-2">No Semester Data Yet</h3>
+                        <p className="text-sm sm:text-base text-gray-500 mb-4">Your CGPA data will appear here once you have completed courses.</p>
                         <div className="flex justify-center space-x-2">
                           <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce"></div>
                           <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
